@@ -3,12 +3,13 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 from urllib.parse import urljoin
 
+from .catalog import JsonLd, graph_items, has_type
 from .http import SourceError
 from .update import COLLECTORS
 
 
 PUBLIC_LINKS = {
-    "magnit": ("https://magnit.ru/categories",),
+    "magnit": ("https://magnit.ru/categories", "https://magnit.ru/shops"),
     "metro": ("https://online.metro-cc.ru/sitemap.xml",),
 }
 
@@ -22,8 +23,17 @@ def inspect(collector_type):
     for url, check in endpoints:
         try:
             response = check()
-            checks.append({"url": url, "result": response if isinstance(response, str)
-                           else response.content_type})
+            if isinstance(response, str):
+                checks.append({"url": url, "result": response})
+                continue
+            observation = {"url": url, "result": response.content_type}
+            if response.content_type == "text/html":
+                parser = JsonLd()
+                parser.feed(response.text)
+                nodes = list(graph_items(parser.documents))
+                observation["productNodes"] = sum(has_type(node, "Product") for node in nodes)
+                observation["mentionsOrenburg"] = "оренбург" in response.text.casefold()
+            checks.append(observation)
         except SourceError as error:
             checks.append({"url": url, "result": error.code, "detail": str(error)})
             if error.code in ("access_denied", "proxy_denied", "rate_limited", "robots_unavailable"):
