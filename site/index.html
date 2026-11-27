@@ -63,6 +63,9 @@
       <a class="nav-link" href="#stores" data-nav="stores">
         <svg class="icon"><use href="#i-store"></use></svg><span>Магазины и цены</span>
       </a>
+      <a class="nav-link" href="#settings" data-nav="settings">
+        <svg class="icon"><use href="#i-filter"></use></svg><span>Настройки рациона</span>
+      </a>
     </nav>
 
     <div class="sidebar-status">
@@ -132,6 +135,25 @@
           <div id="day-menu" class="meal-grid" role="tabpanel" tabindex="0"></div>
           <p id="day-cost" class="day-cost" hidden></p>
           <div class="menu-budget" id="budget-summary"></div>
+        </div>
+      </section>
+
+      <section id="view-settings" class="view" aria-labelledby="settings-title" hidden>
+        <div class="section-heading view-title">
+          <div><h1 id="settings-title">Настройки рациона</h1><p id="settings-status" role="status"></p></div>
+        </div>
+        <div class="settings-week">
+          <div><label for="settings-week">Неделя меню</label><p id="settings-week-range"></p></div>
+          <input type="date" id="settings-week" required aria-describedby="settings-week-hint">
+          <p id="settings-week-hint">Выберите любой день нужной недели. Меню начнётся с понедельника.</p>
+        </div>
+        <div class="settings-grid" id="settings-parameters"></div>
+        <p id="settings-error" role="alert" class="form-error" hidden></p>
+        <div class="settings-actions">
+          <button id="settings-save" class="button primary" type="button">Сохранить и пересчитать меню</button>
+          <button id="settings-refresh" class="button outline" type="button">Обновить блюда</button>
+          <button id="settings-cancel" class="button outline" type="button">Отменить изменения</button>
+          <button id="settings-restart" class="button outline" type="button">Пройти анкету заново</button>
         </div>
       </section>
 

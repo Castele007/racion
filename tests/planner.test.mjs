@@ -1,3 +1,4 @@
+import { CATEGORIES, SIDES, completeDish, familyOf } from "../site/js/culinary.mjs";
 import {
   ALLERGENS, EQUIPMENT, MEALS as QUESTIONNAIRE_MEALS, activeMeals, buildRules, compatibleMethods,
   mealPeople, plannerSettings, portionSchedule, restoreAnswers, validBudget, validateStep,
@@ -10,7 +11,7 @@ import { allocateMealCosts, estimateLowerBound, estimatePricing, estimateRows, f
 import {
   MEALS, STORES, bestQuote, cheapestPacks, eligibleRecipes, exclusionIds, generateMenu,
   pricing, purchasable, recipeAmount, replacementMenu, replacementOptions, shoppingList,
-  starterMenu, validMenu, weekStart,
+  starterMenu, validMenu, weekForDate, weekStart,
 } from "../site/js/planner.mjs";
 
 const load = file => JSON.parse(readFileSync(new URL("../site/data/" + file + ".json", import.meta.url), "utf8"));
@@ -46,6 +47,7 @@ test("public cookbook has at least 300 complete, unique recipes and working asse
   assert.ok(recipes.length >= 300);
   for (const meal of QUESTIONNAIRE_MEALS) assert.ok(recipes.filter(recipe => recipe.meal === meal).length >= 7);
   const imageHashes = new Set();
+  const sides = new Set();
   for (const recipe of recipes) {
     assert.ok(recipe.title && QUESTIONNAIRE_MEALS.includes(recipe.meal) && /^[a-z-]+$/.test(recipe.id));
     assert.ok(recipe.minutes >= 10 && recipe.servings > 0);
@@ -54,6 +56,13 @@ test("public cookbook has at least 300 complete, unique recipes and working asse
       assert.ok(Object.hasOwn(ingredients, id) && Number.isInteger(count) && count > 0);
     }
     assert.ok(Array.isArray(recipe.tags) && recipe.methods.length > 0);
+    assert.ok(Object.hasOwn(recipe.ingredients, recipe.mainIngredient), recipe.id);
+    assert.ok(Object.hasOwn(CATEGORIES, recipe.category) && /^[a-z-]+$/.test(recipe.family), recipe.id);
+    assert.ok(["standalone", "with-side", "needs-side"].includes(recipe.servingStyle), recipe.id);
+    if (recipe.servingStyle === "with-side") {
+      assert.ok(Object.hasOwn(SIDES, recipe.sideDish), recipe.id);
+      sides.add(recipe.sideDish);
+    } else assert.equal(recipe.sideDish, null, recipe.id);
     for (const method of recipe.methods) {
       assert.ok(method.equipment.every(key => Object.hasOwn(EQUIPMENT, key)) && method.minutes > 0);
       assert.ok(method.mode && method.instructions.length >= 3);
@@ -68,6 +77,7 @@ test("public cookbook has at least 300 complete, unique recipes and working asse
     imageHashes.add(createHash("sha256").update(data).digest("hex"));
   }
   assert.equal(imageHashes.size, recipes.length);
+  assert.deepEqual([...sides].sort(), Object.keys(SIDES).sort());
   assert.ok(validMenu(starterMenu(), recipes, ingredients, []));
 });
 
@@ -357,4 +367,60 @@ test("Magnit fills gaps with separate estimates, keeps inventory and excludes co
   assert.equal(archived.stale, 1);
   assert.equal(archived.lines[0].stale, true);
   assert.equal(archived.lines[1].stale, undefined);
+});
+
+test("the calendar date selects the Monday of its week and rejects invalid dates", () => {
+  assert.equal(weekForDate("2027-01-03"), "2026-12-28");
+  assert.equal(weekForDate("2027-01-04"), "2027-01-04");
+  assert.equal(weekForDate("2028-02-29"), "2028-02-28");
+  assert.equal(weekForDate("2027-02-29"), null);
+  assert.equal(weekForDate(""), null);
+});
+
+test("different families are preferred to small recipe variations, including in replacements", () => {
+  const recipesForDinner = [
+    ...Array.from({ length: 10 }, (_, index) => ({
+      id: "variant-" + index, title: "Вариант " + index, family: "roast-poultry", meal: "dinner",
+      category: "roast", mainIngredient: "chicken", sideDish: "roasted-potatoes", servingStyle: "with-side",
+      ingredients: { chicken: 280, potato: 335 }, servings: 2,
+    })),
+    ...["handmade-pelmeni", "beef-stroganoff", "cabbage-rolls-beef", "pork-goulash-bulgur",
+      "risotto-green-peas", "spaghetti-carbonara", "mackerel-country-potatoes", "grill-a-a"]
+      .map(id => byId.get(id)),
+  ];
+  const dinnerMap = new Map(recipesForDinner.map(recipe => [recipe.id, recipe]));
+  const settings = {
+    meals: ["dinner"], exclusions: [], people: 2, budget: 30000,
+    priority: recipe => recipe.id.startsWith("variant-") ? 1 : 0,
+  };
+  const plan = generateMenu(recipesForDinner, ingredients, settings, null, randomWithSeed(21)).menu;
+  assert.equal(new Set(plan.map(id => familyOf(dinnerMap.get(id)))).size, 7);
+  assert.ok(plan.every(id => completeDish(dinnerMap.get(id))));
+  const replace = replacementOptions(plan, plan.findIndex(id => !id.startsWith("variant-")),
+    recipesForDinner, ingredients, [], ["dinner"]);
+  assert.ok(replace[0] && !replace[0].id.startsWith("variant-"));
+  assert.ok(replace.every(completeDish));
+});
+
+test("the old authored families still provide options when equipment restricts a full dinner", () => {
+  const options = restoreAnswers({ store: "magnit", equipment: [],
+    meals: { breakfast: { enabled: false }, lunch: { enabled: false } } });
+  const rules = plannerSettings(options, ingredients);
+  const plan = generateMenu(recipes, ingredients, rules, null, randomWithSeed(5)).menu;
+  assert.equal(plan.length, 7);
+  assert.ok(plan.every(id => completeDish(byId.get(id)) && rules.allows(byId.get(id))));
+});
+
+test("a three-person budget admits a week with 21 families and full meat and fish plates", () => {
+  const estimates = estimatePricing(load("estimates"), ingredients, {});
+  const source = { hasOffers: true, quote: list => [estimates.quote(list)] };
+  const answers = restoreAnswers({ adults: 3, budget: 6500, equipment: ["stove", "oven", "blender"] });
+  const rules = plannerSettings(answers, ingredients);
+  const { menu } = generateMenu(recipes, ingredients, rules, source, randomWithSeed(47));
+  assert.equal(new Set(menu.map(id => familyOf(byId.get(id)))).size, 21);
+  const dinners = menu.map(id => byId.get(id)).filter(recipe => recipe.meal === "dinner");
+  const fish = dinners.filter(recipe => recipe.category === "fish");
+  assert.ok(fish.length && fish.every(recipe => recipe.servingStyle === "with-side"));
+  const quote = estimates.quote(shoppingList(menu, byId, ingredients, rules.people));
+  assert.ok(quote.complete && quote.knownCost <= 650000);
 });

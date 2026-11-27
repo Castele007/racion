@@ -27,7 +27,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "syrniki",
@@ -57,7 +62,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "curd",
+    "family": "syrniki",
+    "servingStyle": "standalone"
   },
   {
     "id": "tomato-eggs",
@@ -87,7 +97,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "fried-eggs",
+    "servingStyle": "standalone"
   },
   {
     "id": "millet-pumpkin",
@@ -117,7 +132,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "kefir-pancakes",
@@ -147,7 +167,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "flour",
+    "sideDish": null,
+    "category": "pancakes",
+    "family": "fritters",
+    "servingStyle": "standalone"
   },
   {
     "id": "curd-berries",
@@ -177,7 +202,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "curd",
+    "family": "curd-bowl",
+    "servingStyle": "standalone"
   },
   {
     "id": "cheese-omelet",
@@ -207,7 +237,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "milk-rice",
@@ -237,7 +272,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "banana-oat-pan",
@@ -267,7 +307,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "pancakes",
+    "family": "fritters",
+    "servingStyle": "standalone"
   },
   {
     "id": "curd-casserole",
@@ -297,7 +342,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "casserole",
+    "family": "curd-casserole",
+    "servingStyle": "standalone"
   },
   {
     "id": "hot-cheese-toast",
@@ -327,7 +377,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "toast",
+    "servingStyle": "standalone"
   },
   {
     "id": "buckwheat-milk",
@@ -357,7 +412,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "buckwheat",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "egg-lavash",
@@ -387,7 +447,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "lavash",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "lavash-roll",
+    "servingStyle": "standalone"
   },
   {
     "id": "shakshuka",
@@ -417,7 +482,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "eggs-in-tomato",
+    "servingStyle": "standalone"
   },
   {
     "id": "apple-semolina",
@@ -447,7 +517,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "semolina",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "savory-oats",
@@ -477,7 +552,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "savory-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "curd-dumplings",
@@ -507,7 +587,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "dumplings",
+    "family": "lazy-dumplings",
+    "servingStyle": "standalone"
   },
   {
     "id": "cabbage-omelet",
@@ -537,7 +622,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "potato-pancakes",
@@ -567,7 +657,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "potato",
+    "sideDish": null,
+    "category": "pancakes",
+    "family": "vegetable-fritters",
+    "servingStyle": "standalone"
   },
   {
     "id": "pear-oats",
@@ -597,7 +692,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "french-toast",
@@ -627,7 +727,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "french-toast",
+    "servingStyle": "standalone"
   },
   {
     "id": "cucumber-curd-toast",
@@ -668,7 +773,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "rye-bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "toast",
+    "servingStyle": "standalone"
   },
   {
     "id": "millet-pear",
@@ -698,7 +808,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "berry-yogurt",
@@ -728,7 +843,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "zucchini-fritters",
@@ -758,7 +878,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "pancakes",
+    "family": "vegetable-fritters",
+    "servingStyle": "standalone"
   },
   {
     "id": "broccoli-omelet",
@@ -788,7 +913,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "banana-curd",
@@ -829,7 +959,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "curd",
+    "family": "curd-bowl",
+    "servingStyle": "standalone"
   },
   {
     "id": "savory-curd-cakes",
@@ -859,7 +994,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "curd",
+    "family": "syrniki",
+    "servingStyle": "standalone"
   },
   {
     "id": "rice-pumpkin",
@@ -889,7 +1029,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "thin-pancakes",
@@ -919,7 +1064,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "flour",
+    "sideDish": null,
+    "category": "pancakes",
+    "family": "thin-pancakes",
+    "servingStyle": "standalone"
   },
   {
     "id": "potato-egg-skillet",
@@ -949,7 +1099,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "potato-eggs",
+    "servingStyle": "standalone"
   },
   {
     "id": "apple-curd-bake",
@@ -979,7 +1134,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "apple",
+    "sideDish": null,
+    "category": "baking",
+    "family": "baked-fruit",
+    "servingStyle": "standalone"
   },
   {
     "id": "oat-casserole",
@@ -1009,7 +1169,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "casserole",
+    "family": "oat-casserole",
+    "servingStyle": "standalone"
   },
   {
     "id": "lavash-curd-apple",
@@ -1039,7 +1204,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "lavash",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "lavash-roll",
+    "servingStyle": "standalone"
   },
   {
     "id": "carrot-pancakes",
@@ -1069,7 +1239,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "carrot",
+    "sideDish": null,
+    "category": "pancakes",
+    "family": "vegetable-fritters",
+    "servingStyle": "standalone"
   },
   {
     "id": "mushroom-toast",
@@ -1099,7 +1274,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "toast",
+    "servingStyle": "standalone"
   },
   {
     "id": "chicken-noodle-soup",
@@ -1129,7 +1309,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "pasta", "soup", "vegetables"]
+    "tags": ["chicken", "pasta", "soup", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "chicken-broth",
+    "servingStyle": "standalone"
   },
   {
     "id": "home-borscht",
@@ -1159,7 +1344,12 @@
         ]
       }
     ],
-    "tags": ["beef", "soup", "vegetables"]
+    "tags": ["beef", "soup", "vegetables"],
+    "mainIngredient": "beet",
+    "sideDish": null,
+    "category": "soup",
+    "family": "borscht",
+    "servingStyle": "standalone"
   },
   {
     "id": "pea-soup",
@@ -1203,7 +1393,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "peas",
+    "sideDish": null,
+    "category": "soup",
+    "family": "pea-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "lentil-soup",
@@ -1233,7 +1428,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "lentils",
+    "sideDish": null,
+    "category": "soup",
+    "family": "lentil-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "solyanka-home",
@@ -1263,7 +1463,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "solyanka",
+    "servingStyle": "standalone"
   },
   {
     "id": "fish-soup",
@@ -1293,7 +1498,12 @@
         ]
       }
     ],
-    "tags": ["fish", "soup", "vegetables"]
+    "tags": ["fish", "soup", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": null,
+    "category": "soup",
+    "family": "fish-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "mushroom-barley",
@@ -1323,7 +1533,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "mushrooms",
+    "sideDish": null,
+    "category": "soup",
+    "family": "mushroom-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "pumpkin-soup",
@@ -1354,7 +1569,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "pumpkin",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "cabbage-soup",
@@ -1384,7 +1604,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "cabbage",
+    "sideDish": null,
+    "category": "soup",
+    "family": "shchi",
+    "servingStyle": "standalone"
   },
   {
     "id": "pickle-soup",
@@ -1414,7 +1639,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "pickles",
+    "sideDish": null,
+    "category": "soup",
+    "family": "rassolnik",
+    "servingStyle": "standalone"
   },
   {
     "id": "meatball-soup",
@@ -1444,7 +1674,12 @@
         ]
       }
     ],
-    "tags": ["beef", "soup", "vegetables"]
+    "tags": ["beef", "soup", "vegetables"],
+    "mainIngredient": "mince",
+    "sideDish": null,
+    "category": "soup",
+    "family": "meatball-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "cauliflower-soup",
@@ -1475,7 +1710,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "cauliflower",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-chicken",
@@ -1505,7 +1745,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "grain",
+    "family": "pilaf",
+    "servingStyle": "standalone"
   },
   {
     "id": "potato-mushroom-soup",
@@ -1535,7 +1780,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "mushrooms",
+    "sideDish": null,
+    "category": "soup",
+    "family": "mushroom-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "bean-tomato-soup",
@@ -1565,7 +1815,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "beans",
+    "sideDish": null,
+    "category": "soup",
+    "family": "bean-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "red-cabbage-chicken",
@@ -1595,7 +1850,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "salad", "vegetables"]
+    "tags": ["chicken", "salad", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "salad",
+    "family": "chicken-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "turkey-buckwheat-soup",
@@ -1625,7 +1885,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": null,
+    "category": "soup",
+    "family": "poultry-grain-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "egg-green-soup",
@@ -1655,7 +1920,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "soup",
+    "family": "potato-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "rice-tuna-salad",
@@ -1685,7 +1955,12 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "tuna",
+    "sideDish": null,
+    "category": "salad",
+    "family": "tuna-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "viniagret-beans",
@@ -1728,7 +2003,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "beet",
+    "sideDish": null,
+    "category": "salad",
+    "family": "vinaigrette",
+    "servingStyle": "standalone"
   },
   {
     "id": "summer-okroshka",
@@ -1758,7 +2038,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "kefir",
+    "sideDish": null,
+    "category": "soup",
+    "family": "okroshka",
+    "servingStyle": "standalone"
   },
   {
     "id": "bean-mackerel-salad",
@@ -1788,7 +2073,12 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "mackerel",
+    "sideDish": null,
+    "category": "salad",
+    "family": "fish-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "sauerkraut-soup",
@@ -1818,7 +2108,12 @@
         ]
       }
     ],
-    "tags": ["pork", "soup", "vegetables"]
+    "tags": ["pork", "soup", "vegetables"],
+    "mainIngredient": "sauerkraut",
+    "sideDish": null,
+    "category": "soup",
+    "family": "shchi",
+    "servingStyle": "standalone"
   },
   {
     "id": "turkey-lavash",
@@ -1848,7 +2143,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "lavash-roll",
+    "servingStyle": "standalone"
   },
   {
     "id": "tomato-rice-soup",
@@ -1878,7 +2178,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "canned-tomato",
+    "sideDish": null,
+    "category": "soup",
+    "family": "tomato-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "courgette-soup",
@@ -1909,7 +2214,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "broccoli-chicken-soup",
@@ -1939,7 +2249,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "chicken-broth",
+    "servingStyle": "standalone"
   },
   {
     "id": "borscht-beans",
@@ -1969,7 +2284,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "beet",
+    "sideDish": null,
+    "category": "soup",
+    "family": "borscht",
+    "servingStyle": "standalone"
   },
   {
     "id": "meatball-pasta-soup",
@@ -1999,7 +2319,12 @@
         ]
       }
     ],
-    "tags": ["beef", "pasta", "soup", "vegetables"]
+    "tags": ["beef", "pasta", "soup", "vegetables"],
+    "mainIngredient": "mince",
+    "sideDish": null,
+    "category": "soup",
+    "family": "meatball-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "rice-pepper-soup",
@@ -2029,7 +2354,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "poultry-grain-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "beet-chicken-salad",
@@ -2059,7 +2389,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "salad", "vegetables"]
+    "tags": ["chicken", "salad", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "salad",
+    "family": "chicken-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-chick-salad",
@@ -2089,7 +2424,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "potato-pea-salad",
@@ -2119,7 +2459,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "potato",
+    "sideDish": null,
+    "category": "salad",
+    "family": "potato-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "mushroom-buckwheat",
@@ -2149,7 +2494,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "buckwheat",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "potato-leek-soup",
@@ -2179,7 +2529,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "potato",
+    "sideDish": null,
+    "category": "soup",
+    "family": "potato-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "chicken-corn-soup",
@@ -2209,7 +2564,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "chicken-broth",
+    "servingStyle": "standalone"
   },
   {
     "id": "roast-chicken-buckwheat",
@@ -2240,7 +2600,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "thigh",
+    "sideDish": "buckwheat",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "baked-pollock",
@@ -2270,7 +2635,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "roasted-potatoes",
+    "category": "fish",
+    "family": "roast-fish",
+    "servingStyle": "with-side"
   },
   {
     "id": "pasta-tomato",
@@ -2300,7 +2670,12 @@
         ]
       }
     ],
-    "tags": ["pasta", "vegetables"]
+    "tags": ["pasta", "vegetables"],
+    "mainIngredient": "pasta",
+    "sideDish": null,
+    "category": "pasta",
+    "family": "tomato-pasta",
+    "servingStyle": "standalone"
   },
   {
     "id": "beef-patties",
@@ -2330,7 +2705,12 @@
         ]
       }
     ],
-    "tags": ["beef", "vegetables"]
+    "tags": ["beef", "vegetables"],
+    "mainIngredient": "mince",
+    "sideDish": "mashed-potatoes",
+    "category": "cutlets",
+    "family": "meat-cutlets",
+    "servingStyle": "with-side"
   },
   {
     "id": "stew-cabbage",
@@ -2360,7 +2740,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "stew",
+    "family": "braised-cabbage",
+    "servingStyle": "standalone"
   },
   {
     "id": "beef-stroganoff",
@@ -2390,7 +2775,12 @@
         ]
       }
     ],
-    "tags": ["beef"]
+    "tags": ["beef"],
+    "mainIngredient": "beef",
+    "sideDish": "buckwheat",
+    "category": "gravy",
+    "family": "stroganoff",
+    "servingStyle": "with-side"
   },
   {
     "id": "stuffed-peppers",
@@ -2420,7 +2810,12 @@
         ]
       }
     ],
-    "tags": ["beef", "vegetables"]
+    "tags": ["beef", "vegetables"],
+    "mainIngredient": "mince",
+    "sideDish": null,
+    "category": "stuffed",
+    "family": "stuffed-peppers",
+    "servingStyle": "standalone"
   },
   {
     "id": "lazy-cabbage-rolls",
@@ -2450,7 +2845,12 @@
         ]
       }
     ],
-    "tags": ["beef", "vegetables"]
+    "tags": ["beef", "vegetables"],
+    "mainIngredient": "mince",
+    "sideDish": null,
+    "category": "stuffed",
+    "family": "cabbage-rolls",
+    "servingStyle": "standalone"
   },
   {
     "id": "pork-potatoes",
@@ -2480,7 +2880,12 @@
         ]
       }
     ],
-    "tags": ["pork", "vegetables"]
+    "tags": ["pork", "vegetables"],
+    "mainIngredient": "pork",
+    "sideDish": null,
+    "category": "stew",
+    "family": "pot-roast",
+    "servingStyle": "standalone"
   },
   {
     "id": "chicken-sour-cream",
@@ -2510,7 +2915,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "rice",
+    "category": "gravy",
+    "family": "creamy-meat",
+    "servingStyle": "with-side"
   },
   {
     "id": "mushroom-pasta",
@@ -2540,7 +2950,12 @@
         ]
       }
     ],
-    "tags": ["pasta", "vegetables"]
+    "tags": ["pasta", "vegetables"],
+    "mainIngredient": "pasta",
+    "sideDish": null,
+    "category": "pasta",
+    "family": "cream-pasta",
+    "servingStyle": "standalone"
   },
   {
     "id": "turkey-meatballs",
@@ -2570,7 +2985,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "rice",
+    "category": "cutlets",
+    "family": "stewed-meatballs",
+    "servingStyle": "with-side"
   },
   {
     "id": "mackerel-vegetables",
@@ -2600,7 +3020,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "mackerel",
+    "sideDish": "roasted-potatoes",
+    "category": "fish",
+    "family": "roast-fish",
+    "servingStyle": "with-side"
   },
   {
     "id": "vegetable-stew",
@@ -2630,7 +3055,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "potato",
+    "sideDish": null,
+    "category": "stew",
+    "family": "vegetable-stew",
+    "servingStyle": "standalone"
   },
   {
     "id": "beef-pasta",
@@ -2660,7 +3090,12 @@
         ]
       }
     ],
-    "tags": ["beef", "pasta", "vegetables"]
+    "tags": ["beef", "pasta", "vegetables"],
+    "mainIngredient": "mince",
+    "sideDish": null,
+    "category": "pasta",
+    "family": "navy-pasta",
+    "servingStyle": "standalone"
   },
   {
     "id": "liver-buckwheat",
@@ -2690,7 +3125,12 @@
         ]
       }
     ],
-    "tags": ["chicken"]
+    "tags": ["chicken"],
+    "mainIngredient": "liver",
+    "sideDish": "buckwheat",
+    "category": "gravy",
+    "family": "liver",
+    "servingStyle": "with-side"
   },
   {
     "id": "fish-patties",
@@ -2720,7 +3160,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "mashed-potatoes",
+    "category": "fish",
+    "family": "fish-cutlets",
+    "servingStyle": "with-side"
   },
   {
     "id": "potato-mushroom-pan",
@@ -2750,7 +3195,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "potato",
+    "sideDish": null,
+    "category": "stew",
+    "family": "fried-potato",
+    "servingStyle": "standalone"
   },
   {
     "id": "turkey-couscous",
@@ -2780,7 +3230,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "couscous",
+    "category": "grain",
+    "family": "poultry-couscous",
+    "servingStyle": "with-side"
   },
   {
     "id": "cabbage-egg-pie",
@@ -2811,7 +3266,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "cabbage",
+    "sideDish": null,
+    "category": "baking",
+    "family": "cabbage-pie",
+    "servingStyle": "standalone"
   },
   {
     "id": "broccoli-pasta-bake",
@@ -2842,7 +3302,12 @@
         ]
       }
     ],
-    "tags": ["pasta"]
+    "tags": ["pasta"],
+    "mainIngredient": "pasta",
+    "sideDish": null,
+    "category": "casserole",
+    "family": "pasta-bake",
+    "servingStyle": "standalone"
   },
   {
     "id": "rice-egg-vegetables",
@@ -2872,7 +3337,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "grain",
+    "family": "fried-rice",
+    "servingStyle": "standalone"
   },
   {
     "id": "lentil-patties",
@@ -2902,7 +3372,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "lentils",
+    "sideDish": "vegetables",
+    "category": "cutlets",
+    "family": "legume-cutlets",
+    "servingStyle": "with-side"
   },
   {
     "id": "pork-perlovka",
@@ -2932,7 +3407,12 @@
         ]
       }
     ],
-    "tags": ["pork", "vegetables"]
+    "tags": ["pork", "vegetables"],
+    "mainIngredient": "pork",
+    "sideDish": null,
+    "category": "grain",
+    "family": "pearl-meat",
+    "servingStyle": "standalone"
   },
   {
     "id": "curd-potato-bake",
@@ -2963,7 +3443,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "potato",
+    "sideDish": null,
+    "category": "casserole",
+    "family": "potato-bake",
+    "servingStyle": "standalone"
   },
   {
     "id": "chicken-potato-tray",
@@ -2993,7 +3478,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "thigh",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "cabbage-beans",
@@ -3023,7 +3513,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "cabbage",
+    "sideDish": null,
+    "category": "stew",
+    "family": "braised-cabbage",
+    "servingStyle": "standalone"
   },
   {
     "id": "zucchini-boats",
@@ -3054,7 +3549,12 @@
         ]
       }
     ],
-    "tags": ["beef", "vegetables"]
+    "tags": ["beef", "vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "stuffed",
+    "family": "stuffed-vegetables",
+    "servingStyle": "standalone"
   },
   {
     "id": "cauliflower-cheese-bake",
@@ -3085,7 +3585,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "cauliflower",
+    "sideDish": null,
+    "category": "casserole",
+    "family": "vegetable-bake",
+    "servingStyle": "standalone"
   },
   {
     "id": "fish-tomato-stew",
@@ -3115,7 +3620,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "rice",
+    "category": "fish",
+    "family": "fish-sauce",
+    "servingStyle": "with-side"
   },
   {
     "id": "baked-stuffed-eggplant",
@@ -3146,7 +3656,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "eggplant",
+    "sideDish": null,
+    "category": "stuffed",
+    "family": "stuffed-vegetables",
+    "servingStyle": "standalone"
   },
   {
     "id": "beef-potato-casserole",
@@ -3177,7 +3692,12 @@
         ]
       }
     ],
-    "tags": ["beef", "vegetables"]
+    "tags": ["beef", "vegetables"],
+    "mainIngredient": "potato",
+    "sideDish": null,
+    "category": "casserole",
+    "family": "potato-bake",
+    "servingStyle": "standalone"
   },
   {
     "id": "chicken-green-beans",
@@ -3207,7 +3727,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "rice",
+    "category": "stew",
+    "family": "poultry-vegetables",
+    "servingStyle": "with-side"
   },
   {
     "id": "barley-mushroom-risotto",
@@ -3237,7 +3762,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "barley",
+    "sideDish": null,
+    "category": "grain",
+    "family": "barley-risotto",
+    "servingStyle": "standalone"
   },
   {
     "id": "potato-lentil-stew",
@@ -3267,7 +3797,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "lentils",
+    "sideDish": null,
+    "category": "stew",
+    "family": "vegetable-stew",
+    "servingStyle": "standalone"
   },
   {
     "id": "turkey-mushroom-sauce",
@@ -3297,7 +3832,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "boiled-potatoes",
+    "category": "gravy",
+    "family": "creamy-meat",
+    "servingStyle": "with-side"
   },
   {
     "id": "porridge-a-a",
@@ -3343,7 +3883,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-a-b",
@@ -3389,7 +3934,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-a-c",
@@ -3435,7 +3985,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-a-d",
@@ -3481,7 +4036,12 @@
         ]
       }
     ],
-    "tags": ["porridge", "vegetables"]
+    "tags": ["porridge", "vegetables"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-b-a",
@@ -3527,7 +4087,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-b-b",
@@ -3573,7 +4138,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-b-c",
@@ -3619,7 +4189,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-b-d",
@@ -3665,7 +4240,12 @@
         ]
       }
     ],
-    "tags": ["porridge", "vegetables"]
+    "tags": ["porridge", "vegetables"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-c-a",
@@ -3711,7 +4291,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-c-b",
@@ -3757,7 +4342,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-c-c",
@@ -3803,7 +4393,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-c-d",
@@ -3849,7 +4444,12 @@
         ]
       }
     ],
-    "tags": ["porridge", "vegetables"]
+    "tags": ["porridge", "vegetables"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-d-a",
@@ -3881,7 +4481,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "semolina",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-d-b",
@@ -3913,7 +4518,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "semolina",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-d-c",
@@ -3945,7 +4555,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "semolina",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "porridge-d-d",
@@ -3977,7 +4592,12 @@
         ]
       }
     ],
-    "tags": ["porridge", "vegetables"]
+    "tags": ["porridge", "vegetables"],
+    "mainIngredient": "semolina",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "milk-porridge",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-a-a",
@@ -4024,7 +4644,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-a-b",
@@ -4071,7 +4696,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-a-c",
@@ -4118,7 +4748,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-a-d",
@@ -4165,7 +4800,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-b-a",
@@ -4212,7 +4852,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-b-b",
@@ -4259,7 +4904,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-b-c",
@@ -4306,7 +4956,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-b-d",
@@ -4353,7 +5008,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-c-a",
@@ -4400,7 +5060,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-c-b",
@@ -4447,7 +5112,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-c-c",
@@ -4494,7 +5164,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-c-d",
@@ -4541,7 +5216,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-d-a",
@@ -4588,7 +5268,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-d-b",
@@ -4635,7 +5320,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-d-c",
@@ -4682,7 +5372,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "omelet-d-d",
@@ -4729,7 +5424,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "egg",
+    "sideDish": null,
+    "category": "eggs",
+    "family": "omelet",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-a-a",
@@ -4759,7 +5459,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-a-b",
@@ -4789,7 +5494,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-a-c",
@@ -4819,7 +5529,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-a-d",
@@ -4849,7 +5564,12 @@
         ]
       }
     ],
-    "tags": ["porridge", "vegetables"]
+    "tags": ["porridge", "vegetables"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-b-a",
@@ -4879,7 +5599,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-b-b",
@@ -4909,7 +5634,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-b-c",
@@ -4939,7 +5669,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-b-d",
@@ -4969,7 +5704,12 @@
         ]
       }
     ],
-    "tags": ["porridge", "vegetables"]
+    "tags": ["porridge", "vegetables"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-c-a",
@@ -4999,7 +5739,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-c-b",
@@ -5029,7 +5774,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-c-c",
@@ -5059,7 +5809,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-c-d",
@@ -5089,7 +5844,12 @@
         ]
       }
     ],
-    "tags": ["porridge", "vegetables"]
+    "tags": ["porridge", "vegetables"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-d-a",
@@ -5119,7 +5879,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-d-b",
@@ -5149,7 +5914,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-d-c",
@@ -5179,7 +5949,12 @@
         ]
       }
     ],
-    "tags": ["porridge"]
+    "tags": ["porridge"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "overnight-d-d",
@@ -5209,7 +5984,12 @@
         ]
       }
     ],
-    "tags": ["porridge", "vegetables"]
+    "tags": ["porridge", "vegetables"],
+    "mainIngredient": "oats",
+    "sideDish": null,
+    "category": "porridge",
+    "family": "overnight-oats",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-a-a",
@@ -5255,7 +6035,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "lentils",
+    "sideDish": null,
+    "category": "soup",
+    "family": "lentil-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-a-b",
@@ -5301,7 +6086,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "lentils",
+    "sideDish": null,
+    "category": "soup",
+    "family": "lentil-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-a-c",
@@ -5347,7 +6137,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "lentils",
+    "sideDish": null,
+    "category": "soup",
+    "family": "lentil-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-a-d",
@@ -5393,7 +6188,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "lentils",
+    "sideDish": null,
+    "category": "soup",
+    "family": "lentil-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-b-a",
@@ -5439,7 +6239,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "peas",
+    "sideDish": null,
+    "category": "soup",
+    "family": "pea-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-b-b",
@@ -5485,7 +6290,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "peas",
+    "sideDish": null,
+    "category": "soup",
+    "family": "pea-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-b-c",
@@ -5531,7 +6341,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "peas",
+    "sideDish": null,
+    "category": "soup",
+    "family": "pea-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-b-d",
@@ -5577,7 +6392,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "peas",
+    "sideDish": null,
+    "category": "soup",
+    "family": "pea-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-c-a",
@@ -5623,7 +6443,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "chicken-broth",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-c-b",
@@ -5669,7 +6494,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "chicken-broth",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-c-c",
@@ -5715,7 +6545,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "chicken-broth",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-c-d",
@@ -5761,7 +6596,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "soup", "vegetables"]
+    "tags": ["chicken", "soup", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "chicken-broth",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-d-a",
@@ -5807,7 +6647,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "barley",
+    "sideDish": null,
+    "category": "soup",
+    "family": "barley-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-d-b",
@@ -5853,7 +6698,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "barley",
+    "sideDish": null,
+    "category": "soup",
+    "family": "barley-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-d-c",
@@ -5899,7 +6749,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "barley",
+    "sideDish": null,
+    "category": "soup",
+    "family": "barley-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "soup-d-d",
@@ -5945,7 +6800,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "barley",
+    "sideDish": null,
+    "category": "soup",
+    "family": "barley-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-a-a",
@@ -5990,7 +6850,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "pumpkin",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-a-b",
@@ -6035,7 +6900,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "pumpkin",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-a-c",
@@ -6080,7 +6950,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "pumpkin",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-a-d",
@@ -6125,7 +7000,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "pumpkin",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-b-a",
@@ -6170,7 +7050,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "cauliflower",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-b-b",
@@ -6215,7 +7100,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "cauliflower",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-b-c",
@@ -6260,7 +7150,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "cauliflower",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-b-d",
@@ -6305,7 +7200,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "cauliflower",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-c-a",
@@ -6350,7 +7250,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-c-b",
@@ -6395,7 +7300,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-c-c",
@@ -6440,7 +7350,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-c-d",
@@ -6485,7 +7400,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-d-a",
@@ -6530,7 +7450,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "broccoli",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-d-b",
@@ -6575,7 +7500,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "broccoli",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-d-c",
@@ -6620,7 +7550,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "broccoli",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "puree-d-d",
@@ -6665,7 +7600,12 @@
         ]
       }
     ],
-    "tags": ["soup", "vegetables"]
+    "tags": ["soup", "vegetables"],
+    "mainIngredient": "broccoli",
+    "sideDish": null,
+    "category": "soup",
+    "family": "cream-soup",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-a-a",
@@ -6695,7 +7635,12 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "tuna",
+    "sideDish": null,
+    "category": "salad",
+    "family": "tuna-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-a-b",
@@ -6725,7 +7670,12 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "tuna",
+    "sideDish": null,
+    "category": "salad",
+    "family": "tuna-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-a-c",
@@ -6755,7 +7705,12 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "tuna",
+    "sideDish": null,
+    "category": "salad",
+    "family": "tuna-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-a-d",
@@ -6785,7 +7740,12 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "tuna",
+    "sideDish": null,
+    "category": "salad",
+    "family": "tuna-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-b-a",
@@ -6815,7 +7775,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "beans",
+    "sideDish": null,
+    "category": "salad",
+    "family": "bean-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-b-b",
@@ -6845,7 +7810,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "beans",
+    "sideDish": null,
+    "category": "salad",
+    "family": "bean-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-b-c",
@@ -6875,7 +7845,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "beans",
+    "sideDish": null,
+    "category": "salad",
+    "family": "bean-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-b-d",
@@ -6905,7 +7880,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "beans",
+    "sideDish": null,
+    "category": "salad",
+    "family": "bean-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-c-a",
@@ -6935,7 +7915,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "green-peas",
+    "sideDish": null,
+    "category": "salad",
+    "family": "vegetable-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-c-b",
@@ -6965,7 +7950,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "green-peas",
+    "sideDish": null,
+    "category": "salad",
+    "family": "vegetable-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-c-c",
@@ -6995,7 +7985,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "green-peas",
+    "sideDish": null,
+    "category": "salad",
+    "family": "vegetable-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-c-d",
@@ -7025,7 +8020,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "green-peas",
+    "sideDish": null,
+    "category": "salad",
+    "family": "vegetable-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-d-a",
@@ -7055,7 +8055,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "corn",
+    "sideDish": null,
+    "category": "salad",
+    "family": "vegetable-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-d-b",
@@ -7085,7 +8090,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "corn",
+    "sideDish": null,
+    "category": "salad",
+    "family": "vegetable-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-d-c",
@@ -7115,7 +8125,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "corn",
+    "sideDish": null,
+    "category": "salad",
+    "family": "vegetable-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "salad-d-d",
@@ -7145,7 +8160,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "corn",
+    "sideDish": null,
+    "category": "salad",
+    "family": "vegetable-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "roast-a-a",
@@ -7188,7 +8208,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-a-b",
@@ -7231,7 +8256,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-a-c",
@@ -7274,7 +8304,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-a-d",
@@ -7317,7 +8352,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-b-a",
@@ -7360,7 +8400,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-b-b",
@@ -7403,7 +8448,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-b-c",
@@ -7446,7 +8496,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-b-d",
@@ -7489,7 +8544,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-poultry",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-c-a",
@@ -7532,7 +8592,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "roasted-potatoes",
+    "category": "fish",
+    "family": "roast-fish",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-c-b",
@@ -7575,7 +8640,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "roasted-potatoes",
+    "category": "fish",
+    "family": "roast-fish",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-c-c",
@@ -7618,7 +8688,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "roasted-potatoes",
+    "category": "fish",
+    "family": "roast-fish",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-c-d",
@@ -7661,7 +8736,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "roasted-potatoes",
+    "category": "fish",
+    "family": "roast-fish",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-d-a",
@@ -7704,7 +8784,12 @@
         ]
       }
     ],
-    "tags": ["pork", "vegetables"]
+    "tags": ["pork", "vegetables"],
+    "mainIngredient": "pork",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-pork",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-d-b",
@@ -7747,7 +8832,12 @@
         ]
       }
     ],
-    "tags": ["pork", "vegetables"]
+    "tags": ["pork", "vegetables"],
+    "mainIngredient": "pork",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-pork",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-d-c",
@@ -7790,7 +8880,12 @@
         ]
       }
     ],
-    "tags": ["pork", "vegetables"]
+    "tags": ["pork", "vegetables"],
+    "mainIngredient": "pork",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-pork",
+    "servingStyle": "with-side"
   },
   {
     "id": "roast-d-d",
@@ -7833,7 +8928,12 @@
         ]
       }
     ],
-    "tags": ["pork", "vegetables"]
+    "tags": ["pork", "vegetables"],
+    "mainIngredient": "pork",
+    "sideDish": "roasted-potatoes",
+    "category": "roast",
+    "family": "roast-pork",
+    "servingStyle": "with-side"
   },
   {
     "id": "pilaf-a-a",
@@ -7876,7 +8976,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-a-b",
@@ -7919,7 +9024,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-a-c",
@@ -7962,7 +9072,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-a-d",
@@ -8005,7 +9120,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-b-a",
@@ -8048,7 +9168,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "buckwheat",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-b-b",
@@ -8091,7 +9216,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "buckwheat",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-b-c",
@@ -8134,7 +9264,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "buckwheat",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-b-d",
@@ -8177,7 +9312,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "buckwheat",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-c-a",
@@ -8220,7 +9360,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "barley",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-c-b",
@@ -8263,7 +9408,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "barley",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-c-c",
@@ -8306,7 +9456,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "barley",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-c-d",
@@ -8349,7 +9504,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "barley",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-d-a",
@@ -8392,7 +9552,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-d-b",
@@ -8435,7 +9600,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-d-c",
@@ -8478,7 +9648,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "pilaf-d-d",
@@ -8521,7 +9696,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "millet",
+    "sideDish": null,
+    "category": "grain",
+    "family": "vegetable-grain",
+    "servingStyle": "standalone"
   },
   {
     "id": "steam-a-a",
@@ -8564,7 +9744,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-a-b",
@@ -8607,7 +9792,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-a-c",
@@ -8650,7 +9840,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-a-d",
@@ -8693,7 +9888,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-b-a",
@@ -8736,7 +9936,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-b-b",
@@ -8779,7 +9984,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-b-c",
@@ -8822,7 +10032,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-b-d",
@@ -8865,7 +10080,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-c-a",
@@ -8908,7 +10128,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-c-b",
@@ -8951,7 +10176,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-c-c",
@@ -8994,7 +10224,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-c-d",
@@ -9037,7 +10272,12 @@
         ]
       }
     ],
-    "tags": ["fish", "vegetables"]
+    "tags": ["fish", "vegetables"],
+    "mainIngredient": "pollock",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-d-a",
@@ -9080,7 +10320,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "cauliflower",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-d-b",
@@ -9123,7 +10368,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "cauliflower",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-d-c",
@@ -9166,7 +10416,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "cauliflower",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "steam-d-d",
@@ -9209,7 +10464,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "cauliflower",
+    "sideDish": "steamed-potatoes",
+    "category": "steamed",
+    "family": "steamed-plate",
+    "servingStyle": "with-side"
   },
   {
     "id": "grill-a-a",
@@ -9255,7 +10515,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "needs-side"
   },
   {
     "id": "grill-a-b",
@@ -9301,7 +10566,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "needs-side"
   },
   {
     "id": "grill-a-c",
@@ -9347,7 +10617,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "needs-side"
   },
   {
     "id": "grill-a-d",
@@ -9393,7 +10668,12 @@
         ]
       }
     ],
-    "tags": ["chicken", "vegetables"]
+    "tags": ["chicken", "vegetables"],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "needs-side"
   },
   {
     "id": "grill-b-a",
@@ -9439,7 +10719,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "needs-side"
   },
   {
     "id": "grill-b-b",
@@ -9485,7 +10770,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "needs-side"
   },
   {
     "id": "grill-b-c",
@@ -9531,7 +10821,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "needs-side"
   },
   {
     "id": "grill-b-d",
@@ -9577,7 +10872,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "turkey",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "needs-side"
   },
   {
     "id": "grill-c-a",
@@ -9623,7 +10923,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "eggplant",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "grill-c-b",
@@ -9669,7 +10974,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "eggplant",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "grill-c-c",
@@ -9715,7 +11025,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "eggplant",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "grill-c-d",
@@ -9761,7 +11076,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "eggplant",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "grill-d-a",
@@ -9807,7 +11127,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "grill-d-b",
@@ -9853,7 +11178,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "grill-d-c",
@@ -9899,7 +11229,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "grill-d-d",
@@ -9945,7 +11280,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "zucchini",
+    "sideDish": null,
+    "category": "grill",
+    "family": "grilled-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-a-a",
@@ -9973,7 +11313,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-a-b",
@@ -10001,7 +11346,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-a-c",
@@ -10029,7 +11379,12 @@
         ]
       }
     ],
-    "tags": ["fish"]
+    "tags": ["fish"],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-a-d",
@@ -10057,7 +11412,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-b-a",
@@ -10085,7 +11445,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "rye-bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-b-b",
@@ -10113,7 +11478,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "rye-bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-b-c",
@@ -10141,7 +11511,12 @@
         ]
       }
     ],
-    "tags": ["fish"]
+    "tags": ["fish"],
+    "mainIngredient": "rye-bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-b-d",
@@ -10169,7 +11544,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "rye-bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-c-a",
@@ -10197,7 +11577,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "lavash",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "lavash-roll",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-c-b",
@@ -10225,7 +11610,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "lavash",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "lavash-roll",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-c-c",
@@ -10253,7 +11643,12 @@
         ]
       }
     ],
-    "tags": ["fish"]
+    "tags": ["fish"],
+    "mainIngredient": "lavash",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "lavash-roll",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-c-d",
@@ -10281,7 +11676,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "lavash",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "lavash-roll",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-d-a",
@@ -10309,7 +11709,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-d-b",
@@ -10337,7 +11742,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-d-c",
@@ -10365,7 +11775,12 @@
         ]
       }
     ],
-    "tags": ["fish"]
+    "tags": ["fish"],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "sandwich-d-d",
@@ -10393,7 +11808,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "bread",
+    "sideDish": null,
+    "category": "sandwich",
+    "family": "sandwich",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-a-a",
@@ -10423,7 +11843,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "kefir",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-a-b",
@@ -10453,7 +11878,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "kefir",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-a-c",
@@ -10483,7 +11913,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "kefir",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-a-d",
@@ -10513,7 +11948,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "kefir",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-b-a",
@@ -10543,7 +11983,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "yogurt",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-b-b",
@@ -10573,7 +12018,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "yogurt",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-b-c",
@@ -10603,7 +12053,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "yogurt",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-b-d",
@@ -10633,7 +12088,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "yogurt",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-c-a",
@@ -10663,7 +12123,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "lactose-free-milk",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-c-b",
@@ -10693,7 +12158,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "lactose-free-milk",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-c-c",
@@ -10723,7 +12193,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "lactose-free-milk",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-c-d",
@@ -10753,7 +12228,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "lactose-free-milk",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-d-a",
@@ -10783,7 +12263,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-d-b",
@@ -10813,7 +12298,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-d-c",
@@ -10843,7 +12333,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "smoothie-d-d",
@@ -10873,7 +12368,12 @@
         ]
       }
     ],
-    "tags": []
+    "tags": [],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "smoothie",
+    "family": "smoothie",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-a-a",
@@ -10919,7 +12419,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-a-b",
@@ -10965,7 +12470,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-a-c",
@@ -11011,7 +12521,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-a-d",
@@ -11057,7 +12572,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-b-a",
@@ -11103,7 +12623,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-b-b",
@@ -11149,7 +12674,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-b-c",
@@ -11195,7 +12725,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-b-d",
@@ -11241,7 +12776,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-c-a",
@@ -11287,7 +12827,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-c-b",
@@ -11333,7 +12878,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-c-c",
@@ -11379,7 +12929,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-c-d",
@@ -11425,7 +12980,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-d-a",
@@ -11471,7 +13031,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-d-b",
@@ -11517,7 +13082,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-d-c",
@@ -11563,7 +13133,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "couscous-d-d",
@@ -11609,7 +13184,12 @@
         ]
       }
     ],
-    "tags": ["vegetables"]
+    "tags": ["vegetables"],
+    "mainIngredient": "couscous",
+    "sideDish": null,
+    "category": "grain",
+    "family": "couscous-salad",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-a-a",
@@ -11639,7 +13219,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "beans",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-a-b",
@@ -11669,7 +13254,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "beans",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-a-c",
@@ -11699,7 +13289,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "beans",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-a-d",
@@ -11729,7 +13324,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "beans",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-b-a",
@@ -11759,7 +13359,12 @@
         ]
       }
     ],
-    "tags": ["seafood", "salad", "vegetables"]
+    "tags": ["seafood", "salad", "vegetables"],
+    "mainIngredient": "cooked-shrimp",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-b-b",
@@ -11789,7 +13394,12 @@
         ]
       }
     ],
-    "tags": ["seafood", "salad", "vegetables"]
+    "tags": ["seafood", "salad", "vegetables"],
+    "mainIngredient": "cooked-shrimp",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-b-c",
@@ -11819,7 +13429,12 @@
         ]
       }
     ],
-    "tags": ["seafood", "salad", "vegetables"]
+    "tags": ["seafood", "salad", "vegetables"],
+    "mainIngredient": "cooked-shrimp",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-b-d",
@@ -11849,7 +13464,12 @@
         ]
       }
     ],
-    "tags": ["seafood", "salad", "vegetables"]
+    "tags": ["seafood", "salad", "vegetables"],
+    "mainIngredient": "cooked-shrimp",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-c-a",
@@ -11879,7 +13499,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-c-b",
@@ -11909,7 +13534,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-c-c",
@@ -11939,7 +13569,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-c-d",
@@ -11969,7 +13604,12 @@
         ]
       }
     ],
-    "tags": ["salad", "vegetables"]
+    "tags": ["salad", "vegetables"],
+    "mainIngredient": "curd",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-d-a",
@@ -11999,7 +13639,12 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "tuna",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-d-b",
@@ -12029,7 +13674,12 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "tuna",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-d-c",
@@ -12059,7 +13709,12 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "tuna",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
   },
   {
     "id": "cold-dinner-d-d",
@@ -12089,6 +13744,878 @@
         ]
       }
     ],
-    "tags": ["fish", "salad", "vegetables"]
+    "tags": ["fish", "salad", "vegetables"],
+    "mainIngredient": "tuna",
+    "sideDish": null,
+    "category": "cold-plate",
+    "family": "cold-dinner-plate",
+    "servingStyle": "standalone"
+  },
+  {
+    "id": "pork-goulash-bulgur",
+    "title": "Гуляш из свинины с булгуром",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 50,
+    "ingredients": {"pork": 330, "bulgur": 145, "onion": 85, "carrot": 95, "paste": 35, "flour": 12, "oil": 18, "paprika": 3},
+    "instructions": [
+      "Нарежьте свинину кубиками. Подрумяньте её в части масла, добавьте лук и морковь.",
+      "Посыпьте мясо мукой и паприкой, добавьте томатную пасту и 250 мл горячей воды. Тушите под крышкой 30–35 минут до мягкости.",
+      "Булгур промойте, прогрейте в оставшемся масле и влейте 300 мл воды. Варите около 15 минут, затем дайте постоять под крышкой. Подайте со свининой и подливой."
+    ],
+    "image": "pork-goulash-bulgur",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 50,
+        "mode": "Обжаривание и тушение",
+        "temperature": null,
+        "instructions": [
+          "Нарежьте свинину кубиками. Подрумяньте её в части масла, добавьте лук и морковь.",
+          "Посыпьте мясо мукой и паприкой, добавьте томатную пасту и 250 мл горячей воды. Тушите под крышкой 30–35 минут до мягкости.",
+          "Булгур промойте, прогрейте в оставшемся масле и влейте 300 мл воды. Варите около 15 минут, затем дайте постоять под крышкой. Подайте со свининой и подливой."
+        ]
+      },
+      {
+        "equipment": [
+          "multicooker"
+        ],
+        "minutes": 68,
+        "mode": "Жарка, тушение и крупа",
+        "temperature": null,
+        "instructions": [
+          "На «Жарке» подрумяньте кубики свинины с частью масла. Добавьте нарезанные лук и морковь.",
+          "Всыпьте муку и паприку, подлейте 250 мл воды и добавьте томатную пасту. Готовьте на «Тушении» около 35–40 минут, до мягкости мяса.",
+          "Переложите мясо в закрытую посуду. Вымойте чашу, добавьте промытый булгур, остаток масла и 300 мл воды. Готовьте на режиме «Крупа» примерно 15–18 минут. Подайте с гуляшом."
+        ]
+      }
+    ],
+    "mainIngredient": "pork",
+    "sideDish": "bulgur",
+    "category": "gravy",
+    "family": "goulash",
+    "servingStyle": "with-side",
+    "tags": ["pork", "vegetables"]
+  },
+  {
+    "id": "chicken-gravy-buckwheat",
+    "title": "Куриная подлива с гречкой",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 40,
+    "ingredients": {"chicken": 325, "buckwheat": 155, "onion": 85, "carrot": 90, "flour": 14, "paste": 25, "oil": 18, "dill": 10},
+    "instructions": [
+      "Промойте гречку, залейте 310 мл воды и томите под крышкой примерно 17 минут.",
+      "Нарежьте курицу небольшими кубиками, обжарьте в масле, вмешайте лук и морковь. Всыпьте муку и добавьте томатную пасту.",
+      "Влейте 230 мл воды и тушите до густой подливы и полной готовности курицы, 74 °C внутри. Подайте с гречкой и укропом."
+    ],
+    "image": "chicken-gravy-buckwheat",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 40,
+        "mode": "Варка и тушение",
+        "temperature": null,
+        "instructions": [
+          "Промойте гречку, залейте 310 мл воды и томите под крышкой примерно 17 минут.",
+          "Нарежьте курицу небольшими кубиками, обжарьте в масле, вмешайте лук и морковь. Всыпьте муку и добавьте томатную пасту.",
+          "Влейте 230 мл воды и тушите до густой подливы и полной готовности курицы, 74 °C внутри. Подайте с гречкой и укропом."
+        ]
+      }
+    ],
+    "mainIngredient": "chicken",
+    "sideDish": "buckwheat",
+    "category": "gravy",
+    "family": "meat-gravy",
+    "servingStyle": "with-side",
+    "tags": ["chicken", "vegetables"]
+  },
+  {
+    "id": "spaghetti-bolognese",
+    "title": "Спагетти болоньезе",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 55,
+    "ingredients": {"spaghetti": 190, "mince": 325, "onion": 90, "carrot": 85, "canned-tomato": 340, "garlic": 8, "cheese": 55, "oil": 16},
+    "instructions": [
+      "Мелко нарежьте лук и морковь, обжарьте в масле 6 минут. Добавьте чеснок и фарш, разбивая комочки лопаткой.",
+      "Добавьте томаты и немного воды. Готовьте при тихом кипении 25–30 минут, пока соус не загустеет и фарш не приготовится полностью.",
+      "Сварите спагетти по упаковке. Разложите по тарелкам, сверху добавьте мясной соус и тёртый сыр."
+    ],
+    "image": "spaghetti-bolognese",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 55,
+        "mode": "Варка и томление",
+        "temperature": null,
+        "instructions": [
+          "Мелко нарежьте лук и морковь, обжарьте в масле 6 минут. Добавьте чеснок и фарш, разбивая комочки лопаткой.",
+          "Добавьте томаты и немного воды. Готовьте при тихом кипении 25–30 минут, пока соус не загустеет и фарш не приготовится полностью.",
+          "Сварите спагетти по упаковке. Разложите по тарелкам, сверху добавьте мясной соус и тёртый сыр."
+        ]
+      }
+    ],
+    "mainIngredient": "spaghetti",
+    "sideDish": "spaghetti",
+    "category": "pasta",
+    "family": "bolognese",
+    "servingStyle": "with-side",
+    "tags": ["beef", "pasta", "vegetables"]
+  },
+  {
+    "id": "spaghetti-carbonara",
+    "title": "Спагетти карбонара с грудинкой",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 30,
+    "ingredients": {"spaghetti": 185, "bacon": 115, "egg": 2, "cheese": 75, "oil": 5},
+    "instructions": [
+      "Поставьте вариться спагетти. Нарежьте грудинку небольшими полосками и подрумяньте в сковороде с маслом.",
+      "Взбейте яйца с мелко натёртым сыром. Сохраните 100 мл воды после варки и понемногу влейте часть к яйцам, непрерывно помешивая.",
+      "Смешайте спагетти с грудинкой и яичной смесью. На минимальном нагреве перемешивайте, пока соус не загустеет и не достигнет 71 °C. Если густо, влейте ещё немного сохранённой воды."
+    ],
+    "image": "spaghetti-carbonara",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 30,
+        "mode": "Варка и прогрев соуса",
+        "temperature": null,
+        "instructions": [
+          "Поставьте вариться спагетти. Нарежьте грудинку небольшими полосками и подрумяньте в сковороде с маслом.",
+          "Взбейте яйца с мелко натёртым сыром. Сохраните 100 мл воды после варки и понемногу влейте часть к яйцам, непрерывно помешивая.",
+          "Смешайте спагетти с грудинкой и яичной смесью. На минимальном нагреве перемешивайте, пока соус не загустеет и не достигнет 71 °C. Если густо, влейте ещё немного сохранённой воды."
+        ]
+      }
+    ],
+    "mainIngredient": "spaghetti",
+    "sideDish": null,
+    "category": "pasta",
+    "family": "carbonara",
+    "servingStyle": "standalone",
+    "tags": ["pork", "pasta"]
+  },
+  {
+    "id": "chicken-pasta-cream",
+    "title": "Паста с курицей и грибами в сливках",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 35,
+    "ingredients": {"pasta": 185, "chicken": 265, "mushrooms": 165, "cream": 120, "onion": 70, "cheese": 40, "oil": 15},
+    "instructions": [
+      "Сварите короткие макароны до упругости, оставьте половину стакана воды.",
+      "Подрумяньте грибы на сухой сковороде, затем добавьте масло, лук и полоски курицы. Жарьте, помешивая, до лёгкой корочки.",
+      "Влейте сливки и доведите курицу до 74 °C в центре. Добавьте макароны, сыр и пару ложек воды после варки, если соус слишком густой."
+    ],
+    "image": "chicken-pasta-cream",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 35,
+        "mode": "Варка и тушение",
+        "temperature": null,
+        "instructions": [
+          "Сварите короткие макароны до упругости, оставьте половину стакана воды.",
+          "Подрумяньте грибы на сухой сковороде, затем добавьте масло, лук и полоски курицы. Жарьте, помешивая, до лёгкой корочки.",
+          "Влейте сливки и доведите курицу до 74 °C в центре. Добавьте макароны, сыр и пару ложек воды после варки, если соус слишком густой."
+        ]
+      }
+    ],
+    "mainIngredient": "pasta",
+    "sideDish": null,
+    "category": "pasta",
+    "family": "cream-pasta",
+    "servingStyle": "standalone",
+    "tags": ["chicken", "pasta"]
+  },
+  {
+    "id": "risotto-green-peas",
+    "title": "Ризотто с зелёным горошком",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 37,
+    "ingredients": {"rice": 180, "green-peas": 155, "onion": 75, "cheese": 75, "butter": 30, "oil": 12, "parsley": 9},
+    "instructions": [
+      "Возьмите круглозёрный рис. Мелко нарежьте лук и прогрейте в масле до мягкости. Добавьте рис и перемешивайте около минуты.",
+      "Подливайте по половнику горячую воду, каждый раз дожидаясь, пока предыдущая порция впитается. Готовьте до мягкой поверхности и упругой сердцевины зёрнышка.",
+      "Откиньте горошек на сито, вмешайте его в рис и прогрейте. Снимите с огня и добавьте сливочное масло, сыр и петрушку."
+    ],
+    "image": "risotto-green-peas",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 37,
+        "mode": "Томление с постепенным добавлением воды",
+        "temperature": null,
+        "instructions": [
+          "Возьмите круглозёрный рис. Мелко нарежьте лук и прогрейте в масле до мягкости. Добавьте рис и перемешивайте около минуты.",
+          "Подливайте по половнику горячую воду, каждый раз дожидаясь, пока предыдущая порция впитается. Готовьте до мягкой поверхности и упругой сердцевины зёрнышка.",
+          "Откиньте горошек на сито, вмешайте его в рис и прогрейте. Снимите с огня и добавьте сливочное масло, сыр и петрушку."
+        ]
+      }
+    ],
+    "mainIngredient": "rice",
+    "sideDish": null,
+    "category": "grain",
+    "family": "rice-risotto",
+    "servingStyle": "standalone",
+    "tags": []
+  },
+  {
+    "id": "cabbage-rolls-beef",
+    "title": "Домашние голубцы с говядиной",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 75,
+    "ingredients": {"cabbage": 470, "mince": 335, "rice": 75, "onion": 85, "carrot": 90, "paste": 40, "sour-cream": 80, "oil": 16},
+    "instructions": [
+      "Отделите 6 крупных капустных листьев и проварите 3–5 минут до гибкости. Рис отварите до полуготовности.",
+      "Соедините фарш, рис и половину измельчённого лука. Разложите по листьям, загните края и сверните рулетиками.",
+      "Прогрейте морковь и оставшийся лук в масле, добавьте пасту, сметану и 300 мл воды. Уложите голубцы швом вниз и тушите до мягкости капусты и 71 °C в центре начинки."
+    ],
+    "image": "cabbage-rolls-beef",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 75,
+        "mode": "Варка и тушение",
+        "temperature": null,
+        "instructions": [
+          "Отделите 6 крупных капустных листьев и проварите 3–5 минут до гибкости. Рис отварите до полуготовности.",
+          "Соедините фарш, рис и половину измельчённого лука. Разложите по листьям, загните края и сверните рулетиками.",
+          "Прогрейте морковь и оставшийся лук в масле, добавьте пасту, сметану и 300 мл воды. Уложите голубцы швом вниз и тушите до мягкости капусты и 71 °C в центре начинки."
+        ]
+      }
+    ],
+    "mainIngredient": "cabbage",
+    "sideDish": null,
+    "category": "stuffed",
+    "family": "cabbage-rolls",
+    "servingStyle": "standalone",
+    "tags": ["beef", "vegetables"]
+  },
+  {
+    "id": "handmade-pelmeni",
+    "title": "Домашние пельмени с говядиной",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 75,
+    "ingredients": {"flour": 270, "egg": 1, "mince": 290, "onion": 70, "sour-cream": 80, "dill": 8},
+    "instructions": [
+      "Замесите упругое тесто из муки, яйца и примерно 90 мл воды. Накройте и оставьте на 25 минут.",
+      "Смешайте фарш с мелко натёртым луком и столовой ложкой холодной воды. Тонко раскатайте тесто, вырежьте кружки и плотно защипните вокруг небольших порций начинки.",
+      "Варите небольшими партиями при слабом кипении около 6–8 минут после всплытия. Начинка должна достичь 71 °C в центре. Подайте со сметаной и укропом."
+    ],
+    "image": "handmade-pelmeni",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 75,
+        "mode": "Варка",
+        "temperature": null,
+        "instructions": [
+          "Замесите упругое тесто из муки, яйца и примерно 90 мл воды. Накройте и оставьте на 25 минут.",
+          "Смешайте фарш с мелко натёртым луком и столовой ложкой холодной воды. Тонко раскатайте тесто, вырежьте кружки и плотно защипните вокруг небольших порций начинки.",
+          "Варите небольшими партиями при слабом кипении около 6–8 минут после всплытия. Начинка должна достичь 71 °C в центре. Подайте со сметаной и укропом."
+        ]
+      }
+    ],
+    "mainIngredient": "mince",
+    "sideDish": null,
+    "category": "dumplings",
+    "family": "pelmeni",
+    "servingStyle": "standalone",
+    "tags": ["beef"]
+  },
+  {
+    "id": "potato-dumplings",
+    "title": "Вареники с картофелем и жареным луком",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 70,
+    "ingredients": {"potato": 520, "flour": 260, "egg": 1, "onion": 115, "butter": 20, "oil": 18, "sour-cream": 70},
+    "instructions": [
+      "Отварите картофель, слейте воду и разомните с маслом. Обжарьте мелко нарезанный лук и вмешайте половину в начинку. Остудите.",
+      "Замесите тесто из муки, яйца и примерно 90 мл воды. Дайте отдохнуть под полотенцем 15 минут, затем раскатайте и вырежьте кружки.",
+      "Наполните кружки картофелем и защипните края. Варите партиями 2–3 минуты после всплытия. Подайте с оставшимся луком и сметаной."
+    ],
+    "image": "potato-dumplings",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 70,
+        "mode": "Варка и обжаривание",
+        "temperature": null,
+        "instructions": [
+          "Отварите картофель, слейте воду и разомните с маслом. Обжарьте мелко нарезанный лук и вмешайте половину в начинку. Остудите.",
+          "Замесите тесто из муки, яйца и примерно 90 мл воды. Дайте отдохнуть под полотенцем 15 минут, затем раскатайте и вырежьте кружки.",
+          "Наполните кружки картофелем и защипните края. Варите партиями 2–3 минуты после всплытия. Подайте с оставшимся луком и сметаной."
+        ]
+      }
+    ],
+    "mainIngredient": "potato",
+    "sideDish": null,
+    "category": "dumplings",
+    "family": "stuffed-dumplings",
+    "servingStyle": "standalone",
+    "tags": []
+  },
+  {
+    "id": "pollock-boiled-potatoes",
+    "title": "Минтай с отварным картофелем и укропом",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 35,
+    "ingredients": {"pollock": 360, "potato": 460, "carrot": 95, "lemon": 45, "butter": 20, "dill": 12},
+    "instructions": [
+      "Картофель нарежьте крупными дольками и сварите до мягкости. Воду слейте, картофель смешайте с маслом и частью укропа.",
+      "Морковь нарежьте тонко и прогрейте в 180 мл воды 5 минут. Удалите кости из филе и уложите его на морковь вместе с лимоном.",
+      "Готовьте под крышкой при слабом кипении до 63 °C в центре рыбы. Разложите минтай и картофель, добавьте остальной укроп."
+    ],
+    "image": "pollock-boiled-potatoes",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 35,
+        "mode": "Варка и припускание",
+        "temperature": null,
+        "instructions": [
+          "Картофель нарежьте крупными дольками и сварите до мягкости. Воду слейте, картофель смешайте с маслом и частью укропа.",
+          "Морковь нарежьте тонко и прогрейте в 180 мл воды 5 минут. Удалите кости из филе и уложите его на морковь вместе с лимоном.",
+          "Готовьте под крышкой при слабом кипении до 63 °C в центре рыбы. Разложите минтай и картофель, добавьте остальной укроп."
+        ]
+      }
+    ],
+    "mainIngredient": "pollock",
+    "sideDish": "boiled-potatoes",
+    "category": "fish",
+    "family": "poached-fish",
+    "servingStyle": "with-side",
+    "tags": ["fish", "vegetables"]
+  },
+  {
+    "id": "mackerel-country-potatoes",
+    "title": "Скумбрия с картофелем по-деревенски",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 48,
+    "ingredients": {"mackerel": 430, "potato": 510, "oil": 22, "paprika": 5, "garlic": 8, "lemon": 50},
+    "instructions": [
+      "Картофель вымойте, нарежьте дольками с кожурой и обсушите. Перемешайте с половиной масла, паприкой и чесноком.",
+      "Запекайте дольки при 200 °C 18 минут. Тем временем удалите из скумбрии внутренности и кости, смажьте оставшимся маслом и добавьте лимон.",
+      "Переверните картофель, добавьте скумбрию и готовьте ещё 15–20 минут до румяных долек и 63 °C в центре рыбы."
+    ],
+    "image": "mackerel-country-potatoes",
+    "methods": [
+      {
+        "equipment": [
+          "oven"
+        ],
+        "minutes": 48,
+        "mode": "Верх и низ",
+        "temperature": 200,
+        "instructions": [
+          "Картофель вымойте, нарежьте дольками с кожурой и обсушите. Перемешайте с половиной масла, паприкой и чесноком.",
+          "Запекайте дольки при 200 °C 18 минут. Тем временем удалите из скумбрии внутренности и кости, смажьте оставшимся маслом и добавьте лимон.",
+          "Переверните картофель, добавьте скумбрию и готовьте ещё 15–20 минут до румяных долек и 63 °C в центре рыбы."
+        ]
+      },
+      {
+        "equipment": [
+          "airfryer"
+        ],
+        "minutes": 42,
+        "mode": "Горячий воздух",
+        "temperature": 190,
+        "instructions": [
+          "Картофель вымойте, нарежьте дольками с кожурой и обсушите. Перемешайте с половиной масла, паприкой и чесноком.",
+          "Готовьте картофель в корзине при 190 °C около 18–22 минут, встряхните в середине.",
+          "Удалите у скумбрии внутренности и кости, смажьте оставшимся маслом и добавьте лимон. Готовьте отдельной партией при 180 °C примерно 12–16 минут, до 63 °C в центре. Подайте с картофельными дольками."
+        ]
+      }
+    ],
+    "mainIngredient": "mackerel",
+    "sideDish": "country-potatoes",
+    "category": "fish",
+    "family": "roast-fish",
+    "servingStyle": "with-side",
+    "tags": ["fish"]
+  },
+  {
+    "id": "fish-patties-couscous",
+    "title": "Рыбные котлеты с кускусом и морковью",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 40,
+    "ingredients": {"pollock": 390, "couscous": 145, "carrot": 145, "onion": 65, "egg": 1, "bread": 50, "oil": 18, "parsley": 10},
+    "instructions": [
+      "Удалите из минтая кости, мелко порубите мякоть с луком. Хлеб размочите в воде и отожмите, смешайте с рыбой и яйцом.",
+      "Сформируйте небольшие котлеты, обжарьте обе стороны и доведите под крышкой до 71 °C в центре.",
+      "Морковь мелко нарежьте и припустите с небольшим количеством воды до мягкости. Отдельно запарьте кускус по упаковке, разрыхлите вилкой и смешайте с морковью и петрушкой."
+    ],
+    "image": "fish-patties-couscous",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 40,
+        "mode": "Обжаривание и запаривание",
+        "temperature": null,
+        "instructions": [
+          "Удалите из минтая кости, мелко порубите мякоть с луком. Хлеб размочите в воде и отожмите, смешайте с рыбой и яйцом.",
+          "Сформируйте небольшие котлеты, обжарьте обе стороны и доведите под крышкой до 71 °C в центре.",
+          "Морковь мелко нарежьте и припустите с небольшим количеством воды до мягкости. Отдельно запарьте кускус по упаковке, разрыхлите вилкой и смешайте с морковью и петрушкой."
+        ]
+      }
+    ],
+    "mainIngredient": "pollock",
+    "sideDish": "couscous",
+    "category": "fish",
+    "family": "fish-cutlets",
+    "servingStyle": "with-side",
+    "tags": ["fish", "vegetables"]
+  },
+  {
+    "id": "pork-fried-potatoes",
+    "title": "Свинина с жареным картофелем и луком",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 42,
+    "ingredients": {"pork": 320, "potato": 510, "onion": 95, "oil": 27, "garlic": 8, "parsley": 8},
+    "instructions": [
+      "Обсушите картофель, нарежьте тонкими ломтиками. Жарьте в половине масла в широкой сковороде, переворачивая после подрумянивания. В конце добавьте половину лука.",
+      "Нарежьте свинину полосками поперёк волокон. Обжарьте небольшими порциями с оставшимся луком и маслом до 63 °C в центре и дайте постоять 3 минуты.",
+      "Добавьте чеснок и петрушку в мясо. Подайте рядом с жареным картофелем."
+    ],
+    "image": "pork-fried-potatoes",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 42,
+        "mode": "Обжаривание",
+        "temperature": null,
+        "instructions": [
+          "Обсушите картофель, нарежьте тонкими ломтиками. Жарьте в половине масла в широкой сковороде, переворачивая после подрумянивания. В конце добавьте половину лука.",
+          "Нарежьте свинину полосками поперёк волокон. Обжарьте небольшими порциями с оставшимся луком и маслом до 63 °C в центре и дайте постоять 3 минуты.",
+          "Добавьте чеснок и петрушку в мясо. Подайте рядом с жареным картофелем."
+        ]
+      }
+    ],
+    "mainIngredient": "pork",
+    "sideDish": "fried-potatoes",
+    "category": "stew",
+    "family": "fried-potato",
+    "servingStyle": "with-side",
+    "tags": ["pork"]
+  },
+  {
+    "id": "chicken-millet-stew",
+    "title": "Курица с пшеном и морковью в мультиварке",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 50,
+    "ingredients": {"chicken": 330, "millet": 150, "carrot": 150, "onion": 90, "oil": 16, "dill": 11},
+    "instructions": [
+      "Промойте пшено горячей водой. Нарежьте морковь брусочками, лук кусочками, курицу небольшими кубиками.",
+      "В режиме «Жарка» подрумяньте курицу, добавьте лук и морковь. Всыпьте пшено, влейте 360 мл горячей воды и закройте чашу.",
+      "Запустите режим «Крупа» примерно на 25 минут. Проверьте, что пшено мягкое, а курица достигла 74 °C в центре. Добавьте укроп."
+    ],
+    "image": "chicken-millet-stew",
+    "methods": [
+      {
+        "equipment": [
+          "multicooker"
+        ],
+        "minutes": 50,
+        "mode": "Жарка и крупа",
+        "temperature": null,
+        "instructions": [
+          "Промойте пшено горячей водой. Нарежьте морковь брусочками, лук кусочками, курицу небольшими кубиками.",
+          "В режиме «Жарка» подрумяньте курицу, добавьте лук и морковь. Всыпьте пшено, влейте 360 мл горячей воды и закройте чашу.",
+          "Запустите режим «Крупа» примерно на 25 минут. Проверьте, что пшено мягкое, а курица достигла 74 °C в центре. Добавьте укроп."
+        ]
+      }
+    ],
+    "mainIngredient": "chicken",
+    "sideDish": "millet",
+    "category": "grain",
+    "family": "poultry-grain",
+    "servingStyle": "with-side",
+    "tags": ["chicken", "vegetables"]
+  },
+  {
+    "id": "beef-pearl-barley-gravy",
+    "title": "Говяжья подлива с перловкой",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 85,
+    "ingredients": {"beef": 345, "barley": 155, "onion": 85, "carrot": 90, "flour": 14, "paste": 25, "oil": 18, "parsley": 10},
+    "instructions": [
+      "Перловку промойте и варите в отдельной кастрюле около 45 минут, затем слейте лишнюю воду.",
+      "Нарежьте мясо небольшими кубиками, подрумяньте в масле, добавьте лук и морковь. Вмешайте пасту, влейте воду и тушите под крышкой до мягкости.",
+      "Разведите муку холодной водой, влейте в подливу и прогрейте до загустения. Разложите перловку и полейте подливой, добавьте петрушку."
+    ],
+    "image": "beef-pearl-barley-gravy",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 85,
+        "mode": "Медленное тушение и варка",
+        "temperature": null,
+        "instructions": [
+          "Перловку промойте и варите в отдельной кастрюле около 45 минут, затем слейте лишнюю воду.",
+          "Нарежьте мясо небольшими кубиками, подрумяньте в масле, добавьте лук и морковь. Вмешайте пасту, влейте воду и тушите под крышкой до мягкости.",
+          "Разведите муку холодной водой, влейте в подливу и прогрейте до загустения. Разложите перловку и полейте подливой, добавьте петрушку."
+        ]
+      }
+    ],
+    "mainIngredient": "beef",
+    "sideDish": "barley",
+    "category": "gravy",
+    "family": "meat-gravy",
+    "servingStyle": "with-side",
+    "tags": ["beef", "vegetables"]
+  },
+  {
+    "id": "cream-meatballs-macaroni",
+    "title": "Тефтели в сливочном соусе с макаронами",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 43,
+    "ingredients": {"mince": 350, "pasta": 175, "egg": 1, "bread": 50, "onion": 70, "cream": 140, "flour": 12, "oil": 15, "dill": 9},
+    "instructions": [
+      "Замочите хлеб в воде, отожмите и смешайте с фаршем, яйцом и луком. Скатайте тефтели и слегка подрумяньте их в масле.",
+      "Влейте сливки и 120 мл воды с размешанной мукой. Тушите под крышкой до густоты и 71 °C в центре тефтелей.",
+      "Отдельно сварите макароны. Подайте тефтели с макаронами, сливочным соусом и укропом."
+    ],
+    "image": "cream-meatballs-macaroni",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 43,
+        "mode": "Варка и тушение",
+        "temperature": null,
+        "instructions": [
+          "Замочите хлеб в воде, отожмите и смешайте с фаршем, яйцом и луком. Скатайте тефтели и слегка подрумяньте их в масле.",
+          "Влейте сливки и 120 мл воды с размешанной мукой. Тушите под крышкой до густоты и 71 °C в центре тефтелей.",
+          "Отдельно сварите макароны. Подайте тефтели с макаронами, сливочным соусом и укропом."
+        ]
+      }
+    ],
+    "mainIngredient": "mince",
+    "sideDish": "pasta",
+    "category": "cutlets",
+    "family": "stewed-meatballs",
+    "servingStyle": "with-side",
+    "tags": ["beef", "pasta"]
+  },
+  {
+    "id": "turkey-mash-patties",
+    "title": "Котлеты из индейки с картофельным пюре",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 43,
+    "ingredients": {"turkey": 345, "potato": 480, "milk": 130, "bread": 45, "onion": 65, "egg": 1, "butter": 20, "oil": 16, "dill": 8},
+    "instructions": [
+      "Картофель сварите до мягкости и разомните с горячим молоком и сливочным маслом.",
+      "Мелко порубите индейку ножом, соедините с луком, яйцом и хлебом, размоченным в воде и отжатым. Сформируйте котлеты.",
+      "Обжарьте котлеты до корочки с обеих сторон, доведите под крышкой до 74 °C в центре. Подайте с пюре и укропом."
+    ],
+    "image": "turkey-mash-patties",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 43,
+        "mode": "Варка и обжаривание",
+        "temperature": null,
+        "instructions": [
+          "Картофель сварите до мягкости и разомните с горячим молоком и сливочным маслом.",
+          "Мелко порубите индейку ножом, соедините с луком, яйцом и хлебом, размоченным в воде и отжатым. Сформируйте котлеты.",
+          "Обжарьте котлеты до корочки с обеих сторон, доведите под крышкой до 74 °C в центре. Подайте с пюре и укропом."
+        ]
+      }
+    ],
+    "mainIngredient": "turkey",
+    "sideDish": "mashed-potatoes",
+    "category": "cutlets",
+    "family": "meat-cutlets",
+    "servingStyle": "with-side",
+    "tags": []
+  },
+  {
+    "id": "ratatouille-rice",
+    "title": "Овощной рататуй с рисом",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 40,
+    "ingredients": {"eggplant": 245, "zucchini": 230, "pepper": 160, "canned-tomato": 250, "rice": 150, "onion": 80, "garlic": 9, "oil": 20, "parsley": 9},
+    "instructions": [
+      "Промойте рис и сварите отдельно в двойном объёме воды, затем оставьте под крышкой.",
+      "Нарежьте овощи одинаковыми кубиками. Сначала подрумяньте баклажан, добавьте лук и перец, через 4 минуты добавьте кабачок.",
+      "Вмешайте чеснок и томаты, тушите до мягкости овощей. Подайте овощи с рисом и петрушкой."
+    ],
+    "image": "ratatouille-rice",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 40,
+        "mode": "Варка и тушение",
+        "temperature": null,
+        "instructions": [
+          "Промойте рис и сварите отдельно в двойном объёме воды, затем оставьте под крышкой.",
+          "Нарежьте овощи одинаковыми кубиками. Сначала подрумяньте баклажан, добавьте лук и перец, через 4 минуты добавьте кабачок.",
+          "Вмешайте чеснок и томаты, тушите до мягкости овощей. Подайте овощи с рисом и петрушкой."
+        ]
+      }
+    ],
+    "mainIngredient": "eggplant",
+    "sideDish": "rice",
+    "category": "stew",
+    "family": "vegetable-stew",
+    "servingStyle": "with-side",
+    "tags": ["vegetables"]
+  },
+  {
+    "id": "baked-fish-vegetables",
+    "title": "Запечённый минтай с фасолью и овощным гарниром",
+    "meal": "dinner",
+    "servings": 2,
+    "minutes": 42,
+    "ingredients": {"pollock": 360, "beans": 230, "broccoli": 240, "carrot": 150, "oil": 21, "lemon": 52, "dill": 10},
+    "instructions": [
+      "Удалите кости из филе. Морковь нарежьте тонкими брусочками, брокколи разберите на соцветия, фасоль из банки промойте.",
+      "Перемешайте морковь с половиной масла и поставьте в духовку при 190 °C на 12 минут. Добавьте брокколи, фасоль и оставшееся масло.",
+      "На отдельной части противня уложите минтай с лимоном. Запекайте рыбу и гарнир до 63 °C в центре рыбы и мягкости овощей. Добавьте укроп."
+    ],
+    "image": "baked-fish-vegetables",
+    "methods": [
+      {
+        "equipment": [
+          "oven"
+        ],
+        "minutes": 42,
+        "mode": "Конвекция",
+        "temperature": 190,
+        "instructions": [
+          "Удалите кости из филе. Морковь нарежьте тонкими брусочками, брокколи разберите на соцветия, фасоль из банки промойте.",
+          "Перемешайте морковь с половиной масла и поставьте в духовку при 190 °C на 12 минут. Добавьте брокколи, фасоль и оставшееся масло.",
+          "На отдельной части противня уложите минтай с лимоном. Запекайте рыбу и гарнир до 63 °C в центре рыбы и мягкости овощей. Добавьте укроп."
+        ]
+      }
+    ],
+    "mainIngredient": "pollock",
+    "sideDish": "vegetables",
+    "category": "fish",
+    "family": "roast-fish",
+    "servingStyle": "with-side",
+    "tags": ["fish", "vegetables"]
+  },
+  {
+    "id": "apple-charlotte",
+    "title": "Домашняя яблочная шарлотка",
+    "meal": "snack",
+    "servings": 4,
+    "minutes": 52,
+    "ingredients": {"apple": 300, "flour": 130, "egg": 3, "sugar": 95, "butter": 12, "cinnamon": 3},
+    "instructions": [
+      "Яблоки очистите от сердцевины, нарежьте кубиками и смешайте с корицей. Смажьте форму сливочным маслом.",
+      "Взбейте яйца с сахаром до светлой массы. Вмешайте муку лопаткой, стараясь сохранить воздух.",
+      "Разложите яблоки в форме, залейте тестом и выпекайте около 35 минут при 175 °C. Проверьте деревянной шпажкой и остудите перед нарезкой."
+    ],
+    "image": "apple-charlotte",
+    "methods": [
+      {
+        "equipment": [
+          "oven"
+        ],
+        "minutes": 52,
+        "mode": "Верх и низ",
+        "temperature": 175,
+        "instructions": [
+          "Яблоки очистите от сердцевины, нарежьте кубиками и смешайте с корицей. Смажьте форму сливочным маслом.",
+          "Взбейте яйца с сахаром до светлой массы. Вмешайте муку лопаткой, стараясь сохранить воздух.",
+          "Разложите яблоки в форме, залейте тестом и выпекайте около 35 минут при 175 °C. Проверьте деревянной шпажкой и остудите перед нарезкой."
+        ]
+      }
+    ],
+    "mainIngredient": "apple",
+    "sideDish": null,
+    "category": "baking",
+    "family": "charlotte",
+    "servingStyle": "standalone",
+    "tags": []
+  },
+  {
+    "id": "savory-cheese-muffins",
+    "title": "Домашние сырные маффины с укропом",
+    "meal": "snack",
+    "servings": 4,
+    "minutes": 35,
+    "ingredients": {"cheese": 110, "flour": 145, "egg": 1, "kefir": 155, "baking-powder": 6, "butter": 20, "dill": 10},
+    "instructions": [
+      "Натрите сыр и измельчите укроп. Растопите масло и остудите до тёплого состояния.",
+      "Смешайте кефир с яйцом и маслом, добавьте муку с разрыхлителем. Вмешайте сыр и укроп.",
+      "Распределите тесто по небольшим формочкам, заполняя их на две трети. Выпекайте 18–22 минуты при 185 °C. Проверьте готовность сухой шпажкой."
+    ],
+    "image": "savory-cheese-muffins",
+    "methods": [
+      {
+        "equipment": [
+          "oven"
+        ],
+        "minutes": 35,
+        "mode": "Верх и низ",
+        "temperature": 185,
+        "instructions": [
+          "Натрите сыр и измельчите укроп. Растопите масло и остудите до тёплого состояния.",
+          "Смешайте кефир с яйцом и маслом, добавьте муку с разрыхлителем. Вмешайте сыр и укроп.",
+          "Распределите тесто по небольшим формочкам, заполняя их на две трети. Выпекайте 18–22 минуты при 185 °C. Проверьте готовность сухой шпажкой."
+        ]
+      }
+    ],
+    "mainIngredient": "cheese",
+    "sideDish": null,
+    "category": "baking",
+    "family": "savory-muffins",
+    "servingStyle": "standalone",
+    "tags": []
+  },
+  {
+    "id": "cabbage-pirozhki",
+    "title": "Печёные пирожки с капустой",
+    "meal": "snack",
+    "servings": 4,
+    "minutes": 63,
+    "ingredients": {"cabbage": 310, "onion": 75, "flour": 240, "kefir": 150, "egg": 1, "oil": 24, "baking-powder": 7},
+    "instructions": [
+      "Нашинкуйте капусту и лук, потушите в половине масла до мягкости. Дайте начинке остыть.",
+      "Смешайте кефир, яйцо и оставшееся масло. Вмешайте муку с разрыхлителем, замесите мягкое тесто.",
+      "Разделите тесто на небольшие лепёшки, наполните капустой и защипните. Выпекайте швом вниз 20–25 минут при 185 °C до румяной корочки."
+    ],
+    "image": "cabbage-pirozhki",
+    "methods": [
+      {
+        "equipment": [
+          "stove",
+          "oven"
+        ],
+        "minutes": 63,
+        "mode": "Тушение и выпекание",
+        "temperature": 185,
+        "instructions": [
+          "Нашинкуйте капусту и лук, потушите в половине масла до мягкости. Дайте начинке остыть.",
+          "Смешайте кефир, яйцо и оставшееся масло. Вмешайте муку с разрыхлителем, замесите мягкое тесто.",
+          "Разделите тесто на небольшие лепёшки, наполните капустой и защипните. Выпекайте швом вниз 20–25 минут при 185 °C до румяной корочки."
+        ]
+      }
+    ],
+    "mainIngredient": "cabbage",
+    "sideDish": null,
+    "category": "baking",
+    "family": "hand-pies",
+    "servingStyle": "standalone",
+    "tags": ["vegetables"]
+  },
+  {
+    "id": "beef-shurpa",
+    "title": "Домашняя шурпа с говядиной",
+    "meal": "lunch",
+    "servings": 2,
+    "minutes": 90,
+    "ingredients": {"beef": 330, "potato": 290, "carrot": 145, "pepper": 135, "tomato": 165, "onion": 90, "parsley": 12},
+    "instructions": [
+      "Нарежьте говядину крупными кусочками, залейте примерно 1,1 л воды. Доведите до кипения, снимите пену и варите на слабом огне до начала размягчения мяса.",
+      "Добавьте крупно нарезанные лук, картофель и морковь, варите около 18 минут. Затем положите перец и помидоры.",
+      "Доведите овощи и мясо до мягкости, добавьте петрушку и оставьте под крышкой на 5 минут."
+    ],
+    "image": "beef-shurpa",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 90,
+        "mode": "Тихое кипение",
+        "temperature": null,
+        "instructions": [
+          "Нарежьте говядину крупными кусочками, залейте примерно 1,1 л воды. Доведите до кипения, снимите пену и варите на слабом огне до начала размягчения мяса.",
+          "Добавьте крупно нарезанные лук, картофель и морковь, варите около 18 минут. Затем положите перец и помидоры.",
+          "Доведите овощи и мясо до мягкости, добавьте петрушку и оставьте под крышкой на 5 минут."
+        ]
+      }
+    ],
+    "mainIngredient": "beef",
+    "sideDish": null,
+    "category": "soup",
+    "family": "shurpa",
+    "servingStyle": "standalone",
+    "tags": ["beef", "vegetables", "soup"]
+  },
+  {
+    "id": "chicken-dumpling-soup",
+    "title": "Куриный суп с домашними клёцками",
+    "meal": "lunch",
+    "servings": 2,
+    "minutes": 45,
+    "ingredients": {"chicken": 245, "potato": 205, "carrot": 95, "onion": 70, "flour": 80, "egg": 1, "milk": 45, "dill": 10},
+    "instructions": [
+      "Курицу, лук и морковь залейте 950 мл воды. После закипания снимите пену и варите 15 минут. Добавьте картофель кубиками.",
+      "Для клёцок взбейте яйцо с молоком и добавьте муку. Ложкой набирайте небольшие порции густого теста и опускайте в слабо кипящий суп.",
+      "Готовьте около 6–8 минут после всплытия клёцок. Клёцки должны провариться внутри, картофель легко прокалывается вилкой, а курица достигла 74 °C в центре. Добавьте укроп."
+    ],
+    "image": "chicken-dumpling-soup",
+    "methods": [
+      {
+        "equipment": [
+          "stove"
+        ],
+        "minutes": 45,
+        "mode": "Варка",
+        "temperature": null,
+        "instructions": [
+          "Курицу, лук и морковь залейте 950 мл воды. После закипания снимите пену и варите 15 минут. Добавьте картофель кубиками.",
+          "Для клёцок взбейте яйцо с молоком и добавьте муку. Ложкой набирайте небольшие порции густого теста и опускайте в слабо кипящий суп.",
+          "Готовьте около 6–8 минут после всплытия клёцок. Клёцки должны провариться внутри, картофель легко прокалывается вилкой, а курица достигла 74 °C в центре. Добавьте укроп."
+        ]
+      }
+    ],
+    "mainIngredient": "chicken",
+    "sideDish": null,
+    "category": "soup",
+    "family": "dumpling-soup",
+    "servingStyle": "standalone",
+    "tags": ["chicken", "vegetables", "soup"]
   }
 ]

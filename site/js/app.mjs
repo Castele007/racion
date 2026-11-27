@@ -1,22 +1,23 @@
 import {
   DAYS, STORES, MAX_PRICE_AGE, bestQuote, dateAt, generateMenu, isWeekStart, pricing, recipeAmount,
-  replacementMenu, replacementOptions, shoppingList, validMenu, weekStart,
+  replacementMenu, replacementOptions, shoppingList, validMenu, weekForDate, weekStart,
 } from "./planner.mjs";
 import {
   ESTIMATE_STORE, allocateMealCosts, cleanOverrides, estimateLowerBound, estimatePricing, estimateRows, fillMissingPrices,
 } from "./estimates.mjs";
 import {
-  STEP_NAMES, MEAL_LABELS, EQUIPMENT, activeMeals, compatibleMethods, household, mealPeople,
+  STEP_NAMES, MEAL_LABELS, ALLERGENS, FAVORITES, EQUIPMENT, activeMeals, compatibleMethods, household, mealPeople,
   plannerSettings, portionSchedule, restoreAnswers, validateStep,
 } from "./questionnaire.mjs";
+import { CATEGORIES, SIDES, familyOf } from "./culinary.mjs";
 import { mountWizard } from "./wizard.mjs";
 
 const $ = id => document.getElementById(id);
 const storageKey = "racion.v1";
-const views = { setup: "Настройка меню", menu: "Планировщик питания", shopping: "Список покупок", stores: "Магазины и цены" };
+const views = { setup: "Настройка меню", menu: "Планировщик питания", shopping: "Список покупок", stores: "Магазины и цены", settings: "Настройки рациона" };
 const mealIcons = { breakfast: "sun", lunch: "bowl", dinner: "moon", snack: "leaf" };
 const dateShort = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "short", timeZone: "UTC" });
-const dateLong = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" });
+const dateWithYear = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 const fullDay = new Intl.DateTimeFormat("ru-RU", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
 const updatedFormat = new Intl.DateTimeFormat("ru-RU", {
   dateStyle: "short", timeStyle: "short", timeZone: "Asia/Yekaterinburg",
@@ -95,7 +96,10 @@ function readState() {
   return {
     answers: menu ? answers : null, draft, menu,
     step: Number.isInteger(saved?.step) && saved.step >= 0 && saved.step < STEP_NAMES.length ? saved.step : 0,
-    editing: Boolean(menu && saved?.editing),
+    wizardMode: menu && (saved?.wizardMode === "parameter" || saved?.wizardMode === "restart") ? saved.wizardMode :
+      menu && saved?.editing ? "parameter" : "initial",
+    settingsDraft: menu && saved?.settingsDraft?.answers && isWeekStart(saved.settingsDraft.start) ?
+      { answers: restoreAnswers(saved.settingsDraft.answers), start: saved.settingsDraft.start } : null,
     searched: Boolean(menu && saved?.searched),
     start: isWeekStart(saved?.start) ? saved.start : weekStart(),
     day: Number.isInteger(saved?.day) && saved.day >= 0 && saved.day < 7 ? saved.day : 0,
@@ -118,9 +122,9 @@ function announce(message) {
 function tabId(index) { return "day-tab-" + index; }
 
 function renderTabs() {
-  $("menu-dates").textContent = dateLong.formatRange(dateAt(state.start, 0), dateAt(state.start, 6)) +
+  $("menu-dates").textContent = dateWithYear.formatRange(dateAt(state.start, 0), dateAt(state.start, 6)) +
     " · " + peopleText(household(state.answers)) +
-    (new Set(state.menu).size < state.menu.length ? " · Есть повторяющиеся блюда" : "");
+    " · Разных семейств блюд: " + new Set(state.menu.map(id => familyOf(recipesById.get(id)))).size;
   $("week-tabs").innerHTML = DAYS.map((day, index) => {
     const date = dateAt(state.start, index);
     const selected = index === state.day;
@@ -159,6 +163,7 @@ function renderDay() {
       '<h3>' + escapeHtml(recipe.title) + '</h3><p class="meal-detail">' +
       peopleText(participants.people) + ' · ' + number.format(participants.portions) + ' порц. · ' +
       escapeHtml(equipmentText(method)) + '</p>' +
+      (recipe.sideDish ? '<p class="meal-side">Гарнир: ' + escapeHtml(SIDES[recipe.sideDish]) + '</p>' : '') +
       (mealCosts ? '<p class="meal-cost">' + quoteMoney(mealCosts[index], planningQuote) + '</p>' : '') +
       '<div class="meal-actions">' +
       '<button class="button recipe-button" type="button" data-recipe="' + index + '">Рецепт</button>' +
@@ -435,7 +440,11 @@ function recipeDialog(index) {
   const [method, ...alternatives] = compatibleMethods(recipe, state.answers.equipment);
   $("dialog-kicker").textContent = MEAL_LABELS[recipe.meal] + " · " + method.minutes + " мин";
   $("dialog-title").textContent = recipe.title;
-  $("dialog-content").innerHTML = '<section class="dialog-section"><h3>Ингредиенты · ' +
+  const composition = [CATEGORIES[recipe.category], "Основное: " + ingredients[recipe.mainIngredient].name,
+    recipe.sideDish ? "Гарнир: " + SIDES[recipe.sideDish] : recipe.servingStyle === "needs-side" ?
+      "Блюдо требует гарнира" : "Самостоятельное блюдо"];
+  $("dialog-content").innerHTML = '<p class="method-note">' + escapeHtml(composition.join(" · ")) +
+    '</p><section class="dialog-section"><h3>Ингредиенты · ' +
     peopleText(people.people) + " · " + number.format(people.portions) + ' порц.</h3><ul class="ingredient-list">' +
     Object.keys(recipe.ingredients).map(id => {
       const item = ingredients[id];
@@ -464,6 +473,62 @@ function replaceDialog(index) {
   $("meal-dialog").showModal();
 }
 
+function currentSettings() {
+  return state.settingsDraft ?? { answers: state.answers, start: state.start };
+}
+
+function saveSettingsDraft(answers, start) {
+  const normalized = restoreAnswers(answers);
+  state.settingsDraft = start === state.start && JSON.stringify(normalized) === JSON.stringify(state.answers)
+    ? null : { answers: normalized, start };
+  persist();
+}
+
+function showSettingsError(error = "") {
+  $("settings-error").textContent = error;
+  $("settings-error").hidden = !error;
+}
+
+function renderSettings() {
+  const { answers, start } = currentSettings();
+  const parts = [
+    STORES.find(store => store.id === answers.store)?.name ?? "Магазин не выбран",
+    [
+      peopleText(household(answers)) + " · Взрослые: " + answers.adults,
+      ...(answers.hasChildren ? answers.children.map(child => child.age + " лет · " + child.percent + "% взрослой порции") : []),
+    ],
+    activeMeals(answers).map(meal => MEAL_LABELS[meal] + " · " + peopleText(mealPeople(answers, meal).people)),
+    money(Math.round(answers.budget * 100)),
+    [
+      "Любимые: " + (answers.favorites.map(key => FAVORITES[key]).join(", ") || "—"),
+      "Оценки блюд: " + Object.keys(answers.ratings).length,
+      "Аллергии и ограничения: " + (answers.allergens.map(key => ALLERGENS[key]).join(", ") || "—"),
+      "Исключения: " + (answers.exclusions.join(", ") || "—"),
+    ],
+    answers.equipment.map(key => EQUIPMENT[key]).join(", ") || "Без техники",
+  ];
+  $("settings-status").textContent = state.settingsDraft
+    ? "Есть несохранённые изменения. Текущее меню доступно в разделе «Меню на неделю»."
+    : "Настройки текущего меню";
+  $("settings-week").value = start;
+  $("settings-week-range").textContent = dateWithYear.formatRange(dateAt(start, 0), dateAt(start, 6));
+  $("settings-cancel").disabled = !state.settingsDraft;
+  $("settings-parameters").innerHTML = STEP_NAMES.map((name, index) => {
+    const lines = Array.isArray(parts[index]) ? parts[index] : [parts[index]];
+    const title = index === 1 ? "Количество людей" : index === 3 ? "Недельный бюджет" :
+      index === 4 ? "Предпочтения и исключения" : index === 5 ? "Кухонная техника" : name;
+    return '<article class="settings-item"><div><h2>' + title + '</h2>' +
+      lines.map(line => "<p>" + escapeHtml(line) + "</p>").join("") + '</div>' +
+      '<button type="button" class="button outline" data-edit-step="' + index + '" aria-label="Изменить: ' +
+      title + '">Изменить</button></article>';
+  }).join("");
+}
+
+function navigate(view) {
+  if (window.location.hash !== "#" + view) window.location.hash = view;
+  else activateView(true);
+}
+
 function activateView(scroll = false) {
   const hash = window.location.hash.slice(1);
   const requested = hash === "main" ? currentView : hash;
@@ -477,6 +542,7 @@ function activateView(scroll = false) {
   }
   $("section-label").textContent = views[view];
   if (view === "setup") wizard.render({ enter: true });
+  if (view === "settings") renderSettings();
   if (scroll) {
     window.scrollTo(0, 0);
     $("main").focus({ preventScroll: true });
@@ -491,11 +557,12 @@ function syncChecked(prior) {
   }
 }
 
-function updatePlan(menu, answers, day, generated) {
+function updatePlan(menu, answers, day, generated, start = state.start) {
   const prior = basket ?? [];
   state.menu = menu;
   state.answers = answers;
-  if (generated) state.start = weekStart();
+  if (start !== state.start) state.checked.clear();
+  state.start = start;
   state.day = day;
   state.searched = generated;
   renderTabs();
@@ -503,7 +570,7 @@ function updatePlan(menu, answers, day, generated) {
   persist();
 }
 
-function generate(answers) {
+function generate(answers, start = state.start, applyDraft = false) {
   for (const step of [0, 2, 3]) {
     const error = validateStep(answers, step);
     if (error) return error;
@@ -514,28 +581,81 @@ function generate(answers) {
     Math.random, state.menu ?? []);
   if (!result.menu) {
     return "Нет подходящих блюд для: " + result.empty.map(meal => MEAL_LABELS[meal].toLowerCase()).join(", ") +
-      ". Проверьте выбранные приёмы пищи, ограничения и технику.";
+      ". Проверьте выбранные приёмы пищи, ограничения и технику." + (state.menu ? " Текущее меню сохранено." : "");
+  }
+  if (state.menu) {
+    const list = shoppingList(result.menu, recipesById, ingredients, rules.people);
+    const quote = bestQuote(source.quote(list));
+    if (quote && quote.knownCost > Math.round(answers.budget * 100)) {
+      return "Подбор не нашёл меню в пределах бюджета. Стоимость найденного варианта " +
+        quoteMoney(quote.knownCost, quote) + ". Текущее меню сохранено.";
+    }
   }
   if (answers.store !== state.answers?.store) state.store = null;
-  state.editing = false;
+  state.wizardMode = "initial";
+  if (applyDraft) state.settingsDraft = null;
   $("result-error").hidden = true;
-  updatePlan(result.menu, restoreAnswers(answers), 0, true);
-  if (window.location.hash !== "#menu") window.location.hash = "menu";
-  activateView(true);
+  updatePlan(result.menu, restoreAnswers(answers), 0, true, start);
+  navigate("menu");
   announce("Меню составлено на семь дней.");
   return "";
+}
+
+function submitWizard() {
+  if (state.wizardMode === "parameter") {
+    saveSettingsDraft(state.draft, currentSettings().start);
+    state.wizardMode = "initial";
+    persist();
+    showSettingsError();
+    navigate("settings");
+    return "";
+  }
+  return generate(state.draft, currentSettings().start, true);
+}
+
+function editParameter(event) {
+  const target = event.target.closest("[data-edit-step]");
+  if (!target) return;
+  state.draft = restoreAnswers(currentSettings().answers);
+  state.wizardMode = "parameter";
+  wizard.setStep(Number(target.dataset.editStep), false);
+  navigate("setup");
 }
 
 function registerEvents() {
   $("edit-shortcuts").innerHTML = STEP_NAMES.map((label, i) =>
     '<button class="button outline" type="button" data-edit-step="' + i + '">' + label + '</button>').join("");
-  $("edit-shortcuts").addEventListener("click", event => {
-    const target = event.target.closest("[data-edit-step]");
-    if (!target) return;
+  $("edit-shortcuts").addEventListener("click", editParameter);
+  $("settings-parameters").addEventListener("click", editParameter);
+  $("settings-week").addEventListener("change", event => {
+    const start = weekForDate(event.target.value);
+    if (!start) {
+      showSettingsError("Выберите корректную календарную дату.");
+      return;
+    }
+    saveSettingsDraft(currentSettings().answers, start);
+    renderSettings();
+    showSettingsError();
+  });
+  $("settings-save").addEventListener("click", () => {
+    if (!$("settings-week").reportValidity()) return;
+    const { answers, start } = currentSettings();
+    showSettingsError(generate(answers, start, true));
+  });
+  $("settings-refresh").addEventListener("click", () => showSettingsError(generate(state.answers)));
+  $("settings-cancel").addEventListener("click", () => {
+    state.settingsDraft = null;
     state.draft = restoreAnswers(state.answers);
-    state.editing = true;
-    wizard.setStep(Number(target.dataset.editStep), false);
-    window.location.hash = "setup";
+    persist();
+    showSettingsError();
+    renderSettings();
+    announce("Черновик настроек отменён.");
+  });
+  $("settings-restart").addEventListener("click", () => {
+    state.draft = restoreAnswers();
+    state.wizardMode = "restart";
+    wizard.setStep(0, false);
+    navigate("setup");
   });
   $("regenerate").addEventListener("click", () => {
     const error = generate(state.answers);
@@ -630,12 +750,12 @@ async function boot() {
     recipesById = new Map(recipes.map(recipe => [recipe.id, recipe]));
     state = readState();
     wizard = mountWizard({
-      state, recipes, ingredients, persist, assess: assessBudget, submit: () => generate(state.draft),
+      state, recipes, ingredients, persist, assess: assessBudget, submit: submitWizard,
       cancel() {
-        state.draft = restoreAnswers(state.answers);
-        state.editing = false;
+        state.draft = restoreAnswers(currentSettings().answers);
+        state.wizardMode = "initial";
         persist();
-        window.location.hash = "menu";
+        navigate("settings");
       },
       icon, escape: escapeHtml,
     });

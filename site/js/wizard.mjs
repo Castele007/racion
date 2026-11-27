@@ -177,9 +177,11 @@ export function mountWizard({ state, recipes, ingredients, persist, assess, subm
     const previousScroll = content.scrollTop;
     content.innerHTML = renderStep[step](state.draft);
     content.scrollTop = enter ? 0 : previousScroll;
-    $("wizard-back").disabled = step === 0 && !state.editing;
-    $("wizard-back").textContent = state.editing ? "К меню" : "Назад";
-    $("wizard-next").textContent = state.editing || step === 5 ? "Составить меню" : "Далее";
+    const editing = state.wizardMode === "parameter";
+    const returnToSettings = editing || (state.wizardMode === "restart" && step === 0);
+    $("wizard-back").disabled = step === 0 && !returnToSettings;
+    $("wizard-back").textContent = returnToSettings ? "К настройкам" : "Назад";
+    $("wizard-next").textContent = editing ? "Сохранить параметр" : step === 5 ? "Составить меню" : "Далее";
     if (step === 3) {
       if (enter || assessment === null) assessment = assess(state.draft);
       budgetText();
@@ -305,14 +307,14 @@ export function mountWizard({ state, recipes, ingredients, persist, assess, subm
       error(problem);
       return;
     }
-    if (state.editing || state.step === 5) {
+    if (state.wizardMode === "parameter" || state.step === 5) {
       error(submit());
       return;
     }
     setStep(state.step + 1);
   });
   $("wizard-back").addEventListener("click", () => {
-    if (state.editing) cancel();
+    if (state.wizardMode === "parameter" || (state.wizardMode === "restart" && state.step === 0)) cancel();
     else if (state.step > 0) setStep(state.step - 1);
   });
 

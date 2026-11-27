@@ -896,6 +896,36 @@
         "factor": "2.6",
         "basis": "unit"
       }
+    },
+    "bulgur": {
+      "packSize": 450,
+      "priceKopecks": 11000,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 2.04",
+      "model": {
+        "factor": "2.04",
+        "basis": "unit"
+      }
+    },
+    "spaghetti": {
+      "packSize": 450,
+      "priceKopecks": 8800,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.63",
+      "model": {
+        "factor": "1.63",
+        "basis": "unit"
+      }
+    },
+    "bacon": {
+      "packSize": 150,
+      "priceKopecks": 22500,
+      "referenceId": "beef",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.80",
+      "model": {
+        "factor": "1.80",
+        "basis": "unit"
+      }
     }
   }
 }

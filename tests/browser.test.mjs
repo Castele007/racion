@@ -204,11 +204,15 @@ test("all six mobile stages save answers, respect filters and build an itemized 
     await page.locator('[data-edit-step="3"]').click();
     await expectStep(page, 4);
     await page.locator("#wizard-budget").fill("1.25");
-    await page.getByRole("button", { name: "Составить меню", exact: true }).click();
-    assert.match(await page.locator("#budget-warning").innerText(), /бюджет/);
+    await page.getByRole("button", { name: "Сохранить параметр", exact: true }).click();
+    await page.getByRole("button", { name: "Сохранить и пересчитать меню", exact: true }).click();
+    assert.match(await page.locator("#settings-error").innerText(), /бюджета.*Текущее меню сохранено/);
+    assert.equal((await state(page)).answers.budget, 31000.25);
+    assert.equal((await state(page)).settingsDraft.answers.budget, 1.25);
+    await page.getByRole("button", { name: "Отменить изменения", exact: true }).click();
+    await page.getByRole("link", { name: "Меню на неделю", exact: true }).click();
     await page.getByRole("button", { name: "Новое меню", exact: true }).click();
-    assert.equal((await state(page)).answers.budget, 1.25);
-    assert.match(await page.locator("#budget-summary").innerText(), /Сверх бюджета/);
+    assert.equal((await state(page)).answers.budget, 31000.25);
     await screenshot(page, "result");
 
     await page.getByRole("link", { name: "Список покупок", exact: true }).click();
@@ -370,6 +374,97 @@ test("Magnit shopping shows actual pack math, an estimate source for gaps and a 
     assert.equal(await select.inputValue(), "magnit");
     assert.match(await page.locator("#shopping-summary").innerText(), /Расчёт по ориентирам/);
     assert.match(await row("milk").locator(".shopping-price").innerText(), /^≈/);
+  } finally {
+    await page.close();
+  }
+});
+
+test("settings edits and week choice are staged, recover from a failed plan and survive reload", async () => {
+  const page = await browser.newPage({ viewport: { width: 375, height: 760 } });
+  try {
+    const answers = restoreAnswers({ store: "magnit", adults: 3, equipment: ["stove", "oven", "blender"] });
+    const menu = starterMenu();
+    await page.addInitScript(({ answers, menu }) => {
+      if (!localStorage.getItem("racion.v1")) {
+        localStorage.setItem("racion.v1", JSON.stringify({ answers, draft: answers, menu, start: "2026-11-23" }));
+      }
+    }, { answers, menu });
+    await page.goto(address);
+    await page.getByRole("link", { name: "Настройки рациона", exact: true }).click();
+    await page.getByRole("heading", { name: "Настройки рациона", exact: true }).waitFor();
+    assert.equal(await page.locator(".settings-item").count(), 6);
+    assert.match(await page.locator(".settings-item").first().innerText(), /Магнит/);
+    assert.match(await page.locator(".settings-item").nth(1).innerText(), /Взрослые: 3/);
+    await fitViewport(page);
+    await screenshot(page, "settings-mobile");
+    const edit = name => page.getByRole("button", { name: "Изменить: " + name, exact: true }).click();
+    const keep = () => page.getByRole("button", { name: "Сохранить параметр", exact: true }).click();
+    const save = () => page.getByRole("button", { name: "Сохранить и пересчитать меню", exact: true }).click();
+
+    await edit("Недельный бюджет");
+    await page.locator("#wizard-budget").fill("9500.50");
+    await keep();
+    await edit("Количество людей");
+    await page.getByRole("button", { name: "Увеличить: взрослые" }).click();
+    await keep();
+    await page.getByLabel("Неделя меню").fill("2026-12-16");
+    await page.reload();
+    assert.equal(await page.getByLabel("Неделя меню").inputValue(), "2026-12-14");
+    let saved = await state(page);
+    assert.deepEqual(saved.menu, menu);
+    assert.deepEqual(saved.answers, answers);
+    assert.deepEqual(saved.settingsDraft.answers, { ...answers, budget: 9500.50, adults: 4 });
+
+    await edit("Кухонная техника");
+    for (const device of answers.equipment) {
+      await page.locator('[data-toggle-group="equipment"][data-value="' + device + '"]').click();
+    }
+    await keep();
+    await edit("Предпочтения и исключения");
+    for (const allergen of ["gluten", "dairy"]) {
+      await page.locator('[data-toggle-group="allergens"][data-value="' + allergen + '"]').click();
+    }
+    await keep();
+    await save();
+    assert.match(await page.locator("#settings-error").innerText(), /Нет подходящих блюд/);
+    saved = await state(page);
+    assert.deepEqual(saved.menu, menu);
+    assert.deepEqual(saved.answers, answers);
+    assert.equal(saved.start, "2026-11-23");
+
+    await page.getByRole("button", { name: "Отменить изменения", exact: true }).click();
+    assert.equal((await state(page)).settingsDraft, null);
+    assert.equal(await page.getByLabel("Неделя меню").inputValue(), "2026-11-23");
+    await edit("Недельный бюджет");
+    await page.locator("#wizard-budget").fill("9000");
+    await keep();
+    await page.getByLabel("Неделя меню").fill("2026-12-18");
+    await save();
+    await page.getByRole("heading", { name: "Ваше меню на неделю" }).waitFor();
+    const updated = await state(page);
+    assert.equal(updated.start, "2026-12-14");
+    assert.deepEqual(updated.answers, { ...answers, budget: 9000 });
+    assert.equal(updated.settingsDraft, null);
+
+    await page.getByRole("link", { name: "Настройки рациона", exact: true }).click();
+    await page.getByRole("button", { name: "Обновить блюда", exact: true }).click();
+    await page.getByRole("heading", { name: "Ваше меню на неделю" }).waitFor();
+    const refreshed = await state(page);
+    assert.equal(refreshed.start, updated.start);
+    assert.deepEqual(refreshed.answers, updated.answers);
+    assert.ok(refreshed.menu.some(id => !updated.menu.includes(id)));
+
+    await page.getByRole("link", { name: "Настройки рациона", exact: true }).click();
+    await page.getByRole("button", { name: "Пройти анкету заново", exact: true }).click();
+    await expectStep(page, 1);
+    assert.deepEqual((await state(page)).menu, refreshed.menu);
+    await page.getByRole("button", { name: "К настройкам", exact: true }).click();
+    await page.getByRole("heading", { name: "Настройки рациона", exact: true }).waitFor();
+    assert.equal(await page.getByLabel("Неделя меню").inputValue(), "2026-12-14");
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await fitViewport(page);
+    await screenshot(page, "settings-desktop");
   } finally {
     await page.close();
   }
