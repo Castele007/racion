@@ -1,8 +1,9 @@
 import {
-  MEALS, MEAL_NAMES, DAYS, STORES, LIMITS, MAX_PRICE_AGE, bestQuote, cleanExclusions, dateAt,
+  MEALS, MEAL_NAMES, DAYS, STORES, LIMITS, MAX_PRICE_AGE, bestQuote, cleanExclusions, dateAt, eligibleRecipes,
   generateMenu, isWeekStart, pricing, recipeAmount, replacementMenu, replacementOptions,
   restoreSettings, shoppingList, starterMenu, validMenu, weekStart,
 } from "./planner.mjs";
+import { ESTIMATE_STORE, allocateMealCosts, cleanOverrides, estimateLowerBound, estimatePricing, estimateRows } from "./estimates.mjs";
 
 const $ = id => document.getElementById(id);
 const storageKey = "racion.v1";
@@ -26,6 +27,9 @@ let ingredients, recipes, recipesById, state, prices, basket, quotes;
 let draftExclusions = [];
 let activeDialogIndex = null;
 let loadedCatalog = null;
+let estimateDatabase = null;
+let planningQuote = null;
+let mealCosts = null;
 
 const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => entities[char]);
@@ -90,7 +94,8 @@ function readState() {
     settings, menu,
     start: isWeekStart(saved?.start) ? saved.start : weekStart(),
     day: Number.isInteger(saved?.day) && saved.day >= 0 && saved.day < 7 ? saved.day : 0,
-    store: STORES.some(store => store.id === saved?.store) ? saved.store : null,
+    store: [...STORES, ESTIMATE_STORE].some(store => store.id === saved?.store) ? saved.store : null,
+    overrides: cleanOverrides(saved?.overrides, ingredients),
     checked: new Set(Array.isArray(saved?.checked) ? saved.checked.filter(id => Object.hasOwn(ingredients, id)) : []),
   };
 }
@@ -160,7 +165,16 @@ function renderTabs() {
   $("day-menu").setAttribute("aria-labelledby", tabId(state.day));
 }
 
+function quoteMoney(value, quote) {
+  return (quote?.estimate || quote?.stale ? "≈ " : "") + money(value);
+}
+
 function renderDay() {
+  const dayCost = $("day-cost");
+  dayCost.hidden = !mealCosts;
+  dayCost.textContent = mealCosts ? "Итого за день " + quoteMoney(
+    mealCosts.slice(state.day * 3, state.day * 3 + 3).reduce((sum, cost) => sum + cost, 0), planningQuote
+  ) : "";
   $("day-menu").innerHTML = MEALS.map((meal, slot) => {
     const index = state.day * MEALS.length + slot;
     const recipe = recipesById.get(state.menu[index]);
@@ -170,7 +184,9 @@ function renderDay() {
     return '<article class="meal-card">' + image + '<div class="meal-body"><div class="meal-meta">' +
       '<span class="meal-tag ' + meal + '">' + icon(mealIcons[meal]) + MEAL_NAMES[meal] + '</span>' +
       '<span class="meal-time">' + icon("clock") + recipe.minutes + ' мин</span></div>' +
-      '<h3>' + escapeHtml(recipe.title) + '</h3><div class="meal-actions">' +
+      '<h3>' + escapeHtml(recipe.title) + '</h3>' +
+      (mealCosts ? '<p class="meal-cost">' + quoteMoney(mealCosts[index], planningQuote) + '</p>' : '') +
+      '<div class="meal-actions">' +
       '<button class="button recipe-button" type="button" data-recipe="' + index + '">Рецепт</button>' +
       '<button class="button outline" type="button" data-replace="' + index + '">' +
       icon("refresh") + 'Заменить</button></div></div></article>';
@@ -206,13 +222,33 @@ function budgetSummary(quote, menuView = false) {
   } else if (quote?.knownCost != null) {
     note = "Известная сумма за часть списка. Для остальных продуктов нет подходящих цен.";
   }
+  const estimated = Boolean(quote?.estimate);
+  const warning = menuView && remainder < 0 ? overBudgetNotice(quote, budget) : "";
+  const details = menuView && quote?.complete ?
+    '<p class="summary-note">Стоимость целых упаковок распределена по блюдам пропорционально их долям в покупках.</p>' : "";
   return '<div class="summary-grid">' + summaryCard("Бюджет", money(budget), "На неделю") +
-    summaryCard(basketTitle, quote?.knownCost == null ? "—" : money(quote.knownCost),
-      historical ? "Есть устаревшие цены" : (incomplete ? "Нет полной оценки" : "Целые упаковки")) +
-    summaryCard(remainderTitle, remainder === null ? "—" : money(Math.abs(remainder)),
-      remainder === null ? "Нужна цена всей корзины" : (historical ? "Ориентировочно" : ""),
+    summaryCard(basketTitle, quote?.knownCost == null ? "—" : quoteMoney(quote.knownCost, quote),
+      estimated ? "Расчёт по ориентирам" : historical ? "Есть устаревшие цены" :
+        (incomplete ? "Нет полной оценки" : "Целые упаковки")) +
+    summaryCard(remainderTitle, remainder === null ? "—" : quoteMoney(Math.abs(remainder), quote),
+      remainder === null ? "Нужна цена всей корзины" : (historical || estimated ? "Ориентировочно" : ""),
       remainder === null ? "" : (remainder < 0 ? "over" : "good")) + "</div>" +
-    (note ? '<p class="summary-note">' + note + '</p>' : "");
+    (note ? '<p class="summary-note">' + note + '</p>' : "") + details + warning;
+}
+
+function overBudgetNotice(quote, budget) {
+  const available = eligibleRecipes(recipes, ingredients, state.settings.exclusions);
+  const bound = quote.estimate ? estimateLowerBound(available, ingredients, state.settings.people, prices.estimates) : null;
+  const intro = bound !== null && bound > budget
+    ? "По этим ориентирам уложиться в бюджет невозможно даже без округления до упаковок."
+    : "Текущее меню превышает бюджет. Попробуйте подобрать меню заново или изменить настройки.";
+  return '<div id="budget-warning">' + message(intro, true) + '</div>';
+}
+
+function estimateReference(row) {
+  const ref = row.reference;
+  if (!ref) return "";
+  return sourceLink(ref.url, ref.name) + " · " + escapeHtml(ref.observedOn) + " · " + escapeHtml(row.method);
 }
 
 function selectedQuote() {
@@ -245,14 +281,16 @@ function shoppingRow(item) {
     packs = item.packs.map(({ count, offer }) => count + " × " + amount(offer.packSize, item.unit)).join(" + ") +
       (item.stale ? " · устарело" : "");
   }
-  const products = (item.packs ?? []).map(({ offer, count }) => offerDetails(offer, item, count));
+  const products = item.estimate ? ["<li>" + estimateReference(item.estimate) +
+    (item.estimate.edited ? " · Ваша цена" : "") + "</li>"] :
+    (item.packs ?? []).map(({ offer, count }) => offerDetails(offer, item, count));
   const conditional = item.conditional.map(offer => offerDetails(offer, item, 0));
   return '<div class="shopping-row' + (checked ? ' checked' : '') + '"><label><input type="checkbox" data-item="' +
     item.id + '"' + (checked ? " checked" : "") + '><span>' + escapeHtml(item.name) + '<small>Нужно ' +
     amount(item.quantity, item.unit) + '</small></span></label><div class="pack-details">' + packs +
     (products.length ? '<details><summary>Товары и источник</summary><ul>' + products.join("") + '</ul></details>' : '') +
     (conditional.length ? '<details><summary>Акции с условиями</summary><ul>' + conditional.join("") + '</ul></details>' : '') +
-    '</div><div class="shopping-price">' + (item.hasPrice ? money(item.cost) : "—") + '</div></div>';
+    '</div><div class="shopping-price">' + (item.hasPrice ? quoteMoney(item.cost, item) : "—") + '</div></div>';
 }
 
 function renderShopping() {
@@ -284,13 +322,14 @@ function storeStatus(store, now) {
 
 function renderStores() {
   const now = Date.now();
-  const best = bestQuote(quotes);
+  const storeQuotes = quotes.filter(quote => !quote.estimate);
+  const best = bestQuote(storeQuotes);
   const headline = best ?
     (best.stale ? "Полная корзина по последним сохранённым ценам: " : "Самая низкая цена полной актуальной корзины: ") +
       '<strong>' + escapeHtml(best.store.name) + ' · ' + money(best.knownCost) + '</strong>.' :
-    "Полных цен для этой корзины пока нет. Доступные цены на отдельные продукты показаны в списке покупок.";
+    "Полных цен магазинов для этой корзины пока нет. Для планирования доступны отдельные ориентировочные цены.";
   $("stores-summary").innerHTML = message(headline, !best || Boolean(best.stale));
-  $("store-comparison").innerHTML = quotes.map(quote => {
+  $("store-comparison").innerHTML = storeQuotes.map(quote => {
     const { store } = quote;
     const [status, label] = storeStatus(store, now);
     const place = store.location;
@@ -315,11 +354,38 @@ function renderStores() {
   }).join("");
 }
 
+function planningPrices(overrides) {
+  const actual = pricing(loadedCatalog);
+  const estimates = estimatePricing(estimateDatabase, ingredients, overrides);
+  return {
+    estimates,
+    hasOffers: actual.hasOffers || estimates.hasOffers,
+    quote(list) {
+      const stores = actual.quote(list);
+      return estimates.hasOffers ? [...stores, estimates.quote(list)] : stores;
+    },
+  };
+}
+
+function renderEstimateEditor() {
+  const rows = estimateRows(estimateDatabase, ingredients, state.overrides);
+  $("estimate-editor").hidden = !rows.length;
+  $("estimate-rows").innerHTML = rows.sort((a, b) => a.name.localeCompare(b.name, "ru")).map(row =>
+    '<div class="estimate-row"><div><label for="estimate-' + row.id + '">' + escapeHtml(row.name) +
+    ' · ' + amount(row.packSize, row.unit) + '</label><small>' + estimateReference(row) +
+    '</small></div><input id="estimate-' + row.id + '" data-estimate="' + row.id +
+    '" data-default="' + row.originalPrice + '" type="number" inputmode="decimal" min="0.01" max="1000000" ' +
+    'step="0.01" required value="' + row.priceKopecks / 100 + '"></div>').join("");
+}
+
 function refreshCalculations() {
-  prices = pricing(loadedCatalog);
+  prices = planningPrices(state?.overrides);
   basket = shoppingList(state.menu, recipesById, ingredients, state.settings.people);
   quotes = prices.quote(basket);
-  $("budget-summary").innerHTML = budgetSummary(bestQuote(quotes), true);
+  planningQuote = bestQuote(quotes);
+  mealCosts = allocateMealCosts(state.menu, recipesById, ingredients, state.settings.people, planningQuote);
+  $("budget-summary").innerHTML = budgetSummary(planningQuote, true);
+  renderDay();
   const activeStores = quotes.filter(quote => storeStatus(quote.store, Date.now())[0] === "fresh").length;
   $("sidebar-prices").textContent = activeStores ?
     countText(activeStores, { one: "магазин с ценами", few: "магазина с ценами", many: "магазинов с ценами" }) :
@@ -391,7 +457,6 @@ function updatePlan(menu, settings, start, day) {
   basket = shoppingList(menu, recipesById, ingredients, settings.people);
   syncChecked(prior);
   renderTabs();
-  renderDay();
   refreshCalculations();
   persist();
 }
@@ -491,22 +556,38 @@ function registerEvents() {
     persist();
     renderShopping();
   });
+  $("estimate-form").addEventListener("submit", event => {
+    event.preventDefault();
+    const values = [...$("estimate-rows").querySelectorAll("[data-estimate]")].map(input =>
+      [input.dataset.estimate, Math.round(input.valueAsNumber * 100), Number(input.dataset.default)]);
+    state.overrides = cleanOverrides(Object.fromEntries(values.filter(([, price, base]) => price !== base)), ingredients);
+    persist();
+    refreshCalculations();
+    announce("Ориентировочные цены сохранены. Стоимость меню пересчитана.");
+  });
+  $("reset-estimates").addEventListener("click", () => {
+    state.overrides = {};
+    persist();
+    refreshCalculations();
+    renderEstimateEditor();
+    announce("Исходные ориентировочные цены восстановлены.");
+  });
   window.addEventListener("hashchange", () => activateView(true));
 }
 
 async function boot() {
   try {
-    [ingredients, recipes, loadedCatalog] = await Promise.all([
-      data("ingredients"), data("recipes"), data("prices").catch(() => null),
+    [ingredients, recipes, loadedCatalog, estimateDatabase] = await Promise.all([
+      data("ingredients"), data("recipes"), data("prices").catch(() => null), data("estimates").catch(() => null),
     ]);
     recipesById = new Map(recipes.map(recipe => [recipe.id, recipe]));
-    prices = pricing(loadedCatalog);
+    prices = planningPrices(state?.overrides);
     state = readState();
     registerEvents();
     renderPreferences();
     renderTabs();
-    renderDay();
     refreshCalculations();
+    renderEstimateEditor();
     activateView();
     $("generate").disabled = false;
     $("menu-board").hidden = false;

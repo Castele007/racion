@@ -125,6 +125,7 @@
           </div>
           <div id="week-tabs" class="week-tabs" role="tablist" aria-label="День недели"></div>
           <div id="day-menu" class="meal-grid" role="tabpanel" tabindex="0"></div>
+          <p id="day-cost" class="day-cost" hidden></p>
           <div class="menu-budget" id="budget-summary"></div>
         </div>
       </section>
@@ -136,7 +137,7 @@
         </div>
         <div id="shopping-summary" class="shopping-summary"></div>
         <div class="list-controls">
-          <label for="shopping-store">Цены магазина</label>
+          <label for="shopping-store">Источник цен</label>
           <select id="shopping-store"></select>
           <button id="clear-checks" type="button" class="button outline">Снять отметки</button>
         </div>
@@ -150,6 +151,17 @@
         </div>
         <div id="stores-summary"></div>
         <div id="store-comparison" class="stores-grid"></div>
+        <details id="estimate-editor" class="shopping-group estimate-editor" hidden>
+          <summary>Настроить ориентировочные цены</summary>
+          <p>За указанную упаковку, в рублях. Изменения сохраняются в этом браузере и используются при подборе меню.</p>
+          <form id="estimate-form">
+            <div id="estimate-rows"></div>
+            <div class="estimate-actions">
+              <button class="button primary" type="submit">Сохранить цены</button>
+              <button class="button outline" id="reset-estimates" type="button">Восстановить исходные</button>
+            </div>
+          </form>
+        </details>
         <p class="method-note"><svg class="icon"><use href="#i-info"></use></svg>Итог включает целые упаковки. Условия доступа к акции, доставка и сервисные сборы могут отличаться от магазина к магазину.</p>
       </section>
       <p id="live-status" class="sr-only" role="status" aria-live="polite"></p>

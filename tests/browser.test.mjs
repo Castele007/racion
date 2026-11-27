@@ -7,6 +7,7 @@ import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { STORES, exclusionIds } from "../site/js/planner.mjs";
 
+const published = process.env.RACION_PUBLISHED_URL;
 const { chromium } = createRequire(import.meta.url)("playwright");
 const root = fileURLToPath(new URL("../site", import.meta.url));
 const ingredients = JSON.parse(await readFile(resolve(root, "data/ingredients.json"), "utf8"));
@@ -18,7 +19,7 @@ const types = { ".html": "text/html; charset=utf-8", ".mjs": "text/javascript; c
 let server, browser, address;
 
 before(async () => {
-  server = createServer(async (request, response) => {
+  if (!published) server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url, "http://localhost");
       const relative = url.pathname.replace(/^\/racion(?:\/|$)/, "/");
@@ -31,8 +32,8 @@ before(async () => {
       response.writeHead(404).end();
     }
   });
-  await new Promise((ready, error) => server.once("error", error).listen(0, "127.0.0.1", ready));
-  address = "http://127.0.0.1:" + server.address().port + "/racion/";
+  if (server) await new Promise((ready, error) => server.once("error", error).listen(0, "127.0.0.1", ready));
+  address = published ? published.replace(/\/?$/, "/") : "http://127.0.0.1:" + server.address().port + "/racion/";
   browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH });
 });
 
@@ -119,6 +120,11 @@ test("desktop supports recipes, persistent settings, replacement, shopping and u
     assert.equal((await state(page)).menu[slot], replacementId);
     await screenshot(page, "shopping");
 
+    if (published) {
+      assert.deepEqual(errors, []);
+      return;
+    }
+
     // Verify the documented empty-state behavior independent of today's catalog contents.
     const empty = { ...realCatalog, stores: realCatalog.stores.map(store => ({
       ...store, status: "unavailable", updatedAt: null, offers: [], error: { message: "Подтверждённых цен пока нет." },
@@ -138,7 +144,7 @@ test("desktop supports recipes, persistent settings, replacement, shopping and u
   }
 });
 
-test("mobile fits narrow screens and displays complete, partial and historical baskets separately", async () => {
+test("mobile fits narrow screens and displays complete, partial and historical baskets separately", { skip: Boolean(published) }, async () => {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   try {
     await page.goto(address);
@@ -175,7 +181,7 @@ test("mobile fits narrow screens and displays complete, partial and historical b
 
     await page.locator(".store-card").nth(1).getByRole("link", { name: "К списку" }).click();
     await page.getByRole("checkbox").first().waitFor();
-    assert.equal(await page.getByLabel("Цены магазина").inputValue(), "magnit");
+    assert.equal(await page.getByLabel("Источник цен").inputValue(), "magnit");
     const remainder = page.locator(".shopping-summary .summary-card").last();
     assert.match(await remainder.innerText(), /(Остаток бюджета|Сверх бюджета)\s+[\d\s,]+₽/u);
     assert.match(await page.locator(".pack-details").first().innerText(), /\d+ × /);
@@ -183,10 +189,72 @@ test("mobile fits narrow screens and displays complete, partial and historical b
     const source = page.locator(".pack-details details[open] a").first();
     assert.equal(await source.getAttribute("href"), "https://magnit.ru/");
     await fitViewport(page);
-    await page.getByLabel("Цены магазина").selectOption("perekrestok");
+    await page.getByLabel("Источник цен").selectOption("perekrestok");
     assert.match(await remainder.innerText(), /Нужна цена всей корзины/);
-    await page.getByLabel("Цены магазина").selectOption("lenta");
+    await page.getByLabel("Источник цен").selectOption("lenta");
     assert.match(await remainder.innerText(), /Ориентировочно/);
+  } finally {
+    await page.close();
+  }
+});
+
+test("all 108 recipe WebPs decode, and totals and the price editor work with the served data", async () => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  try {
+    await page.goto(address);
+    await page.getByRole("tab", { name: /понедельник/ }).waitFor();
+    const assets = await page.evaluate(async () => {
+      const response = await fetch("./data/recipes.json", { cache: "no-cache" });
+      const recipes = await response.json();
+      const names = recipes.map(recipe => recipe.image);
+      for (let i = 0; i < names.length; i += 12) {
+        await Promise.all(names.slice(i, i + 12).map(async name => {
+          const image = new Image();
+          image.src = "./assets/" + name + ".webp";
+          await image.decode();
+          if (!image.naturalWidth) throw new Error("Empty image: " + name);
+        }));
+      }
+      return names;
+    });
+    assert.equal(assets.length, 108);
+    assert.equal(new Set(assets).size, 108);
+    assert.deepEqual(assets, recipes.map(recipe => recipe.image));
+
+    const kopecks = text => Math.round(Number(text.replace(/[^\d,]/g, "").replace(",", ".")) * 100);
+    let week = 0;
+    for (const day of await page.getByRole("tab").all()) {
+      await day.click();
+      const mealAmounts = await page.locator(".meal-cost").allTextContents();
+      assert.equal(mealAmounts.length, 3);
+      const subtotal = kopecks(await page.locator("#day-cost").textContent());
+      assert.equal(mealAmounts.reduce((sum, value) => sum + kopecks(value), 0), subtotal);
+      week += subtotal;
+    }
+    assert.equal(week, kopecks(await page.locator("#budget-summary strong").nth(1).textContent()));
+    await page.getByLabel("Бюджет на неделю").fill("1");
+    await page.getByRole("button", { name: "Составить меню" }).click();
+    assert.match(await page.locator("#budget-warning").innerText(), /бюджет/);
+    assert.match(await page.locator("#budget-summary").innerText(), /Сверх бюджета/);
+    assert.equal(new Set((await state(page)).menu).size, 21);
+
+    await page.getByRole("link", { name: "Список покупок", exact: true }).click();
+    await page.getByLabel("Источник цен").selectOption("estimate");
+    const firstIngredient = await page.getByRole("checkbox").first().getAttribute("data-item");
+    const subtotal = page.locator("#shopping-summary strong").nth(1);
+    const original = await subtotal.textContent();
+    assert.match(original, /^≈/);
+    await page.getByRole("link", { name: "Магазины и цены", exact: true }).click();
+    assert.equal(await page.locator(".store-card").count(), 5);
+    await page.getByText("Настроить ориентировочные цены", { exact: true }).click();
+    await page.locator("#estimate-" + firstIngredient).fill("10000");
+    await page.getByRole("button", { name: "Сохранить цены" }).click();
+    await page.getByRole("link", { name: "Список покупок", exact: true }).click();
+    assert.ok(kopecks(await subtotal.textContent()) > kopecks(original));
+    await page.reload();
+    await subtotal.waitFor();
+    assert.equal((await state(page)).overrides[firstIngredient], 1000000);
+    await fitViewport(page);
   } finally {
     await page.close();
   }

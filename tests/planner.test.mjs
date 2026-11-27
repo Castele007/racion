@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { allocateMealCosts, estimateLowerBound, estimatePricing, estimateRows } from "../site/js/estimates.mjs";
 import {
   MEALS, STORES, bestQuote, cheapestPacks, eligibleRecipes, exclusionIds, generateMenu,
   pricing, purchasable, recipeAmount, replacementMenu, replacementOptions, shoppingList,
@@ -39,6 +41,7 @@ test("public cookbook has at least 100 complete, unique recipes and working asse
   assert.equal(new Set(recipes.map(recipe => recipe.title)).size, recipes.length);
   assert.ok(recipes.length >= 100);
   for (const meal of MEALS) assert.ok(recipes.filter(recipe => recipe.meal === meal).length >= 7);
+  const imageHashes = new Set();
   for (const recipe of recipes) {
     assert.ok(recipe.title && MEALS.includes(recipe.meal) && /^[a-z-]+$/.test(recipe.id));
     assert.ok(recipe.minutes >= 10 && recipe.servings > 0);
@@ -46,8 +49,15 @@ test("public cookbook has at least 100 complete, unique recipes and working asse
     for (const [id, count] of Object.entries(recipe.ingredients)) {
       assert.ok(Object.hasOwn(ingredients, id) && Number.isInteger(count) && count > 0);
     }
-    if (recipe.image) assert.ok(existsSync(new URL("../site/assets/" + recipe.image + ".webp", import.meta.url)));
+    assert.equal(recipe.image, recipe.id);
+    const asset = new URL("../site/assets/" + recipe.image + ".webp", import.meta.url);
+    assert.ok(existsSync(asset));
+    const data = readFileSync(asset);
+    assert.equal(data.toString("ascii", 0, 4), "RIFF");
+    assert.equal(data.toString("ascii", 8, 12), "WEBP");
+    imageHashes.add(createHash("sha256").update(data).digest("hex"));
   }
+  assert.equal(imageHashes.size, recipes.length);
   assert.ok(validMenu(starterMenu(), recipes, ingredients, []));
 });
 
@@ -171,4 +181,57 @@ test("the budget search finds a full basket within budget when inexpensive optio
   assert.ok(menu.every(id => !id.endsWith("0")));
   const list = shoppingList(menu, new Map(sampleRecipes.map(item => [item.id, item])), sampleIngredients, 2);
   assert.equal(bestQuote(prices.quote(list)).knownCost, 300);
+});
+
+test("the local estimates cover the whole cookbook, with a dated source and reproducible package model", () => {
+  const database = load("estimates");
+  const rows = estimateRows(database, ingredients);
+  assert.equal(rows.length, Object.keys(ingredients).length);
+  for (const row of rows) {
+    const ref = row.reference;
+    assert.match(ref.observedOn, /^\d{4}-\d{2}-\d{2}$/);
+    assert.equal(new URL(ref.url).protocol, "https:");
+    assert.ok(ref.name && row.method && row.priceKopecks > 0);
+    const factor = Number(row.model.factor);
+    const base = row.model.basis === "unit" ? ref.priceKopecks * row.packSize / ref.amount : ref.priceKopecks;
+    if (row.model.basis === "unit") assert.equal(row.unit, ref.unit);
+    assert.equal(row.priceKopecks, Math.round(base * factor / 100) * 100);
+  }
+});
+
+test("the empty-store fallback changes a real weekly menu to fit a tighter budget", () => {
+  const estimates = estimatePricing(load("estimates"), ingredients, {});
+  const unavailable = pricing({ city: "Оренбург", stores: [] });
+  const prices = { hasOffers: estimates.hasOffers, quote: list => [...unavailable.quote(list), estimates.quote(list)] };
+  const settings = { people: 3, budget: 5500, exclusions: [] };
+  const select = budget => generateMenu(recipes, ingredients, { ...settings, budget }, prices, randomWithSeed(13), starterMenu()).menu;
+  const generous = select(9500);
+  const tight = select(5500);
+  assert.equal(new Set(tight).size, 21);
+  assert.notDeepEqual(tight, generous);
+  const quote = menu => bestQuote(prices.quote(shoppingList(menu, byId, ingredients, settings.people)));
+  assert.ok(quote(generous).knownCost > settings.budget * 100);
+  const subtotal = quote(tight);
+  assert.ok(subtotal.estimate && subtotal.knownCost <= settings.budget * 100);
+  const allocated = allocateMealCosts(tight, byId, ingredients, settings.people, subtotal);
+  assert.equal(allocated.length, 21);
+  assert.ok(allocated.every(value => Number.isSafeInteger(value) && value > 0));
+  assert.equal(allocated.reduce((sum, value) => sum + value, 0), subtotal.knownCost);
+  assert.ok(estimateLowerBound(recipes, ingredients, 3, estimates) > 100);
+});
+
+test("an edited price changes just the estimated quote and whole packs are allocated once", () => {
+  const database = load("estimates");
+  const list = shoppingList(["apple-oats", "apple-oats"], byId, ingredients, 2);
+  const original = estimatePricing(database, ingredients, {}).quote(list);
+  const edited = estimatePricing(database, ingredients, { oats: 11111 }).quote(list);
+  const originalOats = original.lines.find(line => line.id === "oats");
+  const editedOats = edited.lines.find(line => line.id === "oats");
+  assert.equal(editedOats.packs[0].count, 1);
+  assert.equal(edited.knownCost, original.knownCost - originalOats.cost + 11111);
+  const portions = allocateMealCosts(["apple-oats", "apple-oats"], byId, ingredients, 2, edited);
+  assert.equal(portions[0] + portions[1], edited.knownCost);
+  assert.ok(Math.abs(portions[0] - portions[1]) <= edited.lines.length);
+  const actual = { ...edited, estimate: false, stale: 0, knownCost: edited.knownCost + 100 };
+  assert.equal(bestQuote([edited, actual]), actual);
 });

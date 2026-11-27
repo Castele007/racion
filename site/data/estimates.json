@@ -1,0 +1,881 @@
+{
+  "schemaVersion": 1,
+  "city": "Оренбург",
+  "preparedOn": "2026-11-27",
+  "references": {
+    "milk": {
+      "name": "Numbeo · Оренбург · Молоко",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "ml",
+      "priceKopecks": 8827
+    },
+    "bread": {
+      "name": "Numbeo · Оренбург · Белый хлеб",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 500,
+      "unit": "g",
+      "priceKopecks": 5781
+    },
+    "rice": {
+      "name": "Numbeo · Оренбург · Белый рис",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 12012
+    },
+    "egg": {
+      "name": "Numbeo · Оренбург · Яйца",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 12,
+      "unit": "pcs",
+      "priceKopecks": 13500
+    },
+    "cheese": {
+      "name": "Numbeo · Оренбург · Местный сыр",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 79683
+    },
+    "chicken": {
+      "name": "Numbeo · Оренбург · Куриное филе",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 43149
+    },
+    "beef": {
+      "name": "Numbeo · Оренбург · Говядина",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 83479
+    },
+    "apple": {
+      "name": "Numbeo · Оренбург · Яблоки",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 12063
+    },
+    "banana": {
+      "name": "Numbeo · Оренбург · Бананы",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 13716
+    },
+    "orange": {
+      "name": "Numbeo · Оренбург · Апельсины",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 13415
+    },
+    "tomato": {
+      "name": "Numbeo · Оренбург · Помидоры",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 22125
+    },
+    "potato": {
+      "name": "Numbeo · Оренбург · Картофель",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 7425
+    },
+    "onion": {
+      "name": "Numbeo · Оренбург · Репчатый лук",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1000,
+      "unit": "g",
+      "priceKopecks": 4934
+    },
+    "lettuce": {
+      "name": "Numbeo · Оренбург · Кочан салата",
+      "url": "https://www.numbeo.com/cost-of-living/in/Orenburg-Russia",
+      "observedOn": "2026-11-20",
+      "amount": 1,
+      "unit": "pcs",
+      "priceKopecks": 10500
+    }
+  },
+  "items": {
+    "potato": {
+      "packSize": 1000,
+      "priceKopecks": 7400,
+      "referenceId": "potato",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "carrot": {
+      "packSize": 1000,
+      "priceKopecks": 6100,
+      "referenceId": "potato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.82",
+      "model": {
+        "factor": "0.82",
+        "basis": "unit"
+      }
+    },
+    "onion": {
+      "packSize": 1000,
+      "priceKopecks": 4900,
+      "referenceId": "onion",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "green-onion": {
+      "packSize": 50,
+      "priceKopecks": 5000,
+      "referenceId": "lettuce",
+      "method": "Модель по аналогу, доля стоимости контрольной фасовки 0.48",
+      "model": {
+        "factor": "0.48",
+        "basis": "reference-pack"
+      }
+    },
+    "garlic": {
+      "packSize": 100,
+      "priceKopecks": 2900,
+      "referenceId": "onion",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 5.8",
+      "model": {
+        "factor": "5.8",
+        "basis": "unit"
+      }
+    },
+    "cabbage": {
+      "packSize": 1000,
+      "priceKopecks": 6300,
+      "referenceId": "potato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.85",
+      "model": {
+        "factor": "0.85",
+        "basis": "unit"
+      }
+    },
+    "red-cabbage": {
+      "packSize": 1000,
+      "priceKopecks": 10400,
+      "referenceId": "potato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.4",
+      "model": {
+        "factor": "1.4",
+        "basis": "unit"
+      }
+    },
+    "sauerkraut": {
+      "packSize": 500,
+      "priceKopecks": 11900,
+      "referenceId": "potato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 3.2",
+      "model": {
+        "factor": "3.2",
+        "basis": "unit"
+      }
+    },
+    "beet": {
+      "packSize": 1000,
+      "priceKopecks": 6200,
+      "referenceId": "potato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.83",
+      "model": {
+        "factor": "0.83",
+        "basis": "unit"
+      }
+    },
+    "tomato": {
+      "packSize": 500,
+      "priceKopecks": 11100,
+      "referenceId": "tomato",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "cucumber": {
+      "packSize": 500,
+      "priceKopecks": 9300,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.84",
+      "model": {
+        "factor": "0.84",
+        "basis": "unit"
+      }
+    },
+    "pepper": {
+      "packSize": 500,
+      "priceKopecks": 16600,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.5",
+      "model": {
+        "factor": "1.5",
+        "basis": "unit"
+      }
+    },
+    "zucchini": {
+      "packSize": 1000,
+      "priceKopecks": 15000,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.68",
+      "model": {
+        "factor": "0.68",
+        "basis": "unit"
+      }
+    },
+    "eggplant": {
+      "packSize": 500,
+      "priceKopecks": 11400,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.03",
+      "model": {
+        "factor": "1.03",
+        "basis": "unit"
+      }
+    },
+    "pumpkin": {
+      "packSize": 1000,
+      "priceKopecks": 9800,
+      "referenceId": "potato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.32",
+      "model": {
+        "factor": "1.32",
+        "basis": "unit"
+      }
+    },
+    "mushrooms": {
+      "packSize": 300,
+      "priceKopecks": 9800,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.48",
+      "model": {
+        "factor": "1.48",
+        "basis": "unit"
+      }
+    },
+    "broccoli": {
+      "packSize": 400,
+      "priceKopecks": 10900,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.23",
+      "model": {
+        "factor": "1.23",
+        "basis": "unit"
+      }
+    },
+    "cauliflower": {
+      "packSize": 400,
+      "priceKopecks": 9700,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.1",
+      "model": {
+        "factor": "1.1",
+        "basis": "unit"
+      }
+    },
+    "green-beans": {
+      "packSize": 400,
+      "priceKopecks": 9100,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.03",
+      "model": {
+        "factor": "1.03",
+        "basis": "unit"
+      }
+    },
+    "dill": {
+      "packSize": 30,
+      "priceKopecks": 4600,
+      "referenceId": "lettuce",
+      "method": "Модель по аналогу, доля стоимости контрольной фасовки 0.44",
+      "model": {
+        "factor": "0.44",
+        "basis": "reference-pack"
+      }
+    },
+    "parsley": {
+      "packSize": 30,
+      "priceKopecks": 4500,
+      "referenceId": "lettuce",
+      "method": "Модель по аналогу, доля стоимости контрольной фасовки 0.43",
+      "model": {
+        "factor": "0.43",
+        "basis": "reference-pack"
+      }
+    },
+    "lemon": {
+      "packSize": 300,
+      "priceKopecks": 7000,
+      "referenceId": "orange",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.75",
+      "model": {
+        "factor": "1.75",
+        "basis": "unit"
+      }
+    },
+    "apple": {
+      "packSize": 1000,
+      "priceKopecks": 12100,
+      "referenceId": "apple",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "pear": {
+      "packSize": 1000,
+      "priceKopecks": 19100,
+      "referenceId": "apple",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.58",
+      "model": {
+        "factor": "1.58",
+        "basis": "unit"
+      }
+    },
+    "banana": {
+      "packSize": 1000,
+      "priceKopecks": 13700,
+      "referenceId": "banana",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "berries": {
+      "packSize": 300,
+      "priceKopecks": 14800,
+      "referenceId": "apple",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 4.1",
+      "model": {
+        "factor": "4.1",
+        "basis": "unit"
+      }
+    },
+    "milk": {
+      "packSize": 1000,
+      "priceKopecks": 8800,
+      "referenceId": "milk",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "kefir": {
+      "packSize": 900,
+      "priceKopecks": 9500,
+      "referenceId": "milk",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.2",
+      "model": {
+        "factor": "1.2",
+        "basis": "unit"
+      }
+    },
+    "cream": {
+      "packSize": 200,
+      "priceKopecks": 7400,
+      "referenceId": "milk",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 4.2",
+      "model": {
+        "factor": "4.2",
+        "basis": "unit"
+      }
+    },
+    "sour-cream": {
+      "packSize": 300,
+      "priceKopecks": 13700,
+      "referenceId": "milk",
+      "method": "Модель по аналогу, доля стоимости контрольной фасовки 1.55",
+      "model": {
+        "factor": "1.55",
+        "basis": "reference-pack"
+      }
+    },
+    "yogurt": {
+      "packSize": 250,
+      "priceKopecks": 10200,
+      "referenceId": "milk",
+      "method": "Модель по аналогу, доля стоимости контрольной фасовки 1.15",
+      "model": {
+        "factor": "1.15",
+        "basis": "reference-pack"
+      }
+    },
+    "curd": {
+      "packSize": 200,
+      "priceKopecks": 12800,
+      "referenceId": "milk",
+      "method": "Модель по аналогу, доля стоимости контрольной фасовки 1.45",
+      "model": {
+        "factor": "1.45",
+        "basis": "reference-pack"
+      }
+    },
+    "cheese": {
+      "packSize": 200,
+      "priceKopecks": 15900,
+      "referenceId": "cheese",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "butter": {
+      "packSize": 180,
+      "priceKopecks": 19600,
+      "referenceId": "cheese",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.37",
+      "model": {
+        "factor": "1.37",
+        "basis": "unit"
+      }
+    },
+    "egg": {
+      "packSize": 10,
+      "priceKopecks": 11300,
+      "referenceId": "egg",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "chicken": {
+      "packSize": 500,
+      "priceKopecks": 21600,
+      "referenceId": "chicken",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "thigh": {
+      "packSize": 700,
+      "priceKopecks": 21700,
+      "referenceId": "chicken",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.72",
+      "model": {
+        "factor": "0.72",
+        "basis": "unit"
+      }
+    },
+    "turkey": {
+      "packSize": 500,
+      "priceKopecks": 30900,
+      "referenceId": "chicken",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.43",
+      "model": {
+        "factor": "1.43",
+        "basis": "unit"
+      }
+    },
+    "mince": {
+      "packSize": 400,
+      "priceKopecks": 27000,
+      "referenceId": "beef",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.81",
+      "model": {
+        "factor": "0.81",
+        "basis": "unit"
+      }
+    },
+    "beef": {
+      "packSize": 500,
+      "priceKopecks": 41700,
+      "referenceId": "beef",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "pork": {
+      "packSize": 500,
+      "priceKopecks": 25900,
+      "referenceId": "beef",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.62",
+      "model": {
+        "factor": "0.62",
+        "basis": "unit"
+      }
+    },
+    "liver": {
+      "packSize": 500,
+      "priceKopecks": 11700,
+      "referenceId": "chicken",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.54",
+      "model": {
+        "factor": "0.54",
+        "basis": "unit"
+      }
+    },
+    "pollock": {
+      "packSize": 400,
+      "priceKopecks": 16200,
+      "referenceId": "chicken",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.94",
+      "model": {
+        "factor": "0.94",
+        "basis": "unit"
+      }
+    },
+    "mackerel": {
+      "packSize": 600,
+      "priceKopecks": 18600,
+      "referenceId": "chicken",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.72",
+      "model": {
+        "factor": "0.72",
+        "basis": "unit"
+      }
+    },
+    "tuna": {
+      "packSize": 160,
+      "priceKopecks": 15400,
+      "referenceId": "chicken",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 2.23",
+      "model": {
+        "factor": "2.23",
+        "basis": "unit"
+      }
+    },
+    "oats": {
+      "packSize": 400,
+      "priceKopecks": 6300,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.32",
+      "model": {
+        "factor": "1.32",
+        "basis": "unit"
+      }
+    },
+    "buckwheat": {
+      "packSize": 800,
+      "priceKopecks": 10800,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.12",
+      "model": {
+        "factor": "1.12",
+        "basis": "unit"
+      }
+    },
+    "rice": {
+      "packSize": 800,
+      "priceKopecks": 9600,
+      "referenceId": "rice",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "millet": {
+      "packSize": 800,
+      "priceKopecks": 8700,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.91",
+      "model": {
+        "factor": "0.91",
+        "basis": "unit"
+      }
+    },
+    "semolina": {
+      "packSize": 700,
+      "priceKopecks": 8200,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.98",
+      "model": {
+        "factor": "0.98",
+        "basis": "unit"
+      }
+    },
+    "barley": {
+      "packSize": 800,
+      "priceKopecks": 8100,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.84",
+      "model": {
+        "factor": "0.84",
+        "basis": "unit"
+      }
+    },
+    "pasta": {
+      "packSize": 450,
+      "priceKopecks": 8800,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.63",
+      "model": {
+        "factor": "1.63",
+        "basis": "unit"
+      }
+    },
+    "noodles": {
+      "packSize": 400,
+      "priceKopecks": 7900,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.65",
+      "model": {
+        "factor": "1.65",
+        "basis": "unit"
+      }
+    },
+    "couscous": {
+      "packSize": 400,
+      "priceKopecks": 11500,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 2.4",
+      "model": {
+        "factor": "2.4",
+        "basis": "unit"
+      }
+    },
+    "lentils": {
+      "packSize": 450,
+      "priceKopecks": 8900,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.64",
+      "model": {
+        "factor": "1.64",
+        "basis": "unit"
+      }
+    },
+    "peas": {
+      "packSize": 800,
+      "priceKopecks": 8700,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.91",
+      "model": {
+        "factor": "0.91",
+        "basis": "unit"
+      }
+    },
+    "green-peas": {
+      "packSize": 240,
+      "priceKopecks": 11200,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 3.9",
+      "model": {
+        "factor": "3.9",
+        "basis": "unit"
+      }
+    },
+    "beans": {
+      "packSize": 240,
+      "priceKopecks": 12300,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 4.25",
+      "model": {
+        "factor": "4.25",
+        "basis": "unit"
+      }
+    },
+    "corn": {
+      "packSize": 240,
+      "priceKopecks": 10700,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 3.72",
+      "model": {
+        "factor": "3.72",
+        "basis": "unit"
+      }
+    },
+    "flour": {
+      "packSize": 1000,
+      "priceKopecks": 7400,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.62",
+      "model": {
+        "factor": "0.62",
+        "basis": "unit"
+      }
+    },
+    "sugar": {
+      "packSize": 1000,
+      "priceKopecks": 9000,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 0.75",
+      "model": {
+        "factor": "0.75",
+        "basis": "unit"
+      }
+    },
+    "honey": {
+      "packSize": 250,
+      "priceKopecks": 18800,
+      "referenceId": "apple",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 6.25",
+      "model": {
+        "factor": "6.25",
+        "basis": "unit"
+      }
+    },
+    "raisins": {
+      "packSize": 180,
+      "priceKopecks": 9800,
+      "referenceId": "apple",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 4.5",
+      "model": {
+        "factor": "4.5",
+        "basis": "unit"
+      }
+    },
+    "walnuts": {
+      "packSize": 120,
+      "priceKopecks": 12200,
+      "referenceId": "apple",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 8.4",
+      "model": {
+        "factor": "8.4",
+        "basis": "unit"
+      }
+    },
+    "oil": {
+      "packSize": 1000,
+      "priceKopecks": 16300,
+      "referenceId": "milk",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.85",
+      "model": {
+        "factor": "1.85",
+        "basis": "unit"
+      }
+    },
+    "paste": {
+      "packSize": 140,
+      "priceKopecks": 7300,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 2.35",
+      "model": {
+        "factor": "2.35",
+        "basis": "unit"
+      }
+    },
+    "canned-tomato": {
+      "packSize": 400,
+      "priceKopecks": 12600,
+      "referenceId": "tomato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.42",
+      "model": {
+        "factor": "1.42",
+        "basis": "unit"
+      }
+    },
+    "bread": {
+      "packSize": 500,
+      "priceKopecks": 5800,
+      "referenceId": "bread",
+      "method": "Среднее по городу, пересчёт на плановую упаковку",
+      "model": {
+        "factor": "1",
+        "basis": "unit"
+      }
+    },
+    "rye-bread": {
+      "packSize": 400,
+      "priceKopecks": 5200,
+      "referenceId": "bread",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.12",
+      "model": {
+        "factor": "1.12",
+        "basis": "unit"
+      }
+    },
+    "lavash": {
+      "packSize": 200,
+      "priceKopecks": 5800,
+      "referenceId": "bread",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 2.5",
+      "model": {
+        "factor": "2.5",
+        "basis": "unit"
+      }
+    },
+    "pickles": {
+      "packSize": 500,
+      "priceKopecks": 14300,
+      "referenceId": "potato",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 3.85",
+      "model": {
+        "factor": "3.85",
+        "basis": "unit"
+      }
+    },
+    "cinnamon": {
+      "packSize": 15,
+      "priceKopecks": 4700,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 26.1",
+      "model": {
+        "factor": "26.1",
+        "basis": "unit"
+      }
+    },
+    "paprika": {
+      "packSize": 20,
+      "priceKopecks": 5200,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 21.5",
+      "model": {
+        "factor": "21.5",
+        "basis": "unit"
+      }
+    },
+    "soda": {
+      "packSize": 200,
+      "priceKopecks": 5400,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 2.23",
+      "model": {
+        "factor": "2.23",
+        "basis": "unit"
+      }
+    },
+    "baking-powder": {
+      "packSize": 12,
+      "priceKopecks": 2500,
+      "referenceId": "rice",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 17.3",
+      "model": {
+        "factor": "17.3",
+        "basis": "unit"
+      }
+    },
+    "soy": {
+      "packSize": 200,
+      "priceKopecks": 9000,
+      "referenceId": "milk",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 5.1",
+      "model": {
+        "factor": "5.1",
+        "basis": "unit"
+      }
+    }
+  }
+}

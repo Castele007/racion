@@ -5,11 +5,6 @@ on:
     paths:
       - "collectors/**"
       - ".github/workflows/catalog-diagnostics.yml"
-  push:
-    branches: ["feat/racion-budget-photos"]
-    paths:
-      - "collectors/**"
-      - ".github/workflows/catalog-diagnostics.yml"
   workflow_dispatch:
 
 permissions:
