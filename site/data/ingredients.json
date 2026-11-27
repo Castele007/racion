@@ -793,5 +793,41 @@
     "allergens": [
       "seafood"
     ]
+  },
+  "bulgur": {
+    "name": "Булгур",
+    "unit": "g",
+    "category": "Крупы и бакалея",
+    "aliases": [
+      "булгура",
+      "пшеница"
+    ],
+    "allergens": [
+      "gluten"
+    ]
+  },
+  "spaghetti": {
+    "name": "Спагетти",
+    "unit": "g",
+    "category": "Крупы и бакалея",
+    "aliases": [
+      "макароны",
+      "паста",
+      "спагети"
+    ],
+    "allergens": [
+      "gluten"
+    ]
+  },
+  "bacon": {
+    "name": "Копчёная свиная грудинка",
+    "unit": "g",
+    "category": "Мясо и рыба",
+    "aliases": [
+      "свинина",
+      "бекон",
+      "грудинка"
+    ],
+    "allergens": []
   }
 }
