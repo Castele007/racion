@@ -1,0 +1,42 @@
+name: Magnit access check
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/magnit-access.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  access:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check robots.txt and the public store directory
+        run: |
+          python - <<'PY'
+          from collectors.http import BOT, PublicWeb, robots_allows
+
+          endpoint = "https://magnit.ru/webgate/v2/goods/search"
+          directory = "https://magnit.ru/shops"
+          web = PublicWeb(("magnit.ru",))
+          rules = web.robots(endpoint)
+          print(f"robots.txt retrieved for {BOT}")
+          print(f"POST path: {endpoint}")
+          result = "no matching prohibition" if robots_allows(rules, endpoint) else "denied"
+          print(f"robots.txt result for the POST path: {result}")
+          for kind, path in rules:
+              if kind == "disallow" and not robots_allows([(kind, path)], endpoint):
+                  print(f"Matching directive: Disallow: {path}")
+          print("No request to the search endpoint. Automated access and reuse must be confirmed separately.")
+          response = web.fetch(directory)
+          print(f"Store directory: {response.content_type}; code 288620 in public response: {'288620' in response.text}")
+          PY

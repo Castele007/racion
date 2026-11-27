@@ -41,12 +41,34 @@ export function estimatePricing(database, ingredients, overrides) {
       });
       const known = lines.filter(line => line.hasPrice);
       return {
-        store: ESTIMATE_STORE, estimate: true, stale: 0, lines,
+        store: ESTIMATE_STORE, estimate: true, estimatedItems: known.length, stale: 0, lines,
         missing: lines.length - known.length,
         knownCost: known.length ? known.reduce((sum, line) => sum + line.cost, 0) : null,
         complete: known.length > 0 && known.length === lines.length,
       };
     },
+  };
+}
+
+// Keep the store quote available for comparison. Fill gaps only in the
+// planning quote and keep inventory, promotion and reference details per item.
+export function fillMissingPrices(storeQuote, estimateQuote) {
+  if (!storeQuote || storeQuote.complete || !estimateQuote) return storeQuote;
+  const estimates = new Map(estimateQuote.lines.filter(line => line.hasPrice).map(line => [line.id, line]));
+  let estimatedItems = 0;
+  const lines = storeQuote.lines.map(line => {
+    const estimate = estimates.get(line.id);
+    if (line.hasPrice || !estimate) return line;
+    estimatedItems++;
+    return { ...estimate, conditional: line.conditional, outOfStock: line.outOfStock };
+  });
+  if (!estimatedItems) return storeQuote;
+  const known = lines.filter(line => line.hasPrice);
+  return {
+    ...storeQuote, lines, estimate: true, estimatedItems,
+    missing: lines.length - known.length,
+    knownCost: known.reduce((sum, line) => sum + line.cost, 0),
+    complete: known.length === lines.length,
   };
 }
 

@@ -101,6 +101,11 @@ Disallow: /каталог/
             with self.subTest(url=url), self.assertRaises(SourceError):
                 official_url(url, HOSTS)
 
+    def test_magnit_robots_disallows_the_search_path(self):
+        rules = robots_directives("User-agent: *\nAllow: *.js\nDisallow: /*search\n")
+        self.assertFalse(robots_allows(rules, "https://magnit.ru/webgate/v2/goods/search"))
+        self.assertTrue(robots_allows(rules, "https://magnit.ru/shops"))
+
     def test_robots_deny_stops_before_product_request(self):
         public = PublicWeb(HOSTS)
         public.rules["magnit.ru"] = [("disallow", "/catalog/")]

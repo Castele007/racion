@@ -2,7 +2,9 @@ import {
   DAYS, STORES, MAX_PRICE_AGE, bestQuote, dateAt, generateMenu, isWeekStart, pricing, recipeAmount,
   replacementMenu, replacementOptions, shoppingList, validMenu, weekStart,
 } from "./planner.mjs";
-import { ESTIMATE_STORE, allocateMealCosts, cleanOverrides, estimateLowerBound, estimatePricing, estimateRows } from "./estimates.mjs";
+import {
+  ESTIMATE_STORE, allocateMealCosts, cleanOverrides, estimateLowerBound, estimatePricing, estimateRows, fillMissingPrices,
+} from "./estimates.mjs";
 import {
   STEP_NAMES, MEAL_LABELS, EQUIPMENT, activeMeals, compatibleMethods, household, mealPeople,
   plannerSettings, portionSchedule, restoreAnswers, validateStep,
@@ -27,7 +29,8 @@ const peoplePlural = new Intl.PluralRules("ru");
 const units = { g: "г", ml: "мл", pcs: "шт." };
 const channels = { pickup: "Самовывоз", "in-store": "Покупка в магазине", delivery: "Онлайн-заказ" };
 
-let ingredients, recipes, recipesById, state, prices, basket, quotes;
+let ingredients, recipes, recipesById, state, basket, quotes;
+let magnitQuote;
 let wizard;
 let currentView;
 let activeDialogIndex = null;
@@ -182,24 +185,28 @@ function budgetSummary(quote, menuView = false) {
   const remainder = quote?.complete ? budget - quote.knownCost : null;
   const incomplete = !quote?.complete;
   const historical = Boolean(quote?.stale);
+  const estimated = Boolean(quote?.estimatedItems);
+  const mixedPrices = estimated && quote.estimatedItems < quote.lines.length - quote.missing;
   const basketTitle = incomplete && quote?.knownCost != null ? "Часть корзины" : "Вся корзина";
   const remainderTitle = remainder !== null && remainder < 0 ? "Сверх бюджета" : "Остаток бюджета";
   let note = "";
   if (quote?.complete) {
-    note = "Корзина целых упаковок · " + escapeHtml(quote.store.name) +
-      (historical ? " · по последним сохранённым ценам" : "");
+    const source = mixedPrices ? "Магнит и ориентиры по Оренбургу" :
+      estimated ? "Ориентиры по Оренбургу" : escapeHtml(quote.store.name);
+    note = "Корзина целых упаковок · " + source +
+      (historical ? " · есть архивные цены" : "");
   } else if (menuView) {
     note = '<a class="text-link" href="#stores">Проверить магазины и цены</a>';
   } else if (quote?.knownCost != null) {
     note = "Известная сумма за часть списка. Для остальных продуктов нет подходящих цен.";
   }
-  const estimated = Boolean(quote?.estimate);
   const warning = menuView && remainder < 0 ? overBudgetNotice(quote, budget) : "";
   const details = menuView && quote?.complete ?
     '<p class="summary-note">Стоимость целых упаковок распределена по блюдам пропорционально их долям в покупках.</p>' : "";
   return '<div class="summary-grid">' + summaryCard("Бюджет", money(budget), "На неделю") +
     summaryCard(basketTitle, quote?.knownCost == null ? "—" : quoteMoney(quote.knownCost, quote),
-      estimated ? "Расчёт по ориентирам" : historical ? "Есть устаревшие цены" :
+      mixedPrices ? "Ориентиры для " + quote.estimatedItems + " из " + quote.lines.length + " позиций" :
+        estimated ? "Расчёт по ориентирам" : historical ? "Есть устаревшие цены" :
         (incomplete ? "Нет полной оценки" : "Целые упаковки")) +
     summaryCard(remainderTitle, remainder === null ? "—" : quoteMoney(Math.abs(remainder), quote),
       remainder === null ? "Нужна цена всей корзины" : (historical || estimated ? "Ориентировочно" : ""),
@@ -209,8 +216,8 @@ function budgetSummary(quote, menuView = false) {
 
 function overBudgetNotice(quote, budget) {
   const rules = plannerSettings(state.answers, ingredients);
-  const bound = quote.estimate ? estimateLowerBound(recipes.filter(rules.allows),
-    ingredients, rules.people, prices.estimates, rules.meals) : null;
+  const source = planningPrices(state.overrides, state.answers.store);
+  const bound = priceLowerBound(quote, rules, source, state.answers.store);
   const intro = bound !== null && bound > budget
     ? "По этим ориентирам уложиться в бюджет невозможно даже без округления до упаковок."
     : state.searched ? "В пределах бюджета меню подобрать не удалось. Показан найденный вариант с превышением."
@@ -225,7 +232,10 @@ function estimateReference(row) {
 }
 
 function selectedQuote() {
-  return quotes.find(quote => quote.store.id === state.store) ?? planningQuote ??
+  const selected = quotes.find(quote => quote.store.id === state.store);
+  if (selected?.store.id === "magnit") return magnitQuote;
+  if (!selected && !planningQuote && state.answers.store === "magnit") return magnitQuote;
+  return selected ?? planningQuote ??
     [...quotes].sort((a, b) => a.missing - b.missing || a.stale - b.stale)[0];
 }
 
@@ -251,17 +261,21 @@ function shoppingRow(item) {
   const checked = state.checked.has(item.id);
   let packs = item.outOfStock ? "Нет в наличии" : "Нет цены";
   if (item.hasPrice) {
-    packs = item.packs.map(({ count, offer }) => count + " × " + amount(offer.packSize, item.unit)).join(" + ") +
-      (item.stale ? " · устарело" : "");
+    packs = item.packs.map(({ count, offer }) => count + " × " + amount(offer.packSize, item.unit) +
+      " по " + quoteMoney(offer.priceKopecks, item)).join(" + ");
+    if (item.estimate) {
+      packs += " · Ориентир" + (item.outOfStock ? " · Нет в наличии в Магните" : "");
+    } else if (item.stale) packs += " · Архивная цена";
   }
-  const products = item.estimate ? ["<li>" + estimateReference(item.estimate) +
-    (item.estimate.edited ? " · Ваша цена" : "") + "</li>"] :
+  const products = item.estimate ? ["<li>" + (item.estimate.edited ? "Ваша цена · Исходный ориентир: " : "") +
+    estimateReference(item.estimate) + "</li>"] :
     (item.packs ?? []).map(({ offer, count }) => offerDetails(offer, item, count));
   const conditional = item.conditional.map(offer => offerDetails(offer, item, 0));
   return '<div class="shopping-row' + (checked ? ' checked' : '') + '"><label><input type="checkbox" data-item="' +
     item.id + '"' + (checked ? " checked" : "") + '><span>' + escapeHtml(item.name) + '<small>Нужно ' +
     amount(item.quantity, item.unit) + '</small></span></label><div class="pack-details">' + packs +
-    (products.length ? '<details><summary>Товары и источник</summary><ul>' + products.join("") + '</ul></details>' : '') +
+    (products.length ? '<details><summary>' + (item.estimate ? "Источник ориентира" : "Товары и источник") +
+      '</summary><ul>' + products.join("") + '</ul></details>' : '') +
     (conditional.length ? '<details><summary>Акции с условиями</summary><ul>' + conditional.join("") + '</ul></details>' : '') +
     '</div><div class="shopping-price">' + (item.hasPrice ? quoteMoney(item.cost, item) : "—") + '</div></div>';
 }
@@ -271,7 +285,8 @@ function renderShopping() {
   updateShoppingCount();
   $("shopping-summary").innerHTML = budgetSummary(selected);
   $("shopping-store").innerHTML = quotes.map(quote => '<option value="' + quote.store.id + '"' +
-    (quote === selected ? ' selected' : '') + '>' + escapeHtml(quote.store.name) + '</option>').join("");
+    (quote.store.id === selected.store.id ? ' selected' : '') + '>' + escapeHtml(quote.store.name) +
+    (quote.store.id === "magnit" && magnitQuote.estimatedItems ? " · с ориентирами" : "") + '</option>').join("");
   const groups = new Map();
   for (const item of selected.lines) {
     if (!groups.has(item.category)) groups.set(item.category, []);
@@ -332,12 +347,23 @@ function planningPrices(overrides, storeId) {
   const estimates = estimatePricing(estimateDatabase, ingredients, overrides);
   return {
     estimates,
+    hasStoreOffers: actual.hasOffers,
     hasOffers: actual.hasOffers || estimates.hasOffers,
     quote(list) {
       const stores = actual.quote(list);
-      return estimates.hasOffers ? [...stores, estimates.quote(list)] : stores;
+      if (!estimates.hasOffers) return stores;
+      const estimate = estimates.quote(list);
+      if (storeId === "magnit") return [fillMissingPrices(stores[0], estimate)];
+      return [...stores, estimate];
     },
   };
+}
+
+function priceLowerBound(quote, rules, source, storeId) {
+  // An estimate-only lower bound can be too high when a candidate could use
+  // a cheaper confirmed price in Magnit.
+  if (!quote?.estimate || (storeId === "magnit" && source.hasStoreOffers)) return null;
+  return estimateLowerBound(recipes.filter(rules.allows), ingredients, rules.people, source.estimates, rules.meals);
 }
 
 function assessBudget(answers) {
@@ -350,8 +376,7 @@ function assessBudget(answers) {
   const result = generateMenu(recipes, ingredients, { ...rules, budget: 0 }, source, random);
   if (!result.menu) return { message: "Для выбранных приёмов пищи пока нет подходящих рецептов." };
   const quote = bestQuote(source.quote(shoppingList(result.menu, recipesById, ingredients, rules.people)));
-  const bound = quote?.estimate ? estimateLowerBound(recipes.filter(rules.allows),
-    ingredients, rules.people, source.estimates, rules.meals) : null;
+  const bound = priceLowerBound(quote, rules, source, answers.store);
   return { quote, bound };
 }
 
@@ -367,16 +392,21 @@ function renderEstimateEditor() {
 }
 
 function refreshCalculations(prior) {
-  prices = planningPrices(state.overrides);
   const portions = portionSchedule(state.answers);
   basket = shoppingList(state.menu, recipesById, ingredients, portions);
   if (prior) syncChecked(prior);
-  quotes = prices.quote(basket);
-  planningQuote = bestQuote(quotes.filter(quote => quote.estimate || quote.store.id === state.answers.store));
+  quotes = planningPrices(state.overrides).quote(basket);
+  magnitQuote = fillMissingPrices(quotes.find(quote => quote.store.id === "magnit"),
+    quotes.find(quote => quote.store.id === ESTIMATE_STORE.id));
+  planningQuote = state.answers.store === "magnit"
+    ? bestQuote([magnitQuote])
+    : bestQuote(quotes.filter(quote => quote.estimate || quote.store.id === state.answers.store));
   mealCosts = allocateMealCosts(state.menu, recipesById, ingredients, portions, planningQuote);
   $("budget-summary").innerHTML = budgetSummary(planningQuote, true);
   const selectedStore = STORES.find(store => store.id === state.answers.store);
-  const source = planningQuote?.estimate ? "Ориентировочные цены" : planningQuote?.stale ?
+  const mixedPrices = planningQuote?.estimate && planningQuote.estimatedItems < planningQuote.lines.length;
+  const source = mixedPrices ? "Цены магазина и ориентиры" : planningQuote?.estimate ?
+    "Ориентировочные цены" : planningQuote?.stale ?
     "Архивные цены" : planningQuote ? "Подтверждённые цены" : "Полной цены корзины нет";
   const updated = planningQuote && !planningQuote.estimate ? timestamp(planningQuote.store.updatedAt) : null;
   $("result-store").textContent = selectedStore.name + " · Оренбург · " + source + (updated ? " · " + updated : "");

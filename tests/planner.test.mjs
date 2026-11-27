@@ -6,7 +6,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { allocateMealCosts, estimateLowerBound, estimatePricing, estimateRows } from "../site/js/estimates.mjs";
+import { allocateMealCosts, estimateLowerBound, estimatePricing, estimateRows, fillMissingPrices } from "../site/js/estimates.mjs";
 import {
   MEALS, STORES, bestQuote, cheapestPacks, eligibleRecipes, exclusionIds, generateMenu,
   pricing, purchasable, recipeAmount, replacementMenu, replacementOptions, shoppingList,
@@ -311,4 +311,50 @@ test("all nine appliances are used, alternate methods are isolated and replaceme
   assert.equal(replacementMenu(plan, 0, "soup-a-a", recipes, ingredients, [], rules.meals, rules.allows), null);
   const filters = restoreAnswers({ equipment: [], allergens: Object.keys(ALLERGENS) });
   assert.equal(generateMenu(recipes, ingredients, plannerSettings(filters, ingredients), null).menu, null);
+});
+
+test("Magnit fills gaps with separate estimates, keeps inventory and excludes conditional prices", () => {
+  const list = [
+    { id: "milk", ...ingredients.milk, quantity: 1300 },
+    { id: "rice", ...ingredients.rice, quantity: 1200 },
+    { id: "flour", ...ingredients.flour, quantity: 500 },
+  ];
+  const magnit = {
+    id: "magnit", location: scope, status: "partial",
+    offers: [
+      offer({ ingredientId: "milk", unit: "ml", packSize: 800, priceKopecks: 4999 }),
+      offer({ ingredientId: "milk", unit: "ml", packSize: 800, priceKopecks: 1999, terms: { kind: "conditional" } }),
+      offer({ ingredientId: "rice", priceKopecks: 500, available: false }),
+      offer({ ingredientId: "flour", priceKopecks: 200, terms: { kind: "conditional" } }),
+    ],
+  };
+  const [store] = pricing({ city: "Оренбург", stores: [magnit] }, now, "magnit").quote(list);
+  const estimates = estimatePricing(load("estimates"), ingredients, { rice: 10100 }).quote(list);
+  const filled = fillMissingPrices(store, estimates);
+  assert.equal(store.knownCost, 9998);
+  assert.equal(store.missing, 2);
+  assert.equal(filled.estimatedItems, 2);
+  assert.equal(filled.store.id, "magnit");
+  assert.ok(filled.complete);
+  assert.equal(filled.lines[0], store.lines[0]);
+  assert.equal(filled.lines[0].packs[0].count, 2);
+  assert.equal(filled.lines[1].cost, 20200);
+  assert.equal(filled.lines[1].estimate.edited, true);
+  assert.equal(filled.lines[1].outOfStock, true);
+  assert.equal(filled.lines[2].conditional[0].priceKopecks, 200);
+  assert.equal(filled.knownCost, 9998 + 20200 + estimates.lines[2].cost);
+
+  assert.equal(fillMissingPrices(store, null), store);
+  const [milkOnly] = pricing({ city: "Оренбург", stores: [magnit] }, now, "magnit").quote(list.slice(0, 1));
+  assert.equal(fillMissingPrices(milkOnly, estimates), milkOnly);
+  const incomplete = fillMissingPrices(store, { ...estimates, lines: estimates.lines.slice(0, 2) });
+  assert.equal(incomplete.complete, false);
+  assert.equal(incomplete.missing, 1);
+  assert.equal(incomplete.knownCost, 30198);
+
+  const [stale] = pricing({ city: "Оренбург", stores: [{ ...magnit, status: "stale" }] }, now, "magnit").quote(list);
+  const archived = fillMissingPrices(stale, estimates);
+  assert.equal(archived.stale, 1);
+  assert.equal(archived.lines[0].stale, true);
+  assert.equal(archived.lines[1].stale, undefined);
 });
