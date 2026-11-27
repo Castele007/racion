@@ -338,7 +338,7 @@ test("Magnit shopping shows actual pack math, an estimate source for gaps and a 
       }],
     } }));
     await page.goto(address);
-    assert.match(await page.locator("#result-store").innerText(), /Магнит.*Цены магазина и ориентиры/);
+    await page.locator("#result-store").filter({ hasText: /Магнит.*Цены магазина и ориентиры/ }).waitFor();
     const weekly = await page.locator("#budget-summary strong").nth(1).innerText();
     assert.match(weekly, /^≈/);
     await page.getByRole("link", { name: "Список покупок", exact: true }).click();
@@ -371,8 +371,8 @@ test("Magnit shopping shows actual pack math, an estimate source for gaps and a 
     await page.unroute("**/data/prices.json");
     await page.route("**/data/prices.json", route => route.fulfill({ json: { schemaVersion: 1, city: "Оренбург", stores: [] } }));
     await page.reload();
+    await page.locator("#shopping-summary").filter({ hasText: "Расчёт по ориентирам" }).waitFor();
     assert.equal(await select.inputValue(), "magnit");
-    assert.match(await page.locator("#shopping-summary").innerText(), /Расчёт по ориентирам/);
     assert.match(await row("milk").locator(".shopping-price").innerText(), /^≈/);
   } finally {
     await page.close();
@@ -409,6 +409,7 @@ test("settings edits and week choice are staged, recover from a failed plan and 
     await keep();
     await page.getByLabel("Неделя меню").fill("2026-12-16");
     await page.reload();
+    await page.getByLabel("Неделя меню").waitFor();
     assert.equal(await page.getByLabel("Неделя меню").inputValue(), "2026-12-14");
     let saved = await state(page);
     assert.deepEqual(saved.menu, menu);

@@ -1,0 +1,67 @@
+name: Open retail price audit
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/open-price-audit.yml"
+      - "tools/audit_open_prices.py"
+      - "tests/test_audit_open_prices.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download public WebTruffle release assets
+        id: webtruffle
+        run: |
+          audit_dir="$RUNNER_TEMP/open-price-audit"
+          mkdir -p "$audit_dir"
+          cd "$audit_dir"
+          release=https://github.com/webtruffle/retail-product-catalog-prices/releases/latest/download
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+            --max-time 30 --max-filesize 2000000 --write-out 'manifest.json HTTP %{http_code}\n' \
+            --output manifest.json "$release/manifest.json"
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+            --max-time 180 --max-filesize 500000000 --write-out 'retail-product-prices.csv HTTP %{http_code}\n' \
+            --output retail-product-prices.csv "$release/retail-product-prices.csv"
+      - name: Download Open Prices JSONL archives
+        id: open_prices
+        if: ${{ !cancelled() }}
+        run: |
+          audit_dir="$RUNNER_TEMP/open-price-audit"
+          mkdir -p "$audit_dir"
+          cd "$audit_dir"
+          for archive in locations.jsonl.gz prices.jsonl.gz; do
+            curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+              --max-time 150 --max-filesize 120000000 --write-out "$archive HTTP %{http_code}\n" \
+              --output "$archive" "https://prices.openfoodfacts.org/data/$archive"
+          done
+      - name: Verify CSV checksum and count regional observations
+        if: ${{ !cancelled() && steps.webtruffle.outcome == 'success' && steps.open_prices.outcome == 'success' }}
+        run: python tools/audit_open_prices.py "$RUNNER_TEMP/open-price-audit"
+      - name: Verify public Hugging Face mirror
+        if: ${{ !cancelled() }}
+        run: |
+          cd "$RUNNER_TEMP/open-price-audit"
+          fetch() {
+            curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+              --max-time 150 --max-filesize "$1" --write-out "$3 HTTP %{http_code}\n" --output "$3" "$2"
+          }
+          metadata=https://huggingface.co/api/datasets/openfoodfacts/open-prices
+          fetch 2000000 "$metadata" dataset.json
+          revision=$(jq -er '.sha | select(test("^[0-9a-f]{40}$"))' dataset.json)
+          fetch 2000000 "$metadata/tree/$revision" tree.json
+          digest=$(jq -er '.[] | select(.path == "prices.parquet") | .lfs.oid | select(test("^[0-9a-f]{64}$"))' tree.json)
+          fetch 300000000 "https://huggingface.co/datasets/openfoodfacts/open-prices/resolve/$revision/prices.parquet" prices.parquet
+          printf '%s  prices.parquet\n' "$digest" | sha256sum --check
