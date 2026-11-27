@@ -22,30 +22,41 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Download public WebTruffle and Open Prices data
+      - name: Download public WebTruffle release assets
+        id: webtruffle
         run: |
           audit_dir="$RUNNER_TEMP/open-price-audit"
           mkdir -p "$audit_dir"
           cd "$audit_dir"
-          fetch() {
+          release=https://github.com/webtruffle/retail-product-catalog-prices/releases/latest/download
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+            --max-time 30 --max-filesize 2000000 --write-out 'manifest.json HTTP %{http_code}\n' \
+            --output manifest.json "$release/manifest.json"
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+            --max-time 180 --max-filesize 500000000 --write-out 'retail-product-prices.csv HTTP %{http_code}\n' \
+            --output retail-product-prices.csv "$release/retail-product-prices.csv"
+      - name: Download Open Prices JSONL archives
+        id: open_prices
+        if: ${{ !cancelled() }}
+        run: |
+          audit_dir="$RUNNER_TEMP/open-price-audit"
+          mkdir -p "$audit_dir"
+          cd "$audit_dir"
+          for archive in locations.jsonl.gz prices.jsonl.gz; do
             curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
-              --max-time 180 --max-filesize "$1" "$2" --output "$3"
-          }
-          fetch 2000000 https://api.github.com/repos/webtruffle/retail-product-catalog-prices/releases/latest release.json
-          tag=$(jq -er '.tag_name | select(test("^[0-9]{4}-[0-9]{2}-[0-9]{2}(-r[0-9]+)?$"))' release.json)
-          release="https://github.com/webtruffle/retail-product-catalog-prices/releases/download/$tag"
-          fetch 2000000 "$release/manifest.json" manifest.json
-          fetch 500000000 "$release/retail-product-prices.csv" retail-product-prices.csv
-          fetch 120000000 https://prices.openfoodfacts.org/data/locations.jsonl.gz locations.jsonl.gz
-          fetch 120000000 https://prices.openfoodfacts.org/data/prices.jsonl.gz prices.jsonl.gz
+              --max-time 150 --max-filesize 120000000 --write-out "$archive HTTP %{http_code}\n" \
+              --output "$archive" "https://prices.openfoodfacts.org/data/$archive"
+          done
       - name: Verify CSV checksum and count regional observations
+        if: ${{ !cancelled() && steps.webtruffle.outcome == 'success' && steps.open_prices.outcome == 'success' }}
         run: python tools/audit_open_prices.py "$RUNNER_TEMP/open-price-audit"
       - name: Verify public Hugging Face mirror
+        if: ${{ !cancelled() }}
         run: |
           cd "$RUNNER_TEMP/open-price-audit"
           fetch() {
             curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
-              --max-time 150 --max-filesize "$1" "$2" --output "$3"
+              --max-time 150 --max-filesize "$1" --write-out "$3 HTTP %{http_code}\n" --output "$3" "$2"
           }
           metadata=https://huggingface.co/api/datasets/openfoodfacts/open-prices
           fetch 2000000 "$metadata" dataset.json
