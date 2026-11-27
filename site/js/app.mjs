@@ -1,14 +1,18 @@
 import {
-  MEALS, MEAL_NAMES, DAYS, STORES, LIMITS, MAX_PRICE_AGE, bestQuote, cleanExclusions, dateAt, eligibleRecipes,
-  generateMenu, isWeekStart, pricing, recipeAmount, replacementMenu, replacementOptions,
-  restoreSettings, shoppingList, starterMenu, validMenu, weekStart,
+  DAYS, STORES, MAX_PRICE_AGE, bestQuote, dateAt, generateMenu, isWeekStart, pricing, recipeAmount,
+  replacementMenu, replacementOptions, shoppingList, validMenu, weekStart,
 } from "./planner.mjs";
 import { ESTIMATE_STORE, allocateMealCosts, cleanOverrides, estimateLowerBound, estimatePricing, estimateRows } from "./estimates.mjs";
+import {
+  STEP_NAMES, MEAL_LABELS, EQUIPMENT, activeMeals, compatibleMethods, household, mealPeople,
+  plannerSettings, portionSchedule, restoreAnswers, validateStep,
+} from "./questionnaire.mjs";
+import { mountWizard } from "./wizard.mjs";
 
 const $ = id => document.getElementById(id);
 const storageKey = "racion.v1";
-const views = { menu: "Планировщик питания", shopping: "Список покупок", stores: "Магазины и цены" };
-const mealIcons = { breakfast: "sun", lunch: "bowl", dinner: "moon" };
+const views = { setup: "Настройка меню", menu: "Планировщик питания", shopping: "Список покупок", stores: "Магазины и цены" };
+const mealIcons = { breakfast: "sun", lunch: "bowl", dinner: "moon", snack: "leaf" };
 const dateShort = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "short", timeZone: "UTC" });
 const dateLong = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" });
 const fullDay = new Intl.DateTimeFormat("ru-RU", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
@@ -24,7 +28,8 @@ const units = { g: "г", ml: "мл", pcs: "шт." };
 const channels = { pickup: "Самовывоз", "in-store": "Покупка в магазине", delivery: "Онлайн-заказ" };
 
 let ingredients, recipes, recipesById, state, prices, basket, quotes;
-let draftExclusions = [];
+let wizard;
+let currentView;
 let activeDialogIndex = null;
 let loadedCatalog = null;
 let estimateDatabase = null;
@@ -79,19 +84,16 @@ async function data(name) {
 function readState() {
   let saved;
   try { saved = JSON.parse(localStorage.getItem(storageKey)); } catch { /* First visit or storage is unavailable. */ }
-  const settings = restoreSettings(saved?.settings);
-  let menu = saved?.menu;
-  if (!validMenu(menu, recipes, ingredients, settings.exclusions)) {
-    const defaultPlan = starterMenu();
-    menu = validMenu(defaultPlan, recipes, ingredients, settings.exclusions) ? defaultPlan :
-      generateMenu(recipes, ingredients, settings, prices).menu;
-  }
-  if (!menu) {
-    settings.exclusions = [];
-    menu = generateMenu(recipes, ingredients, settings, prices).menu;
-  }
+  const draft = restoreAnswers(saved?.draft, saved?.settings);
+  const answers = saved?.answers ? restoreAnswers(saved.answers) : null;
+  const rules = answers ? plannerSettings(answers, ingredients) : null;
+  const menu = rules && !validateStep(answers, 0) && !validateStep(answers, 2) &&
+    validMenu(saved?.menu, recipes, ingredients, [], rules.meals, rules.allows) ? saved.menu : null;
   return {
-    settings, menu,
+    answers: menu ? answers : null, draft, menu,
+    step: Number.isInteger(saved?.step) && saved.step >= 0 && saved.step < STEP_NAMES.length ? saved.step : 0,
+    editing: Boolean(menu && saved?.editing),
+    searched: Boolean(menu && saved?.searched),
     start: isWeekStart(saved?.start) ? saved.start : weekStart(),
     day: Number.isInteger(saved?.day) && saved.day >= 0 && saved.day < 7 ? saved.day : 0,
     store: [...STORES, ESTIMATE_STORE].some(store => store.id === saved?.store) ? saved.store : null,
@@ -110,49 +112,11 @@ function announce(message) {
   $("live-status").textContent = message;
 }
 
-function showError(message = "") {
-  $("form-error").textContent = message;
-  $("form-error").hidden = !message;
-}
-
-function setPeopleButtons() {
-  const count = $("people").valueAsNumber;
-  document.querySelector('[data-people="-1"]').disabled = count <= 1;
-  document.querySelector('[data-people="1"]').disabled = count >= LIMITS.people;
-}
-
-function chips() {
-  const root = $("exclusion-chips");
-  root.innerHTML = draftExclusions.map((label, index) =>
-    '<button class="chip" type="button" data-remove="' + index + '" aria-label="' +
-    escapeHtml("Убрать исключение " + label) + '">' + escapeHtml(label) + icon("close") + '</button>').join("");
-  root.hidden = draftExclusions.length === 0;
-}
-
-function addExclusion() {
-  const field = $("exclude");
-  if (!field.value.trim()) return;
-  draftExclusions = cleanExclusions([...draftExclusions, ...field.value.split(/[,;\n]+/u)]);
-  field.value = "";
-  showError();
-  chips();
-}
-
-function renderPreferences() {
-  draftExclusions = [...state.settings.exclusions];
-  $("people").value = state.settings.people;
-  $("budget").value = state.settings.budget;
-  $("ingredient-suggestions").innerHTML = Object.values(ingredients).map(item =>
-    '<option value="' + escapeHtml(item.name.toLocaleLowerCase("ru")) + '"></option>').join("");
-  setPeopleButtons();
-  chips();
-}
-
 function tabId(index) { return "day-tab-" + index; }
 
 function renderTabs() {
   $("menu-dates").textContent = dateLong.formatRange(dateAt(state.start, 0), dateAt(state.start, 6)) +
-    " · " + peopleText(state.settings.people) +
+    " · " + peopleText(household(state.answers)) +
     (new Set(state.menu).size < state.menu.length ? " · Есть повторяющиеся блюда" : "");
   $("week-tabs").innerHTML = DAYS.map((day, index) => {
     const date = dateAt(state.start, index);
@@ -171,20 +135,27 @@ function quoteMoney(value, quote) {
 
 function renderDay() {
   const dayCost = $("day-cost");
+  const meals = activeMeals(state.answers);
+  const dayStart = state.day * meals.length;
   dayCost.hidden = !mealCosts;
   dayCost.textContent = mealCosts ? "Итого за день " + quoteMoney(
-    mealCosts.slice(state.day * 3, state.day * 3 + 3).reduce((sum, cost) => sum + cost, 0), planningQuote
+    mealCosts.slice(dayStart, dayStart + meals.length).reduce((sum, cost) => sum + cost, 0), planningQuote
   ) : "";
-  $("day-menu").innerHTML = MEALS.map((meal, slot) => {
-    const index = state.day * MEALS.length + slot;
+  $("day-menu").style.setProperty("--meal-count", meals.length);
+  $("day-menu").innerHTML = meals.map((meal, slot) => {
+    const index = dayStart + slot;
     const recipe = recipesById.get(state.menu[index]);
+    const method = compatibleMethods(recipe, state.answers.equipment)[0];
+    const participants = mealPeople(state.answers, meal);
     const image = recipe.image && /^[a-z-]+$/.test(recipe.image) ?
       '<img class="meal-photo" alt="" src="./assets/' + recipe.image + '.webp" width="400" height="186">' :
       '<div class="meal-photo meal-placeholder" aria-hidden="true">' + icon(mealIcons[meal]) + '</div>';
     return '<article class="meal-card">' + image + '<div class="meal-body"><div class="meal-meta">' +
-      '<span class="meal-tag ' + meal + '">' + icon(mealIcons[meal]) + MEAL_NAMES[meal] + '</span>' +
-      '<span class="meal-time">' + icon("clock") + recipe.minutes + ' мин</span></div>' +
-      '<h3>' + escapeHtml(recipe.title) + '</h3>' +
+      '<span class="meal-tag ' + meal + '">' + icon(mealIcons[meal]) + MEAL_LABELS[meal] + '</span>' +
+      '<span class="meal-time">' + icon("clock") + method.minutes + ' мин</span></div>' +
+      '<h3>' + escapeHtml(recipe.title) + '</h3><p class="meal-detail">' +
+      peopleText(participants.people) + ' · ' + number.format(participants.portions) + ' порц. · ' +
+      escapeHtml(equipmentText(method)) + '</p>' +
       (mealCosts ? '<p class="meal-cost">' + quoteMoney(mealCosts[index], planningQuote) + '</p>' : '') +
       '<div class="meal-actions">' +
       '<button class="button recipe-button" type="button" data-recipe="' + index + '">Рецепт</button>' +
@@ -207,7 +178,7 @@ function summaryCard(title, value, note = "", style = "") {
 }
 
 function budgetSummary(quote, menuView = false) {
-  const budget = state.settings.budget * 100;
+  const budget = Math.round(state.answers.budget * 100);
   const remainder = quote?.complete ? budget - quote.knownCost : null;
   const incomplete = !quote?.complete;
   const historical = Boolean(quote?.stale);
@@ -237,11 +208,13 @@ function budgetSummary(quote, menuView = false) {
 }
 
 function overBudgetNotice(quote, budget) {
-  const available = eligibleRecipes(recipes, ingredients, state.settings.exclusions);
-  const bound = quote.estimate ? estimateLowerBound(available, ingredients, state.settings.people, prices.estimates) : null;
+  const rules = plannerSettings(state.answers, ingredients);
+  const bound = quote.estimate ? estimateLowerBound(recipes.filter(rules.allows),
+    ingredients, rules.people, prices.estimates, rules.meals) : null;
   const intro = bound !== null && bound > budget
     ? "По этим ориентирам уложиться в бюджет невозможно даже без округления до упаковок."
-    : "Текущее меню превышает бюджет. Попробуйте подобрать меню заново или изменить настройки.";
+    : state.searched ? "В пределах бюджета меню подобрать не удалось. Показан найденный вариант с превышением."
+      : "Текущее меню превышает бюджет. Попробуйте подобрать меню заново или изменить настройки.";
   return '<div id="budget-warning">' + message(intro, true) + '</div>';
 }
 
@@ -252,13 +225,13 @@ function estimateReference(row) {
 }
 
 function selectedQuote() {
-  return quotes.find(quote => quote.store.id === state.store) ?? bestQuote(quotes) ??
+  return quotes.find(quote => quote.store.id === state.store) ?? planningQuote ??
     [...quotes].sort((a, b) => a.missing - b.missing || a.stale - b.stale)[0];
 }
 
 function updateShoppingCount() {
   const checked = basket.filter(item => state.checked.has(item.id)).length;
-  $("shopping-subtitle").textContent = peopleText(state.settings.people) + " · " +
+  $("shopping-subtitle").textContent = peopleText(household(state.answers)) + " · " +
     countText(basket.length, { one: "продукт", few: "продукта", many: "продуктов" }) +
     (checked ? " · отмечено " + checked : "");
   $("clear-checks").disabled = checked === 0;
@@ -354,8 +327,8 @@ function renderStores() {
   }).join("");
 }
 
-function planningPrices(overrides) {
-  const actual = pricing(loadedCatalog);
+function planningPrices(overrides, storeId) {
+  const actual = pricing(loadedCatalog, Date.now(), storeId);
   const estimates = estimatePricing(estimateDatabase, ingredients, overrides);
   return {
     estimates,
@@ -365,6 +338,21 @@ function planningPrices(overrides) {
       return estimates.hasOffers ? [...stores, estimates.quote(list)] : stores;
     },
   };
+}
+
+function assessBudget(answers) {
+  const source = planningPrices(state.overrides, answers.store);
+  const rules = plannerSettings(answers, ingredients);
+  // Find one inexpensive, reproducible example for this setup. It is a
+  // feasible upper bound and is reused while the slider moves.
+  let seed = 47;
+  const random = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32);
+  const result = generateMenu(recipes, ingredients, { ...rules, budget: 0 }, source, random);
+  if (!result.menu) return { message: "Для выбранных приёмов пищи пока нет подходящих рецептов." };
+  const quote = bestQuote(source.quote(shoppingList(result.menu, recipesById, ingredients, rules.people)));
+  const bound = quote?.estimate ? estimateLowerBound(recipes.filter(rules.allows),
+    ingredients, rules.people, source.estimates, rules.meals) : null;
+  return { quote, bound };
 }
 
 function renderEstimateEditor() {
@@ -378,13 +366,20 @@ function renderEstimateEditor() {
     'step="0.01" required value="' + row.priceKopecks / 100 + '"></div>').join("");
 }
 
-function refreshCalculations() {
-  prices = planningPrices(state?.overrides);
-  basket = shoppingList(state.menu, recipesById, ingredients, state.settings.people);
+function refreshCalculations(prior) {
+  prices = planningPrices(state.overrides);
+  const portions = portionSchedule(state.answers);
+  basket = shoppingList(state.menu, recipesById, ingredients, portions);
+  if (prior) syncChecked(prior);
   quotes = prices.quote(basket);
-  planningQuote = bestQuote(quotes);
-  mealCosts = allocateMealCosts(state.menu, recipesById, ingredients, state.settings.people, planningQuote);
+  planningQuote = bestQuote(quotes.filter(quote => quote.estimate || quote.store.id === state.answers.store));
+  mealCosts = allocateMealCosts(state.menu, recipesById, ingredients, portions, planningQuote);
   $("budget-summary").innerHTML = budgetSummary(planningQuote, true);
+  const selectedStore = STORES.find(store => store.id === state.answers.store);
+  const source = planningQuote?.estimate ? "Ориентировочные цены" : planningQuote?.stale ?
+    "Архивные цены" : planningQuote ? "Подтверждённые цены" : "Полной цены корзины нет";
+  const updated = planningQuote && !planningQuote.estimate ? timestamp(planningQuote.store.updatedAt) : null;
+  $("result-store").textContent = selectedStore.name + " · Оренбург · " + source + (updated ? " · " + updated : "");
   renderDay();
   const activeStores = quotes.filter(quote => storeStatus(quote.store, Date.now())[0] === "fresh").length;
   $("sidebar-prices").textContent = activeStores ?
@@ -394,46 +389,64 @@ function refreshCalculations() {
   renderStores();
 }
 
+function equipmentText(method) {
+  return method.equipment.length ? method.equipment.map(key => EQUIPMENT[key]).join(", ") : "Без техники";
+}
+
+function renderMethod(method) {
+  return '<p class="method-note">' + escapeHtml(equipmentText(method) + " · " + method.minutes + " мин · " +
+    method.mode + (method.temperature ? " · " + method.temperature + " °C" : "")) + '</p><ol class="steps">' +
+    method.instructions.map(step => '<li>' + escapeHtml(step) + '</li>').join("") + "</ol>";
+}
+
 function recipeDialog(index) {
   const recipe = recipesById.get(state.menu[index]);
-  const people = state.settings.people;
-  $("dialog-kicker").textContent = MEAL_NAMES[recipe.meal] + " · " + recipe.minutes + " мин";
+  const people = mealPeople(state.answers, recipe.meal);
+  const [method, ...alternatives] = compatibleMethods(recipe, state.answers.equipment);
+  $("dialog-kicker").textContent = MEAL_LABELS[recipe.meal] + " · " + method.minutes + " мин";
   $("dialog-title").textContent = recipe.title;
   $("dialog-content").innerHTML = '<section class="dialog-section"><h3>Ингредиенты · ' +
-    peopleText(people) + '</h3><ul class="ingredient-list">' +
+    peopleText(people.people) + " · " + number.format(people.portions) + ' порц.</h3><ul class="ingredient-list">' +
     Object.keys(recipe.ingredients).map(id => {
       const item = ingredients[id];
       return '<li><span>' + escapeHtml(item.name) + '</span><span>' +
-        amount(recipeAmount(recipe, id, people, item.unit), item.unit) + '</span></li>';
-    }).join("") + '</ul></section><section class="dialog-section"><h3>Приготовление</h3><ol class="steps">' +
-    recipe.instructions.map(step => '<li>' + escapeHtml(step) + '</li>').join("") + '</ol></section>';
+        amount(recipeAmount(recipe, id, people.portions, item.unit), item.unit) + '</span></li>';
+    }).join("") + '</ul></section><section class="dialog-section"><h3>Приготовление</h3>' + renderMethod(method) +
+    alternatives.map(alt => '<details class="alternate-method"><summary>Вариант · ' +
+      escapeHtml(equipmentText(alt)) + "</summary>" + renderMethod(alt) + "</details>").join("") + "</section>" +
+    (state.answers.allergens.length ? '<p class="method-note">Проверьте состав и предупреждения о следах аллергенов на упаковках.</p>' : "");
   $("meal-dialog").showModal();
 }
 
 function replaceDialog(index) {
   activeDialogIndex = index;
   const recipe = recipesById.get(state.menu[index]);
-  const options = replacementOptions(state.menu, index, recipes, ingredients, state.settings.exclusions);
-  $("dialog-kicker").textContent = MEAL_NAMES[recipe.meal] + " · " + fullDay.format(dateAt(state.start, state.day));
+  const rules = plannerSettings(state.answers, ingredients);
+  const options = replacementOptions(state.menu, index, recipes, ingredients, [], rules.meals, rules.allows, rules.priority);
+  $("dialog-kicker").textContent = MEAL_LABELS[recipe.meal] + " · " + fullDay.format(dateAt(state.start, state.day));
   $("dialog-title").textContent = "Заменить блюдо";
   $("dialog-content").innerHTML = options.length ?
     '<div class="replacement-list">' + options.map(item =>
       '<button class="replacement-option" type="button" data-alternative="' + item.id + '"><span>' +
-      escapeHtml(item.title) + '</span><span>' + item.minutes + ' мин</span></button>').join("") + '</div>' :
-    '<p class="method-note">Подходящих замен с текущими исключениями нет.</p>';
+      escapeHtml(item.title) + '</span><span>' +
+      compatibleMethods(item, state.answers.equipment)[0].minutes + ' мин</span></button>').join("") + '</div>' :
+    '<p class="method-note">Подходящих замен с текущими ограничениями и техникой нет.</p>';
   $("meal-dialog").showModal();
 }
 
 function activateView(scroll = false) {
   const hash = window.location.hash.slice(1);
-  if (hash === "main") return;
-  const view = Object.hasOwn(views, hash) ? hash : "menu";
+  const requested = hash === "main" ? currentView : hash;
+  const view = !state.menu ? "setup" : Object.hasOwn(views, requested) ? requested : "menu";
+  currentView = view;
+  document.body.classList.toggle("setup-active", view === "setup");
   for (const key of Object.keys(views)) $("view-" + key).hidden = key !== view;
   for (const link of document.querySelectorAll("[data-nav]")) {
     if (link.dataset.nav === view) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   }
   $("section-label").textContent = views[view];
+  if (view === "setup") wizard.render({ enter: true });
   if (scroll) {
     window.scrollTo(0, 0);
     $("main").focus({ preventScroll: true });
@@ -448,55 +461,56 @@ function syncChecked(prior) {
   }
 }
 
-function updatePlan(menu, settings, start, day) {
-  const prior = basket;
+function updatePlan(menu, answers, day, generated) {
+  const prior = basket ?? [];
   state.menu = menu;
-  state.settings = settings;
-  state.start = start;
+  state.answers = answers;
+  if (generated) state.start = weekStart();
   state.day = day;
-  basket = shoppingList(menu, recipesById, ingredients, settings.people);
-  syncChecked(prior);
+  state.searched = generated;
   renderTabs();
-  refreshCalculations();
+  refreshCalculations(prior);
   persist();
 }
 
+function generate(answers) {
+  for (const step of [0, 2, 3]) {
+    const error = validateStep(answers, step);
+    if (error) return error;
+  }
+  const rules = plannerSettings(answers, ingredients);
+  const source = planningPrices(state.overrides, answers.store);
+  const result = generateMenu(recipes, ingredients, rules, source,
+    Math.random, state.menu ?? []);
+  if (!result.menu) {
+    return "Нет подходящих блюд для: " + result.empty.map(meal => MEAL_LABELS[meal].toLowerCase()).join(", ") +
+      ". Проверьте выбранные приёмы пищи, ограничения и технику.";
+  }
+  if (answers.store !== state.answers?.store) state.store = null;
+  state.editing = false;
+  $("result-error").hidden = true;
+  updatePlan(result.menu, restoreAnswers(answers), 0, true);
+  if (window.location.hash !== "#menu") window.location.hash = "menu";
+  activateView(true);
+  announce("Меню составлено на семь дней.");
+  return "";
+}
+
 function registerEvents() {
-  $("people").addEventListener("input", setPeopleButtons);
-  $("add-exclusion").addEventListener("click", () => { addExclusion(); $("exclude").focus(); });
-  $("exclude").addEventListener("keydown", event => {
-    if (event.key === "Enter" && !event.isComposing && $("exclude").value.trim()) {
-      event.preventDefault();
-      addExclusion();
-    }
+  $("edit-shortcuts").innerHTML = STEP_NAMES.map((label, i) =>
+    '<button class="button outline" type="button" data-edit-step="' + i + '">' + label + '</button>').join("");
+  $("edit-shortcuts").addEventListener("click", event => {
+    const target = event.target.closest("[data-edit-step]");
+    if (!target) return;
+    state.draft = restoreAnswers(state.answers);
+    state.editing = true;
+    wizard.setStep(Number(target.dataset.editStep), false);
+    window.location.hash = "setup";
   });
-  $("preferences").addEventListener("click", event => {
-    const peopleButton = event.target.closest("[data-people]");
-    const chip = event.target.closest("[data-remove]");
-    if (peopleButton) {
-      const current = $("people").valueAsNumber || state.settings.people;
-      $("people").value = Math.min(LIMITS.people, Math.max(1, current + Number(peopleButton.dataset.people)));
-      setPeopleButtons();
-    }
-    if (chip) {
-      draftExclusions.splice(Number(chip.dataset.remove), 1);
-      chips();
-      showError();
-      $("exclude").focus();
-    }
-  });
-  $("preferences").addEventListener("submit", event => {
-    event.preventDefault();
-    addExclusion();
-    const settings = { people: $("people").valueAsNumber, budget: $("budget").valueAsNumber, exclusions: draftExclusions };
-    const result = generateMenu(recipes, ingredients, settings, prices, Math.random, state.menu);
-    if (!result.menu) {
-      showError("С этими исключениями не хватает блюд. Измените список продуктов и попробуйте снова.");
-      return;
-    }
-    showError();
-    updatePlan(result.menu, settings, weekStart(), 0);
-    announce("Меню составлено на семь дней. Открыт понедельник.");
+  $("regenerate").addEventListener("click", () => {
+    const error = generate(state.answers);
+    $("result-error").textContent = error;
+    $("result-error").hidden = !error;
   });
   $("week-tabs").addEventListener("click", event => {
     const button = event.target.closest("[data-day]");
@@ -519,10 +533,11 @@ function registerEvents() {
     if (!option || activeDialogIndex === null) return;
     const slot = activeDialogIndex;
     const id = option.dataset.alternative;
-    const menu = replacementMenu(state.menu, slot, id, recipes, ingredients, state.settings.exclusions);
+    const rules = plannerSettings(state.answers, ingredients);
+    const menu = replacementMenu(state.menu, slot, id, recipes, ingredients, [], rules.meals, rules.allows, rules.priority);
     if (!menu) return;
     $("meal-dialog").close();
-    updatePlan(menu, state.settings, state.start, state.day);
+    updatePlan(menu, state.answers, state.day, false);
     document.querySelector('[data-replace="' + slot + '"]')?.focus();
     announce("Блюдо заменено: " + recipesById.get(id).title + ". Список покупок обновлён.");
   });
@@ -561,12 +576,14 @@ function registerEvents() {
     const values = [...$("estimate-rows").querySelectorAll("[data-estimate]")].map(input =>
       [input.dataset.estimate, Math.round(input.valueAsNumber * 100), Number(input.dataset.default)]);
     state.overrides = cleanOverrides(Object.fromEntries(values.filter(([, price, base]) => price !== base)), ingredients);
+    state.searched = false;
     persist();
     refreshCalculations();
     announce("Ориентировочные цены сохранены. Стоимость меню пересчитана.");
   });
   $("reset-estimates").addEventListener("click", () => {
     state.overrides = {};
+    state.searched = false;
     persist();
     refreshCalculations();
     renderEstimateEditor();
@@ -581,16 +598,25 @@ async function boot() {
       data("ingredients"), data("recipes"), data("prices").catch(() => null), data("estimates").catch(() => null),
     ]);
     recipesById = new Map(recipes.map(recipe => [recipe.id, recipe]));
-    prices = planningPrices(state?.overrides);
     state = readState();
+    wizard = mountWizard({
+      state, recipes, ingredients, persist, assess: assessBudget, submit: () => generate(state.draft),
+      cancel() {
+        state.draft = restoreAnswers(state.answers);
+        state.editing = false;
+        persist();
+        window.location.hash = "menu";
+      },
+      icon, escape: escapeHtml,
+    });
     registerEvents();
-    renderPreferences();
-    renderTabs();
-    refreshCalculations();
+    if (state.menu) {
+      renderTabs();
+      refreshCalculations();
+    }
     renderEstimateEditor();
-    activateView();
-    $("generate").disabled = false;
     $("menu-board").hidden = false;
+    activateView();
   } catch (error) {
     console.error(error);
     $("fatal").textContent = "Не удалось загрузить рецепты. Обновите страницу и попробуйте снова.";

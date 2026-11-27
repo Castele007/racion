@@ -5,7 +5,8 @@ import { createRequire } from "node:module";
 import { mkdir, readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { STORES, exclusionIds } from "../site/js/planner.mjs";
+import { STORES, recipeAmount } from "../site/js/planner.mjs";
+import { activeMeals, buildRules, mealPeople } from "../site/js/questionnaire.mjs";
 
 const published = process.env.RACION_PUBLISHED_URL;
 const { chromium } = createRequire(import.meta.url)("playwright");
@@ -59,102 +60,221 @@ async function fitViewport(page) {
   assert.equal(fits, true, "content must fit within the viewport");
 }
 
-test("desktop supports recipes, persistent settings, replacement, shopping and unavailable stores", async () => {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const byId = new Map(recipes.map(recipe => [recipe.id, recipe]));
+const progress = page => page.locator("#wizard-progress-text");
+const next = page => page.getByRole("button", { name: "Далее", exact: true }).click();
+
+async function expectStep(page, step) {
+  await progress(page).filter({ hasText: "Этап " + step + " из 6" }).waitFor();
+  assert.equal(await page.locator("#wizard-progress li").count(), 6);
+}
+
+async function verifyAssets(page) {
+  const images = await page.evaluate(async () => {
+    const response = await fetch("./data/recipes.json", { cache: "no-cache" });
+    const names = (await response.json()).map(recipe => recipe.image);
+    for (let index = 0; index < names.length; index += 16) {
+      await Promise.all(names.slice(index, index + 16).map(async name => {
+        const image = new Image();
+        image.src = "./assets/" + name + ".webp";
+        await image.decode();
+        if (!image.naturalWidth) throw new Error("Invalid asset " + name);
+      }));
+    }
+    return names;
+  });
+  assert.equal(images.length, recipes.length);
+  assert.equal(new Set(images).size, recipes.length);
+  assert.deepEqual(images, recipes.map(recipe => recipe.image));
+}
+
+test("all six mobile stages save answers, respect filters and build an itemized weekly plan", async () => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const errors = [];
   page.on("pageerror", error => errors.push(error.message));
   try {
-    // Load the actual published asset first. It must boot with or without real prices.
     await page.goto(address);
-    await page.getByRole("tab", { name: /понедельник/ }).waitFor();
-    assert.equal(await page.getByRole("tab").count(), 7);
-    assert.equal(await page.locator(".meal-card").count(), 3);
+    await expectStep(page, 1);
     await fitViewport(page);
-    await screenshot(page, "desktop");
-    const imagesReady = await page.locator(".meal-card img").evaluateAll(images =>
-      images.length === 3 && images.every(image => image.complete && image.naturalWidth > 0));
-    assert.ok(imagesReady);
+    await screenshot(page, "store");
+    await next(page);
+    assert.match(await page.locator("#wizard-error").innerText(), /магазин/);
+    assert.equal(await page.locator(".wizard-store img").evaluateAll(async images => {
+      await Promise.all(images.map(image => image.decode()));
+      return images.filter(image => image.naturalWidth > 0).length;
+    }), 5);
+    await page.getByRole("button", { name: "Магнит", exact: true }).click();
+    assert.equal(await page.getByRole("button", { name: "Магнит", exact: true }).getAttribute("aria-pressed"), "true");
+    await next(page);
+    await expectStep(page, 2);
+    await page.getByRole("button", { name: "Уменьшить: взрослые", exact: true }).click();
+    await page.getByRole("switch", { name: "Есть дети?" }).check();
+    await page.locator("#child-age-0").fill("7");
+    await page.locator("#child-percent-0").fill("50");
+    await screenshot(page, "family");
+    await next(page);
+    await expectStep(page, 3);
+    await page.getByRole("button", { name: "Уменьшить: завтрак, взрослые" }).click();
+    await page.locator('[data-meal-child="breakfast"]').click();
+    await page.locator('[data-meal-choice="lunch"]').click();
+    await page.locator('[data-meal-choice="snack"]').click();
+    await page.reload();
+    await expectStep(page, 3);
+    const draft = (await state(page)).draft;
+    assert.equal(draft.adults, 2);
+    assert.deepEqual(draft.children, [{ age: 7, percent: 50 }]);
+    assert.equal(mealPeople(draft, "breakfast").portions, 1);
+    assert.equal(mealPeople(draft, "dinner").portions, 2.5);
+    assert.deepEqual(activeMeals(draft), ["breakfast", "dinner", "snack"]);
+    await next(page);
+    await expectStep(page, 4);
+    assert.match(await page.locator("#budget-assessment").innerText(), /вариант|ориентир/);
+    const slider = page.getByRole("slider");
+    assert.equal(await slider.getAttribute("min"), "1000");
+    assert.equal(await slider.getAttribute("max"), "30000");
+    await slider.press("End");
+    assert.equal(await page.locator("#wizard-budget").inputValue(), "30000");
+    await page.locator("#wizard-budget").fill("31000.25");
+    assert.match(await page.locator("#budget-per-person").innerText(), /10/);
+    await screenshot(page, "budget");
+    await next(page);
+    await expectStep(page, 5);
+    await page.locator('[data-toggle-group="favorites"][data-value="chicken"]').click();
+    await page.getByRole("button", { name: "Нравится", exact: true }).click();
+    await page.getByRole("button", { name: "Пропустить", exact: true }).click();
+    await page.locator('[data-toggle-group="allergens"][data-value="eggs"]').click();
+    assert.match(await page.getByText(/возможных следах аллергенов/).innerText(), /упаковке/);
+    await page.locator("#wizard-exclude").fill("баклажан, чеснок, банан");
+    await page.locator("#wizard-exclude").press("Enter");
+    await page.getByRole("button", { name: "Убрать банан", exact: true }).click();
+    await next(page);
+    await expectStep(page, 6);
+    assert.equal(await page.locator(".wizard-device").count(), 9);
+    await page.locator('[data-toggle-group="equipment"][data-value="stove"]').click();
+    await page.locator('[data-toggle-group="equipment"][data-value="airfryer"]').click();
+    await page.locator('[data-toggle-group="equipment"][data-value="blender"]').click();
+    await screenshot(page, "devices");
+    await page.getByRole("button", { name: "Составить меню", exact: true }).click();
+    await page.getByRole("tab", { name: /понедельник/ }).waitFor();
+    await fitViewport(page);
+    await page.setViewportSize({ width: 320, height: 720 });
+    await fitViewport(page);
+    await page.setViewportSize({ width: 390, height: 844 });
+    const plan = await state(page);
+    assert.equal(plan.answers.store, "magnit");
+    assert.equal(plan.answers.budget, 31000.25);
+    assert.equal(plan.menu.length, 21);
+    assert.equal(new Set(plan.menu).size, 21);
+    assert.deepEqual(plan.answers.allergens, ["eggs"]);
+    assert.deepEqual(plan.answers.exclusions, ["баклажан", "чеснок"]);
+    assert.equal(Object.values(plan.answers.ratings).filter(value => value === 1).length, 1);
+    const rules = buildRules(plan.answers, ingredients);
+    assert.ok(plan.menu.every(id => rules.allows(byId.get(id)) && byId.get(id).meal !== "lunch"));
+    assert.match(await page.locator("#result-store").innerText(), /Магнит · Оренбург/);
+    assert.equal(await page.locator(".meal-cost").count(), 3);
+
+    const recipe = byId.get(plan.menu[0]);
+    const ingredientId = Object.keys(recipe.ingredients)[0];
     await page.getByRole("button", { name: "Рецепт", exact: true }).first().click();
     const dialog = page.getByRole("dialog");
-    assert.equal(await dialog.locator(".ingredient-list li").first().innerText(), "Овсяные хлопья\n150 г");
-    assert.equal(await dialog.locator(".steps li").count(), 3);
+    assert.match(await dialog.locator(".ingredient-list li").first().innerText(), new RegExp(
+      new Intl.NumberFormat("ru-RU").format(recipeAmount(recipe, ingredientId, 1, ingredients[ingredientId].unit))
+    ));
+    assert.match(await dialog.innerText(), /Приготовление/);
     await dialog.getByRole("button", { name: "Закрыть" }).click();
-
-    await page.getByRole("button", { name: "Увеличить число человек" }).click();
-    await page.getByLabel("Бюджет на неделю").fill("4800");
-    await page.getByLabel("Исключить продукты").fill("Лук, грибы");
-    await page.getByLabel("Исключить продукты").press("Enter");
-    assert.equal(await page.locator(".chip").count(), 2);
-    await page.getByRole("button", { name: "Составить меню" }).click();
-    const newPlan = await state(page);
-    assert.deepEqual(newPlan.settings, { people: 4, budget: 4800, exclusions: ["Лук", "грибы"] });
-    const removed = exclusionIds(ingredients, newPlan.settings.exclusions);
-    for (const id of newPlan.menu) {
-      const recipe = recipes.find(item => item.id === id);
-      assert.ok(Object.keys(recipe.ingredients).every(ingredient => !removed.has(ingredient)));
-    }
-
-    await page.getByRole("tab", { name: /понедельник/ }).press("ArrowRight");
-    assert.match(await page.getByRole("tab", { selected: true }).getAttribute("aria-label"), /вторник/);
-    const slot = 3;
-    const before = await page.locator(".meal-card h3").first().textContent();
     await page.getByRole("button", { name: "Заменить", exact: true }).first().click();
-    const choice = dialog.locator(".replacement-option").first();
-    const replacementId = await choice.getAttribute("data-alternative");
-    await choice.click();
-    await dialog.waitFor({ state: "hidden" });
-    const edited = await state(page);
-    assert.notEqual(edited.menu[slot], newPlan.menu[slot]);
-    assert.deepEqual(edited.menu, newPlan.menu.map((id, i) => i === slot ? replacementId : id));
-    assert.notEqual(await page.locator(".meal-card h3").first().textContent(), before);
-
-    await page.getByRole("link", { name: "Список покупок" }).click();
-    const first = page.getByRole("checkbox").first();
-    await first.check();
+    const options = await dialog.locator("[data-alternative]").evaluateAll(nodes => nodes.map(node => node.dataset.alternative));
+    assert.ok(options.length && options.every(id => rules.allows(byId.get(id))));
+    await dialog.locator("[data-alternative]").first().click();
+    assert.notEqual((await state(page)).menu[0], plan.menu[0]);
     await page.reload();
-    await first.waitFor();
-    assert.equal(await first.isChecked(), true);
-    await page.getByRole("button", { name: "Снять отметки" }).click();
-    assert.equal(await first.isChecked(), false);
-    assert.deepEqual((await state(page)).settings, newPlan.settings);
-    assert.equal((await state(page)).menu[slot], replacementId);
-    await screenshot(page, "shopping");
+    await page.getByRole("tab", { name: /понедельник/ }).waitFor();
 
-    if (published) {
-      assert.deepEqual(errors, []);
-      return;
+    const kopecks = text => Math.round(Number(text.replace(/[^\d,]/g, "").replace(",", ".")) * 100);
+    let week = 0;
+    for (const day of await page.getByRole("tab").all()) {
+      await day.click();
+      const mealAmounts = await page.locator(".meal-cost").allTextContents();
+      const subtotal = kopecks(await page.locator("#day-cost").textContent());
+      assert.equal(mealAmounts.reduce((sum, value) => sum + kopecks(value), 0), subtotal);
+      week += subtotal;
     }
+    assert.equal(week, kopecks(await page.locator("#budget-summary strong").nth(1).textContent()));
+    await page.getByText("Изменить настройки", { exact: true }).click();
+    await page.locator('[data-edit-step="3"]').click();
+    await expectStep(page, 4);
+    await page.locator("#wizard-budget").fill("1.25");
+    await page.getByRole("button", { name: "Составить меню", exact: true }).click();
+    assert.match(await page.locator("#budget-warning").innerText(), /бюджет/);
+    await page.getByRole("button", { name: "Новое меню", exact: true }).click();
+    assert.equal((await state(page)).answers.budget, 1.25);
+    assert.match(await page.locator("#budget-summary").innerText(), /Сверх бюджета/);
+    await screenshot(page, "result");
 
-    // Verify the documented empty-state behavior independent of today's catalog contents.
-    const empty = { ...realCatalog, stores: realCatalog.stores.map(store => ({
-      ...store, status: "unavailable", updatedAt: null, offers: [], error: { message: "Подтверждённых цен пока нет." },
-    })) };
-    await page.route("**/data/prices.json", route => route.fulfill({ json: empty }));
-    await page.getByRole("link", { name: "Магазины и цены", exact: true }).click();
+    await page.getByRole("link", { name: "Список покупок", exact: true }).click();
+    const box = page.getByRole("checkbox").first();
+    await box.check();
     await page.reload();
-    await page.locator(".store-card").first().waitFor();
+    assert.ok(await box.isChecked());
+    await page.getByLabel("Источник цен").selectOption("estimate");
+    assert.match(await page.locator("#shopping-summary").innerText(), /Расчёт по ориентирам/);
+    await page.getByRole("link", { name: "Магазины и цены", exact: true }).click();
     assert.equal(await page.locator(".store-card").count(), 5);
-    assert.equal(await page.getByText("Источник недоступен", { exact: true }).count(), 5);
-    assert.deepEqual(await page.locator(".store-actions a.text-link").evaluateAll(links => links.map(link => link.href)),
-      STORES.map(store => store.url));
+    await page.getByText("Настроить ориентировочные цены", { exact: true }).click();
+    await page.locator("#estimate-bread").fill("123.45");
+    await page.getByRole("button", { name: "Сохранить цены" }).click();
+    assert.equal((await state(page)).overrides.bread, 12345);
+    await page.getByRole("button", { name: "Восстановить исходные" }).click();
+    assert.equal((await state(page)).overrides.bread, undefined);
+    await verifyAssets(page);
     assert.deepEqual(errors, []);
-    await screenshot(page, "stores");
   } finally {
     await page.close();
   }
 });
 
-test("mobile fits narrow screens and displays complete, partial and historical baskets separately", { skip: Boolean(published) }, async () => {
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+test("desktop warns when restrictions and equipment leave no eligible recipes", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   try {
+    if (!published) {
+      await page.route("**/data/prices.json", route => route.fulfill({ json: realCatalog }));
+    }
     await page.goto(address);
-    await page.getByRole("tab", { name: /понедельник/ }).waitFor();
-    await fitViewport(page);
-    await screenshot(page, "mobile");
-    await page.setViewportSize({ width: 320, height: 720 });
-    await fitViewport(page);
-    await page.setViewportSize({ width: 390, height: 844 });
+    await expectStep(page, 1);
+    await screenshot(page, "desktop");
+    await page.getByRole("button", { name: "METRO", exact: true }).click();
+    await next(page);
+    await expectStep(page, 2);
+    await page.getByRole("button", { name: "Назад", exact: true }).click();
+    await expectStep(page, 1);
+    assert.equal(await page.getByRole("button", { name: "METRO", exact: true }).getAttribute("aria-pressed"), "true");
+    await next(page);
+    await next(page);
+    await expectStep(page, 3);
+    for (const meal of ["breakfast", "lunch", "dinner"]) await page.locator('[data-meal-choice="' + meal + '"]').click();
+    await next(page);
+    assert.match(await page.locator("#wizard-error").innerText(), /хотя бы один/);
+    await page.locator('[data-meal-choice="breakfast"]').click();
+    await next(page);
+    await next(page);
+    for (const allergy of ["gluten", "dairy"]) {
+      await page.locator('[data-toggle-group="allergens"][data-value="' + allergy + '"]').click();
+    }
+    await next(page);
+    await expectStep(page, 6);
+    await page.locator('[data-toggle-group="equipment"][data-value="stove"]').click();
+    await page.getByRole("button", { name: "Составить меню", exact: true }).click();
+    assert.match(await page.locator("#wizard-error").innerText(), /Нет подходящих блюд.*завтрак/);
+    assert.equal((await state(page)).menu, null);
+    assert.equal(await page.getByRole("tab").count(), 0);
+  } finally {
+    await page.close();
+  }
+});
 
+test("city store cards remain priced separately from estimated prices", { skip: Boolean(published) }, async () => {
+  const page = await browser.newPage();
+  try {
     const updatedAt = new Date(Date.now() - 3600000).toISOString();
     const location = { city: "Оренбург", id: "fixture", address: "Тестовая точка", channel: "pickup" };
     const fixture = (index, priceKopecks, ids, status = "fresh") => ({
@@ -171,90 +291,20 @@ test("mobile fits narrow screens and displays complete, partial and historical b
         fixture(2, 5000, Object.keys(ingredients), "stale"), fixture(3, 8000, ["potato"]),
       ],
     } }));
-    await page.reload();
-    await page.getByRole("link", { name: "Магазины и цены", exact: true }).click();
-    await page.locator(".store-card").first().waitFor();
-    assert.match(await page.locator("#stores-summary").innerText(), /Самая низкая цена полной актуальной корзины: Магнит/);
-    assert.match(await page.locator(".store-card").nth(2).innerText(), /Цены устарели/);
-    assert.match(await page.locator(".store-card").nth(3).innerText(), /Часть корзины/);
-    await fitViewport(page);
-
-    await page.locator(".store-card").nth(1).getByRole("link", { name: "К списку" }).click();
-    await page.getByRole("checkbox").first().waitFor();
-    assert.equal(await page.getByLabel("Источник цен").inputValue(), "magnit");
-    const remainder = page.locator(".shopping-summary .summary-card").last();
-    assert.match(await remainder.innerText(), /(Остаток бюджета|Сверх бюджета)\s+[\d\s,]+₽/u);
-    assert.match(await page.locator(".pack-details").first().innerText(), /\d+ × /);
-    await page.getByText("Товары и источник", { exact: true }).first().click();
-    const source = page.locator(".pack-details details[open] a").first();
-    assert.equal(await source.getAttribute("href"), "https://magnit.ru/");
-    await fitViewport(page);
-    await page.getByLabel("Источник цен").selectOption("perekrestok");
-    assert.match(await remainder.innerText(), /Нужна цена всей корзины/);
-    await page.getByLabel("Источник цен").selectOption("lenta");
-    assert.match(await remainder.innerText(), /Ориентировочно/);
-  } finally {
-    await page.close();
-  }
-});
-
-test("all 108 recipe WebPs decode, and totals and the price editor work with the served data", async () => {
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  try {
     await page.goto(address);
-    await page.getByRole("tab", { name: /понедельник/ }).waitFor();
-    const assets = await page.evaluate(async () => {
-      const response = await fetch("./data/recipes.json", { cache: "no-cache" });
-      const recipes = await response.json();
-      const names = recipes.map(recipe => recipe.image);
-      for (let i = 0; i < names.length; i += 12) {
-        await Promise.all(names.slice(i, i + 12).map(async name => {
-          const image = new Image();
-          image.src = "./assets/" + name + ".webp";
-          await image.decode();
-          if (!image.naturalWidth) throw new Error("Empty image: " + name);
-        }));
-      }
-      return names;
-    });
-    assert.equal(assets.length, 108);
-    assert.equal(new Set(assets).size, 108);
-    assert.deepEqual(assets, recipes.map(recipe => recipe.image));
-
-    const kopecks = text => Math.round(Number(text.replace(/[^\d,]/g, "").replace(",", ".")) * 100);
-    let week = 0;
-    for (const day of await page.getByRole("tab").all()) {
-      await day.click();
-      const mealAmounts = await page.locator(".meal-cost").allTextContents();
-      assert.equal(mealAmounts.length, 3);
-      const subtotal = kopecks(await page.locator("#day-cost").textContent());
-      assert.equal(mealAmounts.reduce((sum, value) => sum + kopecks(value), 0), subtotal);
-      week += subtotal;
-    }
-    assert.equal(week, kopecks(await page.locator("#budget-summary strong").nth(1).textContent()));
-    await page.getByLabel("Бюджет на неделю").fill("1");
-    await page.getByRole("button", { name: "Составить меню" }).click();
-    assert.match(await page.locator("#budget-warning").innerText(), /бюджет/);
-    assert.match(await page.locator("#budget-summary").innerText(), /Сверх бюджета/);
-    assert.equal(new Set((await state(page)).menu).size, 21);
-
-    await page.getByRole("link", { name: "Список покупок", exact: true }).click();
-    await page.getByLabel("Источник цен").selectOption("estimate");
-    const firstIngredient = await page.getByRole("checkbox").first().getAttribute("data-item");
-    const subtotal = page.locator("#shopping-summary strong").nth(1);
-    const original = await subtotal.textContent();
-    assert.match(original, /^≈/);
+    await page.getByRole("button", { name: "Пятёрочка", exact: true }).click();
+    for (let step = 0; step < 5; step++) await next(page);
+    await page.getByRole("button", { name: "Составить меню", exact: true }).click();
+    assert.match(await page.locator("#result-store").innerText(), /Пятёрочка.*Подтверждённые цены/);
     await page.getByRole("link", { name: "Магазины и цены", exact: true }).click();
-    assert.equal(await page.locator(".store-card").count(), 5);
-    await page.getByText("Настроить ориентировочные цены", { exact: true }).click();
-    await page.locator("#estimate-" + firstIngredient).fill("10000");
-    await page.getByRole("button", { name: "Сохранить цены" }).click();
+    assert.match(await page.locator("#stores-summary").innerText(), /полной актуальной корзины: Магнит/);
+    assert.match(await page.locator(".store-card").nth(2).innerText(), /Цены устарели/);
     await page.getByRole("link", { name: "Список покупок", exact: true }).click();
-    assert.ok(kopecks(await subtotal.textContent()) > kopecks(original));
-    await page.reload();
-    await subtotal.waitFor();
-    assert.equal((await state(page)).overrides[firstIngredient], 1000000);
-    await fitViewport(page);
+    assert.equal(await page.getByLabel("Источник цен").inputValue(), "pyaterochka");
+    await page.getByLabel("Источник цен").selectOption("perekrestok");
+    assert.match(await page.locator("#shopping-summary").innerText(), /Нужна цена всей корзины/);
+    await page.getByLabel("Источник цен").selectOption("estimate");
+    assert.match(await page.locator("#shopping-summary").innerText(), /Расчёт по ориентирам/);
   } finally {
     await page.close();
   }

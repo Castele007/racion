@@ -6,7 +6,8 @@
     "aliases": [
       "картошка",
       "картошку"
-    ]
+    ],
+    "allergens": []
   },
   "carrot": {
     "name": "Морковь",
@@ -15,7 +16,8 @@
     "aliases": [
       "морковка",
       "морковку"
-    ]
+    ],
+    "allergens": []
   },
   "onion": {
     "name": "Репчатый лук",
@@ -23,8 +25,11 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "лук",
-      "луковица"
-    ]
+      "луковица",
+      "репчатый лук",
+      "лука"
+    ],
+    "allergens": []
   },
   "green-onion": {
     "name": "Зелёный лук",
@@ -32,14 +37,20 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "лук",
-      "перо лука"
-    ]
+      "перо лука",
+      "лука",
+      "зелень"
+    ],
+    "allergens": []
   },
   "garlic": {
     "name": "Чеснок",
     "unit": "g",
     "category": "Овощи и фрукты",
-    "aliases": []
+    "aliases": [
+      "чеснока"
+    ],
+    "allergens": []
   },
   "cabbage": {
     "name": "Белокочанная капуста",
@@ -48,7 +59,8 @@
     "aliases": [
       "капуста",
       "белая капуста"
-    ]
+    ],
+    "allergens": []
   },
   "red-cabbage": {
     "name": "Краснокочанная капуста",
@@ -57,7 +69,8 @@
     "aliases": [
       "капуста",
       "красная капуста"
-    ]
+    ],
+    "allergens": []
   },
   "sauerkraut": {
     "name": "Квашеная капуста",
@@ -65,13 +78,18 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "капуста"
-    ]
+    ],
+    "allergens": []
   },
   "beet": {
     "name": "Свёкла",
     "unit": "g",
     "category": "Овощи и фрукты",
-    "aliases": []
+    "aliases": [
+      "свекла",
+      "свеклу"
+    ],
+    "allergens": []
   },
   "tomato": {
     "name": "Помидоры",
@@ -81,7 +99,8 @@
       "помидор",
       "томаты",
       "томат"
-    ]
+    ],
+    "allergens": []
   },
   "cucumber": {
     "name": "Огурцы",
@@ -89,7 +108,8 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "огурец"
-    ]
+    ],
+    "allergens": []
   },
   "pepper": {
     "name": "Сладкий перец",
@@ -98,7 +118,8 @@
     "aliases": [
       "болгарский перец",
       "перец"
-    ]
+    ],
+    "allergens": []
   },
   "zucchini": {
     "name": "Кабачок",
@@ -107,21 +128,25 @@
     "aliases": [
       "цукини",
       "кабачки"
-    ]
+    ],
+    "allergens": []
   },
   "eggplant": {
     "name": "Баклажан",
     "unit": "g",
     "category": "Овощи и фрукты",
     "aliases": [
-      "баклажаны"
-    ]
+      "баклажаны",
+      "баклажанов"
+    ],
+    "allergens": []
   },
   "pumpkin": {
     "name": "Тыква",
     "unit": "g",
     "category": "Овощи и фрукты",
-    "aliases": []
+    "aliases": [],
+    "allergens": []
   },
   "mushrooms": {
     "name": "Шампиньоны",
@@ -129,8 +154,11 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "грибы",
-      "гриб"
-    ]
+      "гриб",
+      "грибов",
+      "шампиньон"
+    ],
+    "allergens": []
   },
   "broccoli": {
     "name": "Брокколи",
@@ -138,7 +166,8 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "капуста"
-    ]
+    ],
+    "allergens": []
   },
   "cauliflower": {
     "name": "Цветная капуста",
@@ -146,7 +175,8 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "капуста"
-    ]
+    ],
+    "allergens": []
   },
   "green-beans": {
     "name": "Стручковая фасоль",
@@ -154,7 +184,8 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "фасоль"
-    ]
+    ],
+    "allergens": []
   },
   "dill": {
     "name": "Укроп",
@@ -162,7 +193,8 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "зелень"
-    ]
+    ],
+    "allergens": []
   },
   "parsley": {
     "name": "Петрушка",
@@ -170,14 +202,20 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "зелень"
-    ]
+    ],
+    "allergens": []
   },
   "lemon": {
     "name": "Лимон",
     "unit": "g",
     "category": "Овощи и фрукты",
     "aliases": [
-      "лимоны"
+      "лимоны",
+      "цитрус",
+      "цитрусовые"
+    ],
+    "allergens": [
+      "citrus"
     ]
   },
   "apple": {
@@ -186,7 +224,8 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "яблоко"
-    ]
+    ],
+    "allergens": []
   },
   "pear": {
     "name": "Груши",
@@ -194,7 +233,8 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "груша"
-    ]
+    ],
+    "allergens": []
   },
   "banana": {
     "name": "Бананы",
@@ -202,7 +242,8 @@
     "category": "Овощи и фрукты",
     "aliases": [
       "банан"
-    ]
+    ],
+    "allergens": []
   },
   "berries": {
     "name": "Замороженные ягоды",
@@ -211,31 +252,50 @@
     "aliases": [
       "ягоды",
       "ягода"
-    ]
+    ],
+    "allergens": []
   },
   "milk": {
     "name": "Молоко",
     "unit": "ml",
     "category": "Молочные продукты",
-    "aliases": []
+    "aliases": [],
+    "allergens": [
+      "dairy",
+      "lactose"
+    ]
   },
   "kefir": {
     "name": "Кефир",
     "unit": "ml",
     "category": "Молочные продукты",
-    "aliases": []
+    "aliases": [],
+    "allergens": [
+      "dairy",
+      "lactose"
+    ]
   },
   "cream": {
     "name": "Сливки",
     "unit": "ml",
     "category": "Молочные продукты",
-    "aliases": []
+    "aliases": [],
+    "allergens": [
+      "dairy",
+      "lactose"
+    ]
   },
   "sour-cream": {
     "name": "Сметана",
     "unit": "g",
     "category": "Молочные продукты",
-    "aliases": []
+    "aliases": [
+      "сметаны"
+    ],
+    "allergens": [
+      "dairy",
+      "lactose"
+    ]
   },
   "yogurt": {
     "name": "Натуральный йогурт",
@@ -243,13 +303,23 @@
     "category": "Молочные продукты",
     "aliases": [
       "йогурт"
+    ],
+    "allergens": [
+      "dairy",
+      "lactose"
     ]
   },
   "curd": {
     "name": "Творог",
     "unit": "g",
     "category": "Молочные продукты",
-    "aliases": []
+    "aliases": [
+      "творога"
+    ],
+    "allergens": [
+      "dairy",
+      "lactose"
+    ]
   },
   "cheese": {
     "name": "Твёрдый сыр",
@@ -257,6 +327,10 @@
     "category": "Молочные продукты",
     "aliases": [
       "сыр"
+    ],
+    "allergens": [
+      "dairy",
+      "lactose"
     ]
   },
   "butter": {
@@ -265,6 +339,10 @@
     "category": "Молочные продукты",
     "aliases": [
       "масло"
+    ],
+    "allergens": [
+      "dairy",
+      "lactose"
     ]
   },
   "egg": {
@@ -274,6 +352,9 @@
     "aliases": [
       "яйцо",
       "куриное яйцо"
+    ],
+    "allergens": [
+      "eggs"
     ]
   },
   "chicken": {
@@ -284,7 +365,8 @@
       "курица",
       "куриное мясо",
       "грудка"
-    ]
+    ],
+    "allergens": []
   },
   "thigh": {
     "name": "Куриные бёдра",
@@ -294,7 +376,8 @@
       "курица",
       "куриное мясо",
       "бедро"
-    ]
+    ],
+    "allergens": []
   },
   "turkey": {
     "name": "Филе индейки",
@@ -302,7 +385,8 @@
     "category": "Мясо и рыба",
     "aliases": [
       "индейка"
-    ]
+    ],
+    "allergens": []
   },
   "mince": {
     "name": "Говяжий фарш",
@@ -312,7 +396,8 @@
       "фарш",
       "говядина",
       "мясо"
-    ]
+    ],
+    "allergens": []
   },
   "beef": {
     "name": "Говядина",
@@ -320,15 +405,19 @@
     "category": "Мясо и рыба",
     "aliases": [
       "мясо"
-    ]
+    ],
+    "allergens": []
   },
   "pork": {
     "name": "Свинина",
     "unit": "g",
     "category": "Мясо и рыба",
     "aliases": [
-      "мясо"
-    ]
+      "мясо",
+      "свиное мясо",
+      "свинины"
+    ],
+    "allergens": []
   },
   "liver": {
     "name": "Куриная печень",
@@ -337,7 +426,8 @@
     "aliases": [
       "печень",
       "курица"
-    ]
+    ],
+    "allergens": []
   },
   "pollock": {
     "name": "Филе минтая",
@@ -346,6 +436,9 @@
     "aliases": [
       "минтай",
       "рыба"
+    ],
+    "allergens": [
+      "fish"
     ]
   },
   "mackerel": {
@@ -354,6 +447,9 @@
     "category": "Мясо и рыба",
     "aliases": [
       "рыба"
+    ],
+    "allergens": [
+      "fish"
     ]
   },
   "tuna": {
@@ -363,6 +459,9 @@
     "aliases": [
       "тунец",
       "рыба"
+    ],
+    "allergens": [
+      "fish"
     ]
   },
   "oats": {
@@ -373,6 +472,9 @@
       "овсянка",
       "овес",
       "геркулес"
+    ],
+    "allergens": [
+      "gluten"
     ]
   },
   "buckwheat": {
@@ -381,19 +483,22 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "гречка"
-    ]
+    ],
+    "allergens": []
   },
   "rice": {
     "name": "Рис",
     "unit": "g",
     "category": "Крупы и бакалея",
-    "aliases": []
+    "aliases": [],
+    "allergens": []
   },
   "millet": {
     "name": "Пшено",
     "unit": "g",
     "category": "Крупы и бакалея",
-    "aliases": []
+    "aliases": [],
+    "allergens": []
   },
   "semolina": {
     "name": "Манная крупа",
@@ -401,6 +506,9 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "манка"
+    ],
+    "allergens": [
+      "gluten"
     ]
   },
   "barley": {
@@ -409,6 +517,9 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "перловка"
+    ],
+    "allergens": [
+      "gluten"
     ]
   },
   "pasta": {
@@ -417,6 +528,9 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "паста"
+    ],
+    "allergens": [
+      "gluten"
     ]
   },
   "noodles": {
@@ -426,19 +540,26 @@
     "aliases": [
       "лапша",
       "макароны"
+    ],
+    "allergens": [
+      "gluten"
     ]
   },
   "couscous": {
     "name": "Кускус",
     "unit": "g",
     "category": "Крупы и бакалея",
-    "aliases": []
+    "aliases": [],
+    "allergens": [
+      "gluten"
+    ]
   },
   "lentils": {
     "name": "Чечевица",
     "unit": "g",
     "category": "Крупы и бакалея",
-    "aliases": []
+    "aliases": [],
+    "allergens": []
   },
   "peas": {
     "name": "Колотый горох",
@@ -446,7 +567,8 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "горох"
-    ]
+    ],
+    "allergens": []
   },
   "green-peas": {
     "name": "Зелёный горошек консервированный",
@@ -455,7 +577,8 @@
     "aliases": [
       "горошек",
       "горох"
-    ]
+    ],
+    "allergens": []
   },
   "beans": {
     "name": "Фасоль консервированная",
@@ -463,7 +586,8 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "фасоль"
-    ]
+    ],
+    "allergens": []
   },
   "corn": {
     "name": "Кукуруза консервированная",
@@ -471,7 +595,8 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "кукуруза"
-    ]
+    ],
+    "allergens": []
   },
   "flour": {
     "name": "Пшеничная мука",
@@ -479,25 +604,36 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "мука"
+    ],
+    "allergens": [
+      "gluten"
     ]
   },
   "sugar": {
     "name": "Сахар",
     "unit": "g",
     "category": "Крупы и бакалея",
-    "aliases": []
+    "aliases": [
+      "сахара",
+      "сахарный песок"
+    ],
+    "allergens": []
   },
   "honey": {
     "name": "Мёд",
     "unit": "g",
     "category": "Крупы и бакалея",
-    "aliases": []
+    "aliases": [],
+    "allergens": [
+      "honey"
+    ]
   },
   "raisins": {
     "name": "Изюм",
     "unit": "g",
     "category": "Крупы и бакалея",
-    "aliases": []
+    "aliases": [],
+    "allergens": []
   },
   "walnuts": {
     "name": "Грецкие орехи",
@@ -505,6 +641,9 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "орехи"
+    ],
+    "allergens": [
+      "nuts"
     ]
   },
   "oil": {
@@ -514,7 +653,8 @@
     "aliases": [
       "растительное масло",
       "масло"
-    ]
+    ],
+    "allergens": []
   },
   "paste": {
     "name": "Томатная паста",
@@ -523,7 +663,8 @@
     "aliases": [
       "томаты",
       "помидоры"
-    ]
+    ],
+    "allergens": []
   },
   "canned-tomato": {
     "name": "Томаты в собственном соку",
@@ -532,7 +673,8 @@
     "aliases": [
       "томаты",
       "помидоры"
-    ]
+    ],
+    "allergens": []
   },
   "bread": {
     "name": "Пшеничный хлеб",
@@ -541,6 +683,9 @@
     "aliases": [
       "хлеб",
       "батон"
+    ],
+    "allergens": [
+      "gluten"
     ]
   },
   "rye-bread": {
@@ -550,6 +695,9 @@
     "aliases": [
       "хлеб",
       "чёрный хлеб"
+    ],
+    "allergens": [
+      "gluten"
     ]
   },
   "lavash": {
@@ -558,6 +706,9 @@
     "category": "Хлеб и выпечка",
     "aliases": [
       "лаваш"
+    ],
+    "allergens": [
+      "gluten"
     ]
   },
   "pickles": {
@@ -567,7 +718,8 @@
     "aliases": [
       "огурцы",
       "огурец"
-    ]
+    ],
+    "allergens": []
   },
   "cinnamon": {
     "name": "Молотая корица",
@@ -575,15 +727,19 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "корица"
-    ]
+    ],
+    "allergens": []
   },
   "paprika": {
     "name": "Молотая паприка",
     "unit": "g",
     "category": "Крупы и бакалея",
     "aliases": [
-      "паприка"
-    ]
+      "паприка",
+      "острое",
+      "острая паприка"
+    ],
+    "allergens": []
   },
   "soda": {
     "name": "Пищевая сода",
@@ -591,7 +747,8 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "сода"
-    ]
+    ],
+    "allergens": []
   },
   "baking-powder": {
     "name": "Разрыхлитель теста",
@@ -599,12 +756,42 @@
     "category": "Крупы и бакалея",
     "aliases": [
       "разрыхлитель"
-    ]
+    ],
+    "allergens": []
   },
   "soy": {
     "name": "Соевый соус",
     "unit": "ml",
     "category": "Крупы и бакалея",
-    "aliases": []
+    "aliases": [],
+    "allergens": [
+      "gluten",
+      "soy"
+    ]
+  },
+  "lactose-free-milk": {
+    "name": "Безлактозное коровье молоко",
+    "unit": "ml",
+    "category": "Молочные продукты",
+    "aliases": [
+      "молоко",
+      "безлактозное молоко"
+    ],
+    "allergens": [
+      "dairy"
+    ]
+  },
+  "cooked-shrimp": {
+    "name": "Готовые очищенные креветки",
+    "unit": "g",
+    "category": "Мясо и рыба",
+    "aliases": [
+      "креветки",
+      "креветка",
+      "морепродукты"
+    ],
+    "allergens": [
+      "seafood"
+    ]
   }
 }

@@ -89,28 +89,34 @@ export function starterMenu() {
   return STARTER_DAYS.flat();
 }
 
-export function validMenu(menu, recipes, ingredients, exclusions) {
-  if (!Array.isArray(menu) || menu.length !== 21) return false;
-  const allowed = new Map(eligibleRecipes(recipes, ingredients, exclusions).map(recipe => [recipe.id, recipe.meal]));
-  return menu.every((id, index) => allowed.get(id) === MEALS[index % MEALS.length]);
+export function validMenu(menu, recipes, ingredients, exclusions, meals = MEALS, allows = () => true) {
+  if (!Array.isArray(menu) || !meals.length || menu.length !== 7 * meals.length) return false;
+  const allowed = new Map(eligibleRecipes(recipes, ingredients, exclusions).filter(allows)
+    .map(recipe => [recipe.id, recipe.meal]));
+  return menu.every((id, index) => allowed.get(id) === meals[index % meals.length]);
 }
 
 export function recipeAmount(recipe, id, people, unit) {
   const quantity = recipe.ingredients[id] * people / recipe.servings;
   // Half an egg can be measured by whisking it, then using half by volume.
-  return unit === "pcs" ? quantity : Math.ceil(quantity);
+  if (unit === "pcs") return Math.round(quantity * 1000) / 1000;
+  return Math.ceil(quantity - 1e-9);
+}
+
+export function portionsAt(people, index) {
+  return Array.isArray(people) ? people[index] : people;
 }
 
 export function shoppingList(menu, recipesById, ingredients, people) {
   const quantities = new Map();
-  for (const recipeId of menu) {
+  for (const [index, recipeId] of menu.entries()) {
     const recipe = recipesById.get(recipeId);
     if (!recipe) continue;
     for (const id of Object.keys(recipe.ingredients)) {
-      quantities.set(id, (quantities.get(id) ?? 0) + recipeAmount(recipe, id, people, ingredients[id].unit));
+      quantities.set(id, (quantities.get(id) ?? 0) + recipeAmount(recipe, id, portionsAt(people, index), ingredients[id].unit));
     }
   }
-  return [...quantities].map(([id, quantity]) => ({ id, quantity, ...ingredients[id] }))
+  return [...quantities].map(([id, quantity]) => ({ id, quantity: Math.round(quantity * 1000) / 1000, ...ingredients[id] }))
     .sort((a, b) => a.category.localeCompare(b.category, "ru") || a.name.localeCompare(b.name, "ru"));
 }
 
@@ -190,8 +196,8 @@ export function cheapestPacks(quantity, offers) {
   };
 }
 
-export function pricing(catalog, now = Date.now()) {
-  const stores = STORES.map(meta => ({ ...meta, ...(catalog?.city === "Оренбург" ?
+export function pricing(catalog, now = Date.now(), storeId = null) {
+  const stores = STORES.filter(store => !storeId || store.id === storeId).map(meta => ({ ...meta, ...(catalog?.city === "Оренбург" ?
     catalog?.stores?.find(store => store.id === meta.id) : undefined) }));
   const lookups = stores.map(store => {
     const byIngredient = new Map();
@@ -260,13 +266,13 @@ function shuffle(items, random) {
   return pool;
 }
 
-function quoteScore(quote, budget, changed) {
-  if (!quote.complete) return [6, quote.missing, quote.knownCost ?? Infinity];
+function quoteScore(quote, budget, changed, preference) {
+  if (!quote.complete) return [6, quote.missing, quote.knownCost ?? Infinity, -preference];
   const level = evidence(quote);
-  if (quote.knownCost <= budget) return [level * 2, -changed, 0];
+  if (quote.knownCost <= budget) return [level * 2, -preference, -changed, 0];
   const consumption = quote.lines.reduce((sum, line) =>
     sum + line.cost * line.quantity / line.bought, 0);
-  return [level * 2 + 1, quote.knownCost, consumption];
+  return [level * 2 + 1, quote.knownCost, consumption, -preference];
 }
 
 function better(candidate, reference) {
@@ -277,17 +283,20 @@ function better(candidate, reference) {
 }
 
 export function generateMenu(recipes, ingredients, settings, prices, random = Math.random, previousMenu = []) {
-  const eligible = eligibleRecipes(recipes, ingredients, settings.exclusions);
-  const pools = MEALS.map(meal => eligible.filter(recipe => recipe.meal === meal).map(recipe => recipe.id));
-  const empty = pools.map((pool, index) => pool.length ? null : MEALS[index]).filter(Boolean);
-  if (empty.length) return { menu: null, empty };
+  const meals = settings.meals ?? MEALS;
+  const eligible = eligibleRecipes(recipes, ingredients, settings.exclusions).filter(settings.allows ?? (() => true));
+  const pools = meals.map(meal => eligible.filter(recipe => recipe.meal === meal).map(recipe => recipe.id));
+  const empty = pools.map((pool, index) => pool.length ? null : meals[index]).filter(Boolean);
+  if (!meals.length || empty.length) return { menu: null, empty };
+  const recipesById = new Map(eligible.map(recipe => [recipe.id, recipe]));
+  const recipePriority = settings.priority ?? (() => 0);
 
   function candidate() {
     const days = pools.map(pool => {
-      const mixed = shuffle(pool, random);
+      const mixed = shuffle(pool, random).sort((a, b) => recipePriority(recipesById.get(b)) - recipePriority(recipesById.get(a)));
       return Array.from({ length: 7 }, (_, index) => mixed[index % mixed.length]);
     });
-    return Array.from({ length: 21 }, (_, index) => days[index % 3][Math.floor(index / 3)]);
+    return Array.from({ length: meals.length * 7 }, (_, index) => days[index % meals.length][Math.floor(index / meals.length)]);
   }
 
   let menu = candidate();
@@ -295,12 +304,12 @@ export function generateMenu(recipes, ingredients, settings, prices, random = Ma
   for (let i = 0; i < 4 && menu.every((id, index) => id === previousMenu[index]); i++) menu = candidate();
   if (!prices?.hasOffers) return { menu, empty };
 
-  const recipesById = new Map(eligible.map(recipe => [recipe.id, recipe]));
-  const budget = settings.budget * 100;
+  const budget = Math.round(settings.budget * 100);
   function rank(plan, limit = budget) {
     const quotes = prices.quote(shoppingList(plan, recipesById, ingredients, settings.people));
     const changed = plan.reduce((sum, id) => sum + Number(!previousMenu.includes(id)), 0);
-    return quotes.map(quote => quoteScore(quote, limit, changed)).reduce((best, score) => better(score, best) ? score : best);
+    const preference = plan.reduce((sum, id) => sum + recipePriority(recipesById.get(id)), 0);
+    return quotes.map(quote => quoteScore(quote, limit, changed, preference)).reduce((best, score) => better(score, best) ? score : best);
   }
 
   let score = rank(menu);
@@ -315,7 +324,7 @@ export function generateMenu(recipes, ingredients, settings, prices, random = Ma
     // whenever the exclusions leave that many.
     const greedy = [];
     for (let index = 0; index < menu.length; index++) {
-      const pool = pools[index % MEALS.length];
+      const pool = pools[index % meals.length];
       const unused = pool.filter(id => !greedy.includes(id));
       const candidates = unused.length ? unused : pool;
       let choice = candidates[0];
@@ -332,7 +341,7 @@ export function generateMenu(recipes, ingredients, settings, prices, random = Ma
   for (let pass = 0; pass < 3; pass++) {
     const before = score;
     for (let index = 0; index < menu.length; index++) {
-      const options = pools[index % MEALS.length].filter(id => !menu.includes(id));
+      const options = pools[index % meals.length].filter(id => !menu.includes(id));
       for (const id of shuffle(options, random).slice(0, 10)) {
         const trial = menu.map((current, slot) => slot === index ? id : current);
         const trialScore = rank(trial);
@@ -344,15 +353,16 @@ export function generateMenu(recipes, ingredients, settings, prices, random = Ma
   return { menu, empty };
 }
 
-export function replacementOptions(menu, index, recipes, ingredients, exclusions) {
+export function replacementOptions(menu, index, recipes, ingredients, exclusions, meals = MEALS,
+  allows = () => true, priority = () => 0) {
   const pool = eligibleRecipes(recipes, ingredients, exclusions).filter(recipe =>
-    recipe.meal === MEALS[index % 3] && recipe.id !== menu[index]);
+    recipe.meal === meals[index % meals.length] && recipe.id !== menu[index] && allows(recipe));
   const unused = pool.filter(recipe => !menu.includes(recipe.id));
-  return (unused.length ? unused : pool).sort((a, b) => a.title.localeCompare(b.title, "ru"));
+  return (unused.length ? unused : pool).sort((a, b) => priority(b) - priority(a) || a.title.localeCompare(b.title, "ru"));
 }
 
-export function replacementMenu(menu, index, id, recipes, ingredients, exclusions) {
+export function replacementMenu(menu, index, id, recipes, ingredients, exclusions, meals, allows, priority) {
   if (!Number.isInteger(index) || index < 0 || index >= menu.length ||
-      !replacementOptions(menu, index, recipes, ingredients, exclusions).some(recipe => recipe.id === id)) return null;
+      !replacementOptions(menu, index, recipes, ingredients, exclusions, meals, allows, priority).some(recipe => recipe.id === id)) return null;
   return menu.map((current, slot) => slot === index ? id : current);
 }
