@@ -118,7 +118,9 @@ export function mountWizard({ state, recipes, ingredients, persist, assess, subm
       return;
     }
     const { quote, bound } = assessment;
-    const source = quote.estimate ? "по ориентирам" : quote.stale ? "по архивным ценам" : "по ценам выбранного магазина";
+    const mixedPrices = quote.estimate && quote.estimatedItems < quote.lines.length;
+    const source = mixedPrices ? "по ценам магазина и ориентирам" : quote.estimate ? "по ориентирам" :
+      quote.stale ? "по архивным ценам" : "по ценам выбранного магазина";
     const example = (quote.estimate || quote.stale ? "≈ " : "") + rubles.format(quote.knownCost / 100);
     target.textContent = quote.knownCost <= Math.round(budget * 100) ? "Уже найден вариант " + source + " за " + example + "." :
       bound !== null && bound > Math.round(budget * 100) ? "По этим ориентирам бюджета не хватит даже без округления до упаковок." :

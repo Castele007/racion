@@ -5,8 +5,8 @@ import { createRequire } from "node:module";
 import { mkdir, readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { STORES, recipeAmount } from "../site/js/planner.mjs";
-import { activeMeals, buildRules, mealPeople } from "../site/js/questionnaire.mjs";
+import { STORES, recipeAmount, shoppingList, starterMenu } from "../site/js/planner.mjs";
+import { activeMeals, buildRules, mealPeople, restoreAnswers } from "../site/js/questionnaire.mjs";
 
 const published = process.env.RACION_PUBLISHED_URL;
 const { chromium } = createRequire(import.meta.url)("playwright");
@@ -305,6 +305,71 @@ test("city store cards remain priced separately from estimated prices", { skip: 
     assert.match(await page.locator("#shopping-summary").innerText(), /Нужна цена всей корзины/);
     await page.getByLabel("Источник цен").selectOption("estimate");
     assert.match(await page.locator("#shopping-summary").innerText(), /Расчёт по ориентирам/);
+  } finally {
+    await page.close();
+  }
+});
+
+test("Magnit shopping shows actual pack math, an estimate source for gaps and a consistent total", { skip: Boolean(published) }, async () => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  try {
+    const answers = restoreAnswers({ store: "magnit", adults: 3, equipment: ["stove", "oven", "blender"] });
+    const menu = starterMenu();
+    await page.addInitScript(({ settings, plan }) => {
+      if (!localStorage.getItem("racion.v1")) {
+        localStorage.setItem("racion.v1", JSON.stringify({ answers: settings, draft: settings, menu: plan }));
+      }
+    }, { settings: answers, plan: menu });
+    const updatedAt = new Date(Date.now() - 60000).toISOString();
+    const location = { city: "Оренбург", id: "fixture", address: "Тестовая точка", channel: "pickup" };
+    const mockOffer = (id, size, price, available = true) => ({
+      sku: id + "-fixture", ingredientId: id, name: ingredients[id].name,
+      packSize: size, unit: ingredients[id].unit, priceKopecks: price, available, updatedAt,
+      terms: { kind: "regular" }, sourceUrl: "https://magnit.ru/",
+    });
+    await page.route("**/data/prices.json", route => route.fulfill({ json: {
+      schemaVersion: 1, city: "Оренбург", stores: [{
+        id: "magnit", status: "partial", location, checkedAt: updatedAt, updatedAt,
+        offers: [mockOffer("milk", 800, 4999), mockOffer("potato", 1000, 7299, false)],
+      }],
+    } }));
+    await page.goto(address);
+    assert.match(await page.locator("#result-store").innerText(), /Магнит.*Цены магазина и ориентиры/);
+    const weekly = await page.locator("#budget-summary strong").nth(1).innerText();
+    assert.match(weekly, /^≈/);
+    await page.getByRole("link", { name: "Список покупок", exact: true }).click();
+    const select = page.getByLabel("Источник цен");
+    assert.equal(await select.inputValue(), "magnit");
+    assert.match(await select.locator("option:checked").innerText(), /с ориентирами/);
+    const byRecipe = new Map(recipes.map(recipe => [recipe.id, recipe]));
+    const milk = shoppingList(menu, byRecipe, ingredients, 3).find(line => line.id === "milk");
+    const packs = Math.ceil(milk.quantity / 800);
+    const row = id => page.locator(".shopping-row", { has: page.locator('[data-item="' + id + '"]') });
+    assert.match(await row("milk").innerText(), new RegExp(packs + " × 800 мл по 49,99"));
+    const currency = new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB" });
+    assert.equal(await row("milk").locator(".shopping-price").innerText(), currency.format(packs * 49.99));
+    assert.match(await row("potato").innerText(), /Ориентир · Нет в наличии в Магните/);
+    assert.match(await row("potato").locator(".shopping-price").innerText(), /^≈/);
+    await row("potato").getByText("Источник ориентира", { exact: true }).click();
+    const reference = row("potato").getByRole("link", { name: /Numbeo/ });
+    assert.match(await reference.getAttribute("href"), /numbeo.com/);
+    assert.equal(await page.locator("#shopping-summary strong").nth(1).innerText(), weekly);
+    await fitViewport(page);
+
+    await page.getByRole("link", { name: "Магазины и цены", exact: true }).click();
+    const store = page.locator(".store-card", { has: page.getByRole("heading", { name: "Магнит", exact: true }) });
+    assert.match(await store.innerText(), /Часть корзины/);
+    assert.equal(await store.locator(".store-cost").innerText(), currency.format(packs * 49.99));
+    await store.getByRole("link", { name: "К списку" }).click();
+    assert.equal(await select.inputValue(), "magnit");
+    assert.equal(await page.locator("#shopping-summary strong").nth(1).innerText(), weekly);
+
+    await page.unroute("**/data/prices.json");
+    await page.route("**/data/prices.json", route => route.fulfill({ json: { schemaVersion: 1, city: "Оренбург", stores: [] } }));
+    await page.reload();
+    assert.equal(await select.inputValue(), "magnit");
+    assert.match(await page.locator("#shopping-summary").innerText(), /Расчёт по ориентирам/);
+    assert.match(await row("milk").locator(".shopping-price").innerText(), /^≈/);
   } finally {
     await page.close();
   }
