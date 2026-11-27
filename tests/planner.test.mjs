@@ -1,3 +1,7 @@
+import {
+  ALLERGENS, EQUIPMENT, MEALS as QUESTIONNAIRE_MEALS, activeMeals, buildRules, compatibleMethods,
+  mealPeople, plannerSettings, portionSchedule, restoreAnswers, validBudget, validateStep,
+} from "../site/js/questionnaire.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
@@ -36,18 +40,24 @@ function randomWithSeed(seed) {
   };
 }
 
-test("public cookbook has at least 100 complete, unique recipes and working assets", () => {
+test("public cookbook has at least 300 complete, unique recipes and working assets", () => {
   assert.equal(byId.size, recipes.length);
   assert.equal(new Set(recipes.map(recipe => recipe.title)).size, recipes.length);
-  assert.ok(recipes.length >= 100);
-  for (const meal of MEALS) assert.ok(recipes.filter(recipe => recipe.meal === meal).length >= 7);
+  assert.ok(recipes.length >= 300);
+  for (const meal of QUESTIONNAIRE_MEALS) assert.ok(recipes.filter(recipe => recipe.meal === meal).length >= 7);
   const imageHashes = new Set();
   for (const recipe of recipes) {
-    assert.ok(recipe.title && MEALS.includes(recipe.meal) && /^[a-z-]+$/.test(recipe.id));
+    assert.ok(recipe.title && QUESTIONNAIRE_MEALS.includes(recipe.meal) && /^[a-z-]+$/.test(recipe.id));
     assert.ok(recipe.minutes >= 10 && recipe.servings > 0);
     assert.ok(recipe.instructions.length >= 3 && recipe.instructions.every(step => step.length >= 25));
     for (const [id, count] of Object.entries(recipe.ingredients)) {
       assert.ok(Object.hasOwn(ingredients, id) && Number.isInteger(count) && count > 0);
+    }
+    assert.ok(Array.isArray(recipe.tags) && recipe.methods.length > 0);
+    for (const method of recipe.methods) {
+      assert.ok(method.equipment.every(key => Object.hasOwn(EQUIPMENT, key)) && method.minutes > 0);
+      assert.ok(method.mode && method.instructions.length >= 3);
+      assert.ok(method.temperature === null || method.temperature >= 100);
     }
     assert.equal(recipe.image, recipe.id);
     const asset = new URL("../site/assets/" + recipe.image + ".webp", import.meta.url);
@@ -97,7 +107,7 @@ test("generation respects exclusions, meal types, variety, and cannot submit an 
   assert.ok(validMenu(menu, recipes, ingredients, settings.exclusions));
   assert.deepEqual([...exclusionIds(ingredients, ["Лук"])], ["onion", "green-onion"]);
   const { menu: impossible, empty } = generateMenu(recipes, ingredients,
-    { ...settings, exclusions: Object.values(ingredients).map(item => item.name).slice(0, 30) }, null);
+    { ...settings, allows: () => false }, null);
   assert.equal(impossible, null);
   assert.ok(empty.length > 0);
   assert.ok(eligibleRecipes(recipes, ingredients, ["шампиньоны"]).every(recipe => !recipe.ingredients.mushrooms));
@@ -234,4 +244,71 @@ test("an edited price changes just the estimated quote and whole packs are alloc
   assert.ok(Math.abs(portions[0] - portions[1]) <= edited.lines.length);
   const actual = { ...edited, estimate: false, stale: 0, knownCost: edited.knownCost + 100 };
   assert.equal(bestQuote([edited, actual]), actual);
+});
+
+test("per-meal people scale groceries and costs using adjustable child portions", () => {
+  const options = restoreAnswers({
+    store: "magnit", adults: 2, hasChildren: true, children: [{ age: 4, percent: 50 }, { age: 12, percent: 80 }],
+    meals: { breakfast: { adults: 1, children: [] }, lunch: { enabled: false }, dinner: { adults: 2, children: [0] },
+      snack: { enabled: true, adults: 0, children: [1] } },
+  });
+  assert.deepEqual(activeMeals(options), ["breakfast", "dinner", "snack"]);
+  assert.deepEqual(portionSchedule(options).slice(0, 6), [1, 2.5, 0.8, 1, 2.5, 0.8]);
+  assert.equal(mealPeople(options, "dinner").people, 3);
+  assert.equal(mealPeople(options, "snack").people, 1);
+  const menu = ["apple-oats", "apple-oats", "apple-oats"];
+  const amounts = shoppingList(menu, byId, ingredients, portionSchedule(options));
+  assert.equal(amounts.find(entry => entry.id === "oats").quantity, 215);
+  const estimate = estimatePricing(load("estimates"), ingredients, {});
+  const quote = estimate.quote(amounts);
+  const mealCosts = allocateMealCosts(menu, byId, ingredients, portionSchedule(options), quote);
+  assert.equal(mealCosts.reduce((sum, cost) => sum + cost, 0), quote.knownCost);
+  assert.ok(mealCosts[1] > mealCosts[0] && mealCosts[0] > mealCosts[2]);
+  assert.equal(validateStep(options, 2), "");
+  assert.ok(validateStep(restoreAnswers({ meals: { dinner: { adults: 0 } } }), 2));
+  assert.ok(validBudget(50000.25) && validBudget(0.01));
+  assert.ok(!validBudget(0) && !validBudget(-1) && !validBudget(0.009));
+});
+
+test("ingredient composition distinguishes lactose from dairy and fish from seafood", () => {
+  for (const item of Object.values(ingredients)) assert.ok(item.allergens.every(key => Object.hasOwn(ALLERGENS, key)));
+  const recipe = byId.get("overnight-c-a");
+  assert.ok(recipe.ingredients["lactose-free-milk"]);
+  const base = { equipment: [] };
+  assert.equal(buildRules(restoreAnswers({ ...base, allergens: ["lactose"] }), ingredients).allows(recipe), true);
+  assert.equal(buildRules(restoreAnswers({ ...base, allergens: ["dairy"] }), ingredients).allows(recipe), false);
+  assert.equal(buildRules(restoreAnswers({ ...base, allergens: ["gluten"] }), ingredients).allows(recipe), false);
+  assert.equal(buildRules(restoreAnswers({ ...base, allergens: ["fish"] }), ingredients).allows(byId.get("cold-dinner-b-a")), true);
+  assert.equal(buildRules(restoreAnswers({ ...base, allergens: ["seafood"] }), ingredients).allows(byId.get("cold-dinner-b-a")), false);
+  assert.equal(buildRules(restoreAnswers({ ...base, exclusions: ["укроп"] }), ingredients).allows(byId.get("cold-dinner-b-a")), false);
+});
+
+test("all nine appliances are used, alternate methods are isolated and replacements stay eligible", () => {
+  for (const key of Object.keys(EQUIPMENT)) {
+    assert.ok(recipes.some(recipe => recipe.methods.some(method => method.equipment.includes(key))), key);
+  }
+  const roasted = byId.get("roast-a-a");
+  assert.deepEqual(compatibleMethods(roasted, ["airfryer"]).map(method => method.temperature), [185]);
+  assert.deepEqual(compatibleMethods(roasted, ["oven"]).map(method => method.temperature), [200]);
+  assert.deepEqual(compatibleMethods(roasted, ["stove"]), []);
+  const compact = byId.get("puree-a-a");
+  assert.deepEqual(compatibleMethods(compact, ["microwave"]), []);
+  assert.equal(compatibleMethods(compact, ["microwave", "blender"]).length, 1);
+  const answers = restoreAnswers({
+    equipment: [], meals: { breakfast: { enabled: false }, lunch: { enabled: true }, dinner: { enabled: false },
+      snack: { enabled: true } },
+    exclusions: ["лука"], allergens: ["fish"], ratings: { "salad-b-a": 1, "salad-b-b": -1 },
+  });
+  const rules = plannerSettings(answers, ingredients);
+  const plan = generateMenu(recipes, ingredients, rules, null, randomWithSeed(12)).menu;
+  assert.equal(plan.length, 14);
+  assert.equal(new Set(plan).size, 14);
+  assert.ok(plan.includes("salad-b-a"));
+  assert.ok(!plan.includes("salad-b-b"));
+  assert.ok(plan.every(id => rules.allows(byId.get(id)) && compatibleMethods(byId.get(id), [])[0]));
+  assert.ok(replacementOptions(plan, 0, recipes, ingredients, [], rules.meals, rules.allows)
+    .every(rules.allows));
+  assert.equal(replacementMenu(plan, 0, "soup-a-a", recipes, ingredients, [], rules.meals, rules.allows), null);
+  const filters = restoreAnswers({ equipment: [], allergens: Object.keys(ALLERGENS) });
+  assert.equal(generateMenu(recipes, ingredients, plannerSettings(filters, ingredients), null).menu, null);
 });

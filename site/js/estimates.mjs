@@ -1,4 +1,4 @@
-import { MEALS, recipeAmount } from "./planner.mjs";
+import { MEALS, portionsAt, recipeAmount } from "./planner.mjs";
 
 export const ESTIMATE_STORE = { id: "estimate", name: "Ориентировочные цены" };
 
@@ -59,7 +59,7 @@ export function allocateMealCosts(menu, recipes, ingredients, people, quote) {
     const shares = menu.flatMap((id, index) => {
       const recipe = recipes.get(id);
       if (!Object.hasOwn(recipe.ingredients, line.id)) return [];
-      const quantity = recipeAmount(recipe, line.id, people, ingredients[line.id].unit);
+      const quantity = recipeAmount(recipe, line.id, portionsAt(people, index), ingredients[line.id].unit);
       const exact = line.cost * (quantity / line.quantity);
       const whole = Math.floor(exact);
       return [{ index, whole, fraction: exact - whole }];
@@ -72,13 +72,16 @@ export function allocateMealCosts(menu, recipes, ingredients, people, quote) {
 
 // Relax the packaging constraint and allow repeats. The resulting minimum
 // cannot exceed the cost of an actual plan using this estimate database.
-export function estimateLowerBound(recipes, ingredients, people, estimates) {
+export function estimateLowerBound(recipes, ingredients, people, estimates, meals = MEALS) {
   if (!estimates.hasOffers || Object.keys(ingredients).some(id => estimates.unitCost(id) === null)) return null;
-  const minima = new Map(MEALS.map(meal => [meal, Infinity]));
+  const minima = new Map(meals.map(meal => [meal, Infinity]));
   for (const recipe of recipes) {
+    const slot = meals.indexOf(recipe.meal);
+    if (slot === -1) continue;
     const cost = Object.keys(recipe.ingredients).reduce((sum, id) =>
-      sum + recipeAmount(recipe, id, people, ingredients[id].unit) * estimates.unitCost(id), 0);
+      sum + recipeAmount(recipe, id, portionsAt(people, slot), ingredients[id].unit) * estimates.unitCost(id), 0);
     minima.set(recipe.meal, Math.min(minima.get(recipe.meal), cost));
   }
-  return Math.floor(7 * [...minima.values()].reduce((sum, value) => sum + value, 0));
+  const total = 7 * [...minima.values()].reduce((sum, value) => sum + value, 0);
+  return Number.isFinite(total) ? Math.floor(total) : null;
 }

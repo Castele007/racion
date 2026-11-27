@@ -876,6 +876,26 @@
         "factor": "5.1",
         "basis": "unit"
       }
+    },
+    "lactose-free-milk": {
+      "packSize": 1000,
+      "priceKopecks": 13200,
+      "referenceId": "milk",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 1.5",
+      "model": {
+        "factor": "1.5",
+        "basis": "unit"
+      }
+    },
+    "cooked-shrimp": {
+      "packSize": 200,
+      "priceKopecks": 22400,
+      "referenceId": "chicken",
+      "method": "Модель по аналогу, коэффициент к цене за единицу 2.6",
+      "model": {
+        "factor": "2.6",
+        "basis": "unit"
+      }
     }
   }
 }
