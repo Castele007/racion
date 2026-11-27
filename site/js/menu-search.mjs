@@ -225,5 +225,14 @@ export function selectWeek({ pools, recipes, settings, random, previous, history
     }
     best = sweep(best, shuffle(positions, random));
   }
+  bestScore = rank(best);
+  for (const seed of [best, ...ranked.map(entry => entry.plan)]) {
+    if (!price || bestScore[0] !== 0 || (!bestScore[1] && !bestScore[4])) break;
+    // Make room in a tight basket before trying unfamiliar dishes again.
+    const affordable = sweep([...seed], shuffle(positions, random), "economy");
+    const trial = sweep(affordable, shuffle(positions, random), "early");
+    const score = rank(trial);
+    if (better(score, bestScore)) [best, bestScore] = [trial, score];
+  }
   return best.map(dish => dish.recipe.id);
 }
