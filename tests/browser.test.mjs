@@ -7,6 +7,7 @@ import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { STORES, recipeAmount, shoppingList, starterMenu } from "../site/js/planner.mjs";
 import { activeMeals, buildRules, mealPeople, restoreAnswers } from "../site/js/questionnaire.mjs";
+import { menuRenewal } from "../site/js/menu-search.mjs";
 
 const published = process.env.RACION_PUBLISHED_URL;
 const { chromium } = createRequire(import.meta.url)("playwright");
@@ -191,15 +192,20 @@ test("all six mobile stages save answers, respect filters and build an itemized 
     await page.getByRole("tab", { name: /понедельник/ }).waitFor();
 
     const kopecks = text => Math.round(Number(text.replace(/[^\d,]/g, "").replace(",", ".")) * 100);
+    const portions = activeMeals(plan.answers).map(meal => mealPeople(plan.answers, meal).portions);
     let week = 0;
     for (const day of await page.getByRole("tab").all()) {
       await day.click();
       const mealAmounts = await page.locator(".meal-cost").allTextContents();
       const subtotal = kopecks(await page.locator("#day-cost").textContent());
-      assert.equal(mealAmounts.reduce((sum, value) => sum + kopecks(value), 0), subtotal);
+      assert.ok(mealAmounts.every(value => value.includes("за порцию")));
+      const roundedPortions = mealAmounts.reduce((sum, value, index) => sum + kopecks(value) * portions[index], 0);
+      assert.ok(Math.abs(subtotal - roundedPortions) <= 0.5 + portions.reduce((sum, value) => sum + value, 0) / 2);
       week += subtotal;
     }
-    assert.equal(week, kopecks(await page.locator("#budget-summary strong").nth(1).textContent()));
+    const shoppingCost = kopecks(await page.locator("#budget-summary strong").nth(1).textContent());
+    assert.ok(week <= shoppingCost + 4);
+    assert.match(await page.locator("#budget-summary").textContent(), /целые упаковки/);
     await page.getByText("Изменить настройки", { exact: true }).click();
     await page.locator('[data-edit-step="3"]').click();
     await expectStep(page, 4);
@@ -268,7 +274,7 @@ test("desktop warns when restrictions and equipment leave no eligible recipes", 
     await expectStep(page, 6);
     await page.locator('[data-toggle-group="equipment"][data-value="stove"]').click();
     await page.getByRole("button", { name: "Составить меню", exact: true }).click();
-    assert.match(await page.locator("#wizard-error").innerText(), /Нет подходящих блюд.*завтрак/);
+    assert.match(await page.locator("#wizard-error").innerText(), /Нет подходящих блюд.*завтрак.*аллергии.*техника/i);
     assert.equal((await state(page)).menu, null);
     assert.equal(await page.getByRole("tab").count(), 0);
   } finally {
@@ -466,6 +472,80 @@ test("settings edits and week choice are staged, recover from a failed plan and 
     await page.setViewportSize({ width: 1440, height: 900 });
     await fitViewport(page);
     await screenshot(page, "settings-desktop");
+  } finally {
+    await page.close();
+  }
+});
+
+test("budget modes and both refresh actions change real dinner and snack sets", async () => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  try {
+    const answers = restoreAnswers({
+      store: "magnit", adults: 1, budget: 3400, equipment: ["stove", "oven"],
+      meals: { breakfast: { enabled: false }, lunch: { enabled: false }, snack: { enabled: true } },
+      favorites: ["chicken", "beef", "pork", "fish", "seafood", "soup", "salad", "pasta", "porridge"],
+      exclusions: ["лук", "баклажаны", "оливки", "зелень", "укроп", "петрушка", "свёкла", "белокочанная капуста"],
+    });
+    await page.route("**/data/prices.json", route => route.fulfill({ json: { city: "Оренбург", stores: [] } }));
+    await page.addInitScript(draft => {
+      let seed = 5050;
+      Math.random = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32);
+      if (!localStorage.getItem("racion.v1")) localStorage.setItem("racion.v1", JSON.stringify({ draft, step: 3 }));
+    }, answers);
+    await page.goto(address);
+    await expectStep(page, 4);
+    assert.ok(await page.getByRole("radio", { name: /Сбалансированный/ }).isChecked());
+    await page.getByRole("radio", { name: /Экономный/ }).check();
+    assert.equal((await state(page)).draft.mode, "economy");
+    await page.getByRole("radio", { name: /Сбалансированный/ }).check();
+    await fitViewport(page);
+    await screenshot(page, "budget-modes");
+    await next(page);
+    await next(page);
+    await page.getByRole("button", { name: "Составить меню", exact: true }).click();
+    await page.getByRole("tab", { name: /понедельник/ }).waitFor();
+    const rules = buildRules(answers, ingredients);
+    let previous = null;
+
+    async function verifyPlan(budget, mode) {
+      const plan = await state(page);
+      assert.equal(plan.answers.budget, budget);
+      assert.equal(plan.answers.mode, mode);
+      assert.equal(new Set(plan.menu).size, 14);
+      assert.ok(plan.menu.every(id => rules.allows(byId.get(id))));
+      const quote = await page.locator("#budget-summary strong").nth(1).textContent();
+      assert.ok(Number(quote.replace(/[^\d,]/g, "").replace(",", ".")) <= budget);
+      if (previous) {
+        const changes = menuRenewal(plan.menu, previous, byId, ["dinner", "snack"], rules.method);
+        assert.ok(changes.length === 2 && changes.every(change => change.recipes >= 5 && change.families >= 5));
+        assert.deepEqual(plan.history[0].menu, previous);
+      }
+      previous = plan.menu;
+    }
+
+    await verifyPlan(3400, "balanced");
+    assert.match(await page.locator("#menu-limit").textContent(), /исключённые продукты.*доступная техника/);
+    await page.getByRole("button", { name: "Новое меню", exact: true }).click();
+    await verifyPlan(3400, "balanced");
+    for (const [budget, mode] of [[5800, "balanced"], [10100, "variety"]]) {
+      await page.getByRole("link", { name: "Настройки рациона", exact: true }).click();
+      await page.getByRole("button", { name: "Изменить: Недельный бюджет", exact: true }).click();
+      await page.locator("#wizard-budget").fill(String(budget));
+      if (mode === "variety") await page.getByRole("radio", { name: /Максимальное разнообразие/ }).check();
+      await page.getByRole("button", { name: "Сохранить параметр", exact: true }).click();
+      await page.getByRole("button", { name: "Сохранить и пересчитать меню", exact: true }).click();
+      await page.getByRole("tab", { name: /понедельник/ }).waitFor();
+      await verifyPlan(budget, mode);
+    }
+    await page.getByRole("link", { name: "Настройки рациона", exact: true }).click();
+    await page.getByRole("button", { name: "Обновить блюда", exact: true }).click();
+    await page.getByRole("tab", { name: /понедельник/ }).waitFor();
+    await verifyPlan(10100, "variety");
+    await page.reload();
+    await page.locator("#menu-history > summary").click();
+    assert.equal(await page.locator("#menu-history-list details").count(), 4);
+    assert.match(await page.locator("#menu-turnover").textContent(), /непохожих семейств/);
+    await screenshot(page, "menu-variety");
   } finally {
     await page.close();
   }

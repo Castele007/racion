@@ -3,6 +3,7 @@ import {
   ADULT_LIMIT, CHILD_LIMIT, BUDGET_MAX, MEALS, MEAL_LABELS, STEP_NAMES, EQUIPMENT, FAVORITES,
   ALLERGENS, COMMON_EXCLUSIONS, activeMeals, childDefault, dietFilter, household, mealPeople, restoreAnswers, validBudget, validateStep,
 } from "./questionnaire.mjs";
+import { MENU_MODES } from "./menu-search.mjs";
 
 const labels = [
   ["Где покупаете продукты?", "Выберите магазин в Оренбурге. Если его корзину пока нельзя посчитать, используем ориентировочные цены."],
@@ -105,7 +106,12 @@ export function mountWizard({ state, recipes, ingredients, persist, assess, subm
       '"><div class="range-endpoints"><span>1 000 ₽</span><span>30 000 ₽</span></div></div>' +
       '<div class="budget-stats"><div><small>На человека в неделю</small><strong id="budget-per-person"></strong></div>' +
       '<div><small>На день</small><strong id="budget-per-day"></strong></div></div>' +
-      '<p id="budget-assessment" class="wizard-note" aria-live="polite"></p>';
+      '<p id="budget-assessment" class="wizard-note" aria-live="polite"></p>' +
+      '<fieldset class="menu-modes"><legend>Режим меню</legend>' +
+      Object.entries(MENU_MODES).map(([mode, entry]) =>
+        '<label><input type="radio" name="menu-mode" value="' + mode + '"' + (mode === a.mode ? ' checked' : '') +
+        '><span><strong>' + entry.label + '</strong><small>' + entry.description + '</small></span></label>'
+      ).join("") + "</fieldset>";
   }
 
   function budgetText() {
@@ -288,6 +294,11 @@ export function mountWizard({ state, recipes, ingredients, persist, assess, subm
   });
 
   content.addEventListener("change", event => {
+    if (event.target.name === "menu-mode" && Object.hasOwn(MENU_MODES, event.target.value)) {
+      state.draft.mode = event.target.value;
+      persist();
+      return;
+    }
     if (event.target.id !== "has-children") return;
     state.draft.hasChildren = event.target.checked;
     saveRender("#has-children");

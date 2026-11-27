@@ -131,10 +131,16 @@
             </div>
             <a class="button outline" href="#shopping"><svg class="icon"><use href="#i-bag"></use></svg>К покупкам</a>
           </div>
+          <p id="menu-limit" class="method-note" hidden></p>
+          <p id="menu-turnover" class="summary-note" role="status" hidden></p>
           <div id="week-tabs" class="week-tabs" role="tablist" aria-label="День недели"></div>
           <div id="day-menu" class="meal-grid" role="tabpanel" tabindex="0"></div>
           <p id="day-cost" class="day-cost" hidden></p>
           <div class="menu-budget" id="budget-summary"></div>
+          <details class="menu-details"><summary>Доступные рецепты</summary><ul id="recipe-availability"></ul></details>
+          <details class="menu-details" id="menu-history" hidden>
+            <summary>История меню</summary><div id="menu-history-list"></div>
+          </details>
         </div>
       </section>
 

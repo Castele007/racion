@@ -1,4 +1,6 @@
 import { DEFAULT_SETTINGS, STORES, cleanExclusions, exclusionIds } from "./planner.mjs";
+import { completeDish, familyOf } from "./culinary.mjs";
+import { DEFAULT_MODE, MENU_MODES } from "./menu-search.mjs";
 
 export const MEALS = ["breakfast", "lunch", "dinner", "snack"];
 export const MEAL_LABELS = { breakfast: "Завтрак", lunch: "Обед", dinner: "Ужин", snack: "Перекус" };
@@ -62,6 +64,7 @@ export function restoreAnswers(input = {}, legacy = {}) {
     store: STORES.some(store => store.id === input.store) ? input.store : null,
     adults, hasChildren, children, meals,
     budget: validBudget(input.budget) ? input.budget : validBudget(legacy.budget) ? legacy.budget : DEFAULT_SETTINGS.budget,
+    mode: Object.hasOwn(MENU_MODES, input.mode) ? input.mode : DEFAULT_MODE,
     favorites: selected(input.favorites, FAVORITES),
     allergens: selected(input.allergens, ALLERGENS),
     exclusions: cleanExclusions(input.exclusions ?? legacy.exclusions),
@@ -110,18 +113,39 @@ export function dietFilter(answers, ingredients) {
 
 export function buildRules(answers, ingredients) {
   const dietAllows = dietFilter(answers, ingredients);
+  const method = recipe => compatibleMethods(recipe, answers.equipment)[0];
   return {
-    allows: recipe => dietAllows(recipe) && compatibleMethods(recipe, answers.equipment).length > 0,
-    priority: recipe => (answers.ratings[recipe.id] ?? 0) * 6 +
-      recipe.tags.filter(tag => answers.favorites.includes(tag)).length * 2,
+    allows: recipe => dietAllows(recipe) && Boolean(method(recipe)),
+    method,
+    priority: recipe => (answers.ratings[recipe.id] ?? 0) * 4 +
+      (recipe.tags.some(tag => answers.favorites.includes(tag)) ? 2 : 0),
   };
+}
+
+export function recipeAvailability(answers, recipes, ingredients) {
+  const allergies = dietFilter({ ...answers, exclusions: [] }, ingredients);
+  const exclusions = dietFilter({ ...answers, allergens: [] }, ingredients);
+  return MEALS.map(meal => {
+    const all = recipes.filter(recipe => recipe.meal === meal);
+    const usable = all.filter(completeDish);
+    const afterAllergies = usable.filter(allergies);
+    const afterExclusions = afterAllergies.filter(exclusions);
+    const eligible = afterExclusions.filter(recipe => compatibleMethods(recipe, answers.equipment).length > 0);
+    return {
+      meal, total: all.length, families: new Set(all.map(familyOf)).size, usable: usable.length,
+      allergyLoss: usable.length - afterAllergies.length,
+      exclusionLoss: afterAllergies.length - afterExclusions.length,
+      equipmentLoss: afterExclusions.length - eligible.length,
+      eligible: eligible.length, eligibleFamilies: new Set(eligible.map(familyOf)).size,
+    };
+  });
 }
 
 export function plannerSettings(answers, ingredients) {
   const rules = buildRules(answers, ingredients);
   return {
-    meals: activeMeals(answers), people: portionSchedule(answers), budget: answers.budget,
-    exclusions: answers.exclusions, allows: rules.allows, priority: rules.priority,
+    meals: activeMeals(answers), people: portionSchedule(answers), budget: answers.budget, mode: answers.mode,
+    exclusions: answers.exclusions, ...rules,
   };
 }
 

@@ -1,19 +1,21 @@
 import {
-  DAYS, STORES, MAX_PRICE_AGE, bestQuote, dateAt, generateMenu, isWeekStart, pricing, recipeAmount,
+  DAYS, STORES, MAX_PRICE_AGE, bestQuote, dateAt, generateMenu, isWeekStart, mealIngredientCosts, pricing, recipeAmount,
   replacementMenu, replacementOptions, shoppingList, validMenu, weekForDate, weekStart,
 } from "./planner.mjs";
 import {
-  ESTIMATE_STORE, allocateMealCosts, cleanOverrides, estimateLowerBound, estimatePricing, estimateRows, fillMissingPrices,
+  ESTIMATE_STORE, cleanOverrides, estimateLowerBound, estimatePricing, estimateRows, fillMissingPrices,
 } from "./estimates.mjs";
 import {
   STEP_NAMES, MEAL_LABELS, ALLERGENS, FAVORITES, EQUIPMENT, activeMeals, compatibleMethods, household, mealPeople,
-  plannerSettings, portionSchedule, restoreAnswers, validateStep,
+  plannerSettings, portionSchedule, recipeAvailability, restoreAnswers, validateStep,
 } from "./questionnaire.mjs";
 import { CATEGORIES, SIDES, familyOf } from "./culinary.mjs";
+import { MENU_MODES, MIN_NEW_DISHES, menuRenewal } from "./menu-search.mjs";
 import { mountWizard } from "./wizard.mjs";
 
 const $ = id => document.getElementById(id);
 const storageKey = "racion.v1";
+const HISTORY_LIMIT = 8;
 const views = { setup: "Настройка меню", menu: "Планировщик питания", shopping: "Список покупок", stores: "Магазины и цены", settings: "Настройки рациона" };
 const mealIcons = { breakfast: "sun", lunch: "bowl", dinner: "moon", snack: "leaf" };
 const dateShort = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "short", timeZone: "UTC" });
@@ -93,8 +95,11 @@ function readState() {
   const rules = answers ? plannerSettings(answers, ingredients) : null;
   const menu = rules && !validateStep(answers, 0) && !validateStep(answers, 2) &&
     validMenu(saved?.menu, recipes, ingredients, [], rules.meals, rules.allows) ? saved.menu : null;
+  const history = (Array.isArray(saved?.history) ? saved.history : []).slice(0, HISTORY_LIMIT).filter(entry =>
+    isWeekStart(entry?.start) && Array.isArray(entry.menu) && [7, 14, 21, 28].includes(entry.menu.length) &&
+    entry.menu.every(id => recipesById.has(id)));
   return {
-    answers: menu ? answers : null, draft, menu,
+    answers: menu ? answers : null, draft, menu, history,
     step: Number.isInteger(saved?.step) && saved.step >= 0 && saved.step < STEP_NAMES.length ? saved.step : 0,
     wizardMode: menu && (saved?.wizardMode === "parameter" || saved?.wizardMode === "restart") ? saved.wizardMode :
       menu && saved?.editing ? "parameter" : "initial",
@@ -124,7 +129,8 @@ function tabId(index) { return "day-tab-" + index; }
 function renderTabs() {
   $("menu-dates").textContent = dateWithYear.formatRange(dateAt(state.start, 0), dateAt(state.start, 6)) +
     " · " + peopleText(household(state.answers)) +
-    " · Разных семейств блюд: " + new Set(state.menu.map(id => familyOf(recipesById.get(id)))).size;
+    " · " + MENU_MODES[state.answers.mode].label +
+    " · Семейств блюд: " + new Set(state.menu.map(id => familyOf(recipesById.get(id)))).size;
   $("week-tabs").innerHTML = DAYS.map((day, index) => {
     const date = dateAt(state.start, index);
     const selected = index === state.day;
@@ -145,8 +151,8 @@ function renderDay() {
   const meals = activeMeals(state.answers);
   const dayStart = state.day * meals.length;
   dayCost.hidden = !mealCosts;
-  dayCost.textContent = mealCosts ? "Итого за день " + quoteMoney(
-    mealCosts.slice(dayStart, dayStart + meals.length).reduce((sum, cost) => sum + cost, 0), planningQuote
+  dayCost.textContent = mealCosts ? "Использованные ингредиенты за день " + quoteMoney(
+    Math.round(mealCosts.slice(dayStart, dayStart + meals.length).reduce((sum, cost) => sum + cost.used, 0)), planningQuote
   ) : "";
   $("day-menu").style.setProperty("--meal-count", meals.length);
   $("day-menu").innerHTML = meals.map((meal, slot) => {
@@ -164,7 +170,8 @@ function renderDay() {
       peopleText(participants.people) + ' · ' + number.format(participants.portions) + ' порц. · ' +
       escapeHtml(equipmentText(method)) + '</p>' +
       (recipe.sideDish ? '<p class="meal-side">Гарнир: ' + escapeHtml(SIDES[recipe.sideDish]) + '</p>' : '') +
-      (mealCosts ? '<p class="meal-cost">' + quoteMoney(mealCosts[index], planningQuote) + '</p>' : '') +
+      (mealCosts ? '<p class="meal-cost">' + quoteMoney(mealCosts[index].perPortion, planningQuote) +
+        ' за порцию <small>· ингредиенты</small></p>' : '') +
       '<div class="meal-actions">' +
       '<button class="button recipe-button" type="button" data-recipe="' + index + '">Рецепт</button>' +
       '<button class="button outline" type="button" data-replace="' + index + '">' +
@@ -207,7 +214,7 @@ function budgetSummary(quote, menuView = false) {
   }
   const warning = menuView && remainder < 0 ? overBudgetNotice(quote, budget) : "";
   const details = menuView && quote?.complete ?
-    '<p class="summary-note">Стоимость целых упаковок распределена по блюдам пропорционально их долям в покупках.</p>' : "";
+    '<p class="summary-note">За порцию указана стоимость использованных ингредиентов. Итог покупок за неделю включает целые упаковки.</p>' : "";
   return '<div class="summary-grid">' + summaryCard("Бюджет", money(budget), "На неделю") +
     summaryCard(basketTitle, quote?.knownCost == null ? "—" : quoteMoney(quote.knownCost, quote),
       mixedPrices ? "Ориентиры для " + quote.estimatedItems + " из " + quote.lines.length + " позиций" :
@@ -371,6 +378,43 @@ function priceLowerBound(quote, rules, source, storeId) {
   return estimateLowerBound(recipes.filter(rules.allows), ingredients, rules.people, source.estimates, rules.meals);
 }
 
+function availabilityText(row) {
+  const causes = [
+    [row.allergyLoss, "аллергии и ограничения"], [row.exclusionLoss, "исключённые продукты"],
+    [row.equipmentLoss, "доступная техника"],
+  ].filter(([count]) => count).map(([count, label]) => label + " −" + count);
+  return MEAL_LABELS[row.meal] + " · " + row.eligible + " из " + row.usable +
+    " рецептов · семейств " + row.eligibleFamilies + (causes.length ? " (" + causes.join(", ") + ")" : "");
+}
+
+function renderMenuDetails() {
+  const rules = plannerSettings(state.answers, ingredients);
+  const options = recipeAvailability(state.answers, recipes, ingredients).filter(row => rules.meals.includes(row.meal));
+  $("recipe-availability").innerHTML = options.map(row => "<li>" + availabilityText(row) + "</li>").join("");
+  const limited = options.filter(row => row.eligibleFamilies < 7 || row.eligible * 2 < row.usable);
+  $("menu-limit").hidden = !limited.length;
+  $("menu-limit").textContent = limited.length ? "Настройки сокращают выбор. " + limited.map(availabilityText).join(". ") + "." : "";
+  const changes = menuRenewal(state.menu, state.history[0]?.menu, recipesById, rules.meals, rules.method);
+  const turnover = $("menu-turnover");
+  const belowGoal = changes.some(change => change.families < MIN_NEW_DISHES);
+  turnover.hidden = !changes.length;
+  turnover.classList.toggle("form-error", belowGoal);
+  turnover.textContent = changes.length ? (belowGoal
+    ? "В рамках бюджета и ограничений не удалось подобрать пять непохожих замен для каждого приёма пищи. "
+    : "Обновление по сравнению с предыдущим меню. ") + changes.map(({ meal, recipes, families }) =>
+    MEAL_LABELS[meal] + " · новых рецептов " + recipes + " из 7, непохожих семейств " + families).join(". ") + "." : "";
+
+  $("menu-history").hidden = !state.history.length;
+  $("menu-history-list").innerHTML = state.history.map(({ start, menu }, position) => {
+    const mealCount = menu.length / 7;
+    const days = DAYS.map((day, index) =>
+      "<li><strong>" + dateShort.format(dateAt(start, index)) + "</strong> " +
+      menu.slice(index * mealCount, (index + 1) * mealCount).map(id => escapeHtml(recipesById.get(id).title)).join(" · ") + "</li>");
+    return '<details><summary>' + dateWithYear.formatRange(dateAt(start, 0), dateAt(start, 6)) +
+      (position === 0 ? " · последний вариант" : "") + "</summary><ul>" + days.join("") + "</ul></details>";
+  }).join("");
+}
+
 function assessBudget(answers) {
   const source = planningPrices(state.overrides, answers.store);
   const rules = plannerSettings(answers, ingredients);
@@ -378,7 +422,7 @@ function assessBudget(answers) {
   // feasible upper bound and is reused while the slider moves.
   let seed = 47;
   const random = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32);
-  const result = generateMenu(recipes, ingredients, { ...rules, budget: 0 }, source, random);
+  const result = generateMenu(recipes, ingredients, { ...rules, budget: 0, mode: "economy" }, source, random);
   if (!result.menu) return { message: "Для выбранных приёмов пищи пока нет подходящих рецептов." };
   const quote = bestQuote(source.quote(shoppingList(result.menu, recipesById, ingredients, rules.people)));
   const bound = priceLowerBound(quote, rules, source, answers.store);
@@ -406,7 +450,7 @@ function refreshCalculations(prior) {
   planningQuote = state.answers.store === "magnit"
     ? bestQuote([magnitQuote])
     : bestQuote(quotes.filter(quote => quote.estimate || quote.store.id === state.answers.store));
-  mealCosts = allocateMealCosts(state.menu, recipesById, ingredients, portions, planningQuote);
+  mealCosts = mealIngredientCosts(state.menu, recipesById, ingredients, portions, planningQuote);
   $("budget-summary").innerHTML = budgetSummary(planningQuote, true);
   const selectedStore = STORES.find(store => store.id === state.answers.store);
   const mixedPrices = planningQuote?.estimate && planningQuote.estimatedItems < planningQuote.lines.length;
@@ -416,6 +460,7 @@ function refreshCalculations(prior) {
   const updated = planningQuote && !planningQuote.estimate ? timestamp(planningQuote.store.updatedAt) : null;
   $("result-store").textContent = selectedStore.name + " · Оренбург · " + source + (updated ? " · " + updated : "");
   renderDay();
+  renderMenuDetails();
   const activeStores = quotes.filter(quote => storeStatus(quote.store, Date.now())[0] === "fresh").length;
   $("sidebar-prices").textContent = activeStores ?
     countText(activeStores, { one: "магазин с ценами", few: "магазина с ценами", many: "магазинов с ценами" }) :
@@ -444,7 +489,8 @@ function recipeDialog(index) {
     recipe.sideDish ? "Гарнир: " + SIDES[recipe.sideDish] : recipe.servingStyle === "needs-side" ?
       "Блюдо требует гарнира" : "Самостоятельное блюдо"];
   $("dialog-content").innerHTML = '<p class="method-note">' + escapeHtml(composition.join(" · ")) +
-    '</p><section class="dialog-section"><h3>Ингредиенты · ' +
+    '</p>' + (mealCosts ? '<p class="meal-cost">' + quoteMoney(mealCosts[index].perPortion, planningQuote) +
+      ' за порцию · использованные ингредиенты</p>' : '') + '<section class="dialog-section"><h3>Ингредиенты · ' +
     peopleText(people.people) + " · " + number.format(people.portions) + ' порц.</h3><ul class="ingredient-list">' +
     Object.keys(recipe.ingredients).map(id => {
       const item = ingredients[id];
@@ -461,7 +507,7 @@ function replaceDialog(index) {
   activeDialogIndex = index;
   const recipe = recipesById.get(state.menu[index]);
   const rules = plannerSettings(state.answers, ingredients);
-  const options = replacementOptions(state.menu, index, recipes, ingredients, [], rules.meals, rules.allows, rules.priority);
+  const options = replacementOptions(state.menu, index, recipes, ingredients, [], rules.meals, rules.allows, rules.priority, rules.method);
   $("dialog-kicker").textContent = MEAL_LABELS[recipe.meal] + " · " + fullDay.format(dateAt(state.start, state.day));
   $("dialog-title").textContent = "Заменить блюдо";
   $("dialog-content").innerHTML = options.length ?
@@ -498,7 +544,7 @@ function renderSettings() {
       ...(answers.hasChildren ? answers.children.map(child => child.age + " лет · " + child.percent + "% взрослой порции") : []),
     ],
     activeMeals(answers).map(meal => MEAL_LABELS[meal] + " · " + peopleText(mealPeople(answers, meal).people)),
-    money(Math.round(answers.budget * 100)),
+    [money(Math.round(answers.budget * 100)), MENU_MODES[answers.mode].label],
     [
       "Любимые: " + (answers.favorites.map(key => FAVORITES[key]).join(", ") || "—"),
       "Оценки блюд: " + Object.keys(answers.ratings).length,
@@ -577,11 +623,14 @@ function generate(answers, start = state.start, applyDraft = false) {
   }
   const rules = plannerSettings(answers, ingredients);
   const source = planningPrices(state.overrides, answers.store);
-  const result = generateMenu(recipes, ingredients, rules, source,
-    Math.random, state.menu ?? []);
+  const comparable = state.answers &&
+    JSON.stringify({ ...state.answers, budget: answers.budget, mode: answers.mode }) === JSON.stringify(restoreAnswers(answers));
+  const result = generateMenu(recipes, ingredients, { ...rules, previousBudget: comparable ? state.answers.budget : null }, source,
+    Math.random, state.menu ?? [], state.history.map(entry => entry.menu));
   if (!result.menu) {
-    return "Нет подходящих блюд для: " + result.empty.map(meal => MEAL_LABELS[meal].toLowerCase()).join(", ") +
-      ". Проверьте выбранные приёмы пищи, ограничения и технику." + (state.menu ? " Текущее меню сохранено." : "");
+    const unavailable = recipeAvailability(answers, recipes, ingredients).filter(row => result.empty.includes(row.meal));
+    return "Нет подходящих блюд. " + unavailable.map(availabilityText).join(". ") +
+      "." + (state.menu ? " Текущее меню сохранено." : "");
   }
   if (state.menu) {
     const list = shoppingList(result.menu, recipesById, ingredients, rules.people);
@@ -590,6 +639,11 @@ function generate(answers, start = state.start, applyDraft = false) {
       return "Подбор не нашёл меню в пределах бюджета. Стоимость найденного варианта " +
         quoteMoney(quote.knownCost, quote) + ". Текущее меню сохранено.";
     }
+    const changes = menuRenewal(result.menu, state.menu, recipesById, rules.meals, rules.method);
+    if (!applyDraft && changes.length && changes.every(change => change.recipes === 0)) {
+      return "В пределах текущего бюджета и ограничений подобрать новый набор не удалось. Текущее меню сохранено.";
+    }
+    state.history = [{ start: state.start, menu: state.menu }, ...state.history].slice(0, HISTORY_LIMIT);
   }
   if (answers.store !== state.answers?.store) state.store = null;
   state.wizardMode = "initial";
@@ -684,7 +738,7 @@ function registerEvents() {
     const slot = activeDialogIndex;
     const id = option.dataset.alternative;
     const rules = plannerSettings(state.answers, ingredients);
-    const menu = replacementMenu(state.menu, slot, id, recipes, ingredients, [], rules.meals, rules.allows, rules.priority);
+    const menu = replacementMenu(state.menu, slot, id, recipes, ingredients, [], rules.meals, rules.allows, rules.priority, rules.method);
     if (!menu) return;
     $("meal-dialog").close();
     updatePlan(menu, state.answers, state.day, false);

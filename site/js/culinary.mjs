@@ -6,6 +6,7 @@ export const CATEGORIES = {
   casserole: "Запеканки", stew: "Жаркое и рагу", dumplings: "Пельмени и вареники",
   fish: "Рыбные блюда", roast: "Запечённые блюда", steamed: "Блюда на пару",
   grill: "Блюда на гриле", smoothie: "Смузи", "cold-plate": "Холодные блюда",
+  chops: "Отбивные и шницели", seafood: "Морепродукты", fruit: "Фрукты", dairy: "Молочные перекусы", dessert: "Десерты",
 };
 
 export const SIDES = {
@@ -35,4 +36,43 @@ export function productOf(recipe) {
 export function sideFamily(recipe) {
   if (recipe.sideDish?.endsWith("-potatoes")) return "potato";
   return recipe.sideDish === "spaghetti" ? "pasta" : recipe.sideDish;
+}
+
+const seasonings = new Set(["oil", "sugar", "cinnamon", "paprika", "soda", "baking-powder", "soy"]);
+
+function technique(method, category) {
+  if (!method) return "";
+  const { equipment } = method;
+  if (!equipment.length) return "cold";
+  const appliance = equipment.find(item => item !== "stove" && item !== "blender");
+  if (appliance) return appliance;
+  const mode = method.mode.toLowerCase();
+  if (/туш|томл/u.test(mode)) return "braise";
+  if (/жар/u.test(mode) || ["cutlets", "chops", "pancakes", "eggs"].includes(category)) return "pan";
+  return "boil";
+}
+
+export function dishProfile(recipe, method = recipe.methods?.[0]) {
+  const ingredients = Object.keys(recipe.ingredients).filter(id => !seasonings.has(id));
+  return {
+    recipe, family: familyOf(recipe), primary: productOf(recipe), side: sideFamily(recipe),
+    category: recipe.category, method: technique(method, recipe.category), ingredients,
+    secondary: ingredients.filter(id => id !== recipe.mainIngredient),
+  };
+}
+
+function ingredientOverlap(a, b) {
+  const shared = a.filter(id => b.includes(id)).length;
+  return shared / (a.length + b.length - shared || 1);
+}
+
+const same = (a, b) => Number(Boolean(a && a === b));
+export const SIMILAR_DISH = 0.58;
+
+export function dishSimilarity(a, b) {
+  if (a.family === b.family) return 1;
+  return 0.46 * ingredientOverlap(a.ingredients, b.ingredients) +
+    0.16 * ingredientOverlap(a.secondary, b.secondary) +
+    0.13 * same(a.category, b.category) + 0.13 * same(a.method, b.method) +
+    0.1 * same(a.side, b.side) + 0.06 * same(a.primary, b.primary);
 }
