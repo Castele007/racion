@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f7ef">
+  <meta name="description" content="Семейное меню на неделю и список покупок с учётом бюджета и цен магазинов Оренбурга.">
+  <title>Рацион — семейное меню на неделю</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script type="module" src="./js/app.mjs"></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-cutlery" viewBox="0 0 24 24"><path d="M3 3v5a3 3 0 0 0 6 0V3M6 3v18m14 0V3c-3 1.6-5 5.1-5 9v2h5"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18m-13 5h3m2 0h3"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l1.5 13h-17L5 8Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></symbol>
+    <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 11v9h16v-9M3 10l2-6h14l2 6a2.5 2.5 0 0 1-4.5 1.5 2.5 2.5 0 0 1-4.5 0 2.5 2.5 0 0 1-4.5 0A2.5 2.5 0 0 1 3 10Zm6 10v-5h6v5"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 5a3 3 0 0 1 0 6m2 3a4 4 0 0 1 3 4v2"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6m18 6h-5a2 2 0 0 0 0 4h5"/><path d="M16 14h.01"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 7h16M7 12h10m-7 5h4"/><circle cx="8" cy="7" r="1.5" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.5" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m10 2 1.8 5.2L17 9l-5.2 1.8L10 16l-1.8-5.2L3 9l5.2-1.8L10 2Zm8 11 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M13 5h6v6m0-6-9 9m7 0v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h4"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 5v5h-5M4 19v-5h5m10.8-4A8 8 0 0 0 6 6m-1.8 8A8 8 0 0 0 18 18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/></symbol>
+    <symbol id="i-bowl" viewBox="0 0 24 24"><path d="M3 12h18a9 9 0 0 1-18 0Zm5 8h8M8 8c-2-2 2-3 0-5m4 5c-2-2 2-3 0-5m4 5c-2-2 2-3 0-5"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.6 8.6 0 1 0 20.5 14Z"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M19 4c-8-1-14 3-14 9a6 6 0 0 0 6 6c6 0 10-6 8-15ZM4 20l10-10"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">К содержимому</a>
+  <aside class="sidebar">
+    <a class="brand" href="#menu" aria-label="Рацион — меню на неделю">
+      <span class="brand-icon"><svg class="icon"><use href="#i-cutlery"></use></svg></span>
+      <span>Рацион<span class="brand-period">.</span><small>Семейный планировщик</small></span>
+    </a>
+    <nav class="navigation" aria-label="Разделы планировщика">
+      <a class="nav-link" href="#menu" data-nav="menu" aria-current="page">
+        <svg class="icon"><use href="#i-calendar"></use></svg><span>Меню на неделю</span>
+      </a>
+      <a class="nav-link" href="#shopping" data-nav="shopping">
+        <svg class="icon"><use href="#i-bag"></use></svg><span>Список покупок</span>
+      </a>
+      <a class="nav-link" href="#stores" data-nav="stores">
+        <svg class="icon"><use href="#i-store"></use></svg><span>Магазины и цены</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-status">
+      <div class="status-icon"><svg class="icon"><use href="#i-store"></use></svg></div>
+      <div>
+        <strong>Цены в Оренбурге</strong>
+        <p id="sidebar-prices">Проверяем данные</p>
+      </div>
+      <a href="#stores" aria-label="Открыть статус источников цен"><svg class="icon"><use href="#i-arrow"></use></svg></a>
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <span id="section-label">Планировщик питания</span>
+        <span class="city"><svg class="icon"><use href="#i-pin"></use></svg>Оренбург</span>
+      </div>
+    </header>
+    <main id="main" tabindex="-1" class="main-content">
+      <div id="fatal" role="alert" class="message warn" hidden></div>
+      <noscript><p class="message warn">Включите JavaScript, чтобы составлять меню и сохранять список покупок.</p></noscript>
+      <section id="view-menu" class="view" aria-labelledby="hero-title">
+        <div class="hero">
+          <div class="hero-copy">
+            <h1 id="hero-title">Меню на неделю<br><em>для всей семьи</em></h1>
+            <p>Составьте меню для семьи, соберите список покупок и сравните цены в магазинах города.</p>
+          </div>
+          <div class="hero-photo" aria-hidden="true"></div>
+        </div>
+
+        <form id="preferences" class="preferences" aria-label="Настройки меню">
+          <div class="pref">
+            <label for="people"><svg class="icon"><use href="#i-users"></use></svg>Сколько человек</label>
+            <div class="stepper">
+              <button type="button" data-people="-1" aria-label="Уменьшить число человек"><svg class="icon"><use href="#i-minus"></use></svg></button>
+              <input id="people" name="people" type="number" inputmode="numeric" min="1" max="20" step="1" value="3" required>
+              <button type="button" data-people="1" aria-label="Увеличить число человек"><svg class="icon"><use href="#i-plus"></use></svg></button>
+            </div>
+          </div>
+          <div class="pref">
+            <label for="budget"><svg class="icon"><use href="#i-wallet"></use></svg>Бюджет на неделю</label>
+            <div class="budget-input">
+              <input id="budget" name="budget" type="number" inputmode="numeric" min="1" max="1000000" step="1" value="6500" required>
+              <span aria-hidden="true">₽</span>
+            </div>
+          </div>
+          <div class="pref excluded-pref">
+            <label for="exclude"><svg class="icon"><use href="#i-filter"></use></svg>Исключить продукты</label>
+            <div class="exclude-input">
+              <input id="exclude" name="exclude" type="text" list="ingredient-suggestions" maxlength="150" placeholder="Например, лук" aria-describedby="exclusion-help">
+              <button id="add-exclusion" type="button" aria-label="Добавить исключение"><svg class="icon"><use href="#i-plus"></use></svg></button>
+            </div>
+            <datalist id="ingredient-suggestions"></datalist>
+            <span id="exclusion-help" class="sr-only">Вводите продукты по одному или через запятую. Нажмите Enter или кнопку добавления.</span>
+          </div>
+          <button id="generate" class="button primary generate" type="submit" disabled>
+            <svg class="icon"><use href="#i-spark"></use></svg>Составить меню
+          </button>
+          <div id="exclusion-chips" class="chips" hidden></div>
+          <p id="form-error" class="form-error" role="alert" hidden></p>
+        </form>
+
+        <div class="menu-section" id="menu-board" hidden>
+          <div class="section-heading">
+            <div>
+              <h2>Ваше меню</h2>
+              <p id="menu-dates"></p>
+            </div>
+            <a class="button outline" href="#shopping"><svg class="icon"><use href="#i-bag"></use></svg>К покупкам</a>
+          </div>
+          <div id="week-tabs" class="week-tabs" role="tablist" aria-label="День недели"></div>
+          <div id="day-menu" class="meal-grid" role="tabpanel" tabindex="0"></div>
+          <div class="menu-budget" id="budget-summary"></div>
+        </div>
+      </section>
+
+      <section id="view-shopping" class="view" aria-labelledby="shopping-title" hidden>
+        <div class="section-heading view-title">
+          <div><h1 id="shopping-title">Список покупок</h1><p id="shopping-subtitle"></p></div>
+          <a class="button outline" href="#menu"><svg class="icon"><use href="#i-calendar"></use></svg>Открыть меню</a>
+        </div>
+        <div id="shopping-summary" class="shopping-summary"></div>
+        <div class="list-controls">
+          <label for="shopping-store">Цены магазина</label>
+          <select id="shopping-store"></select>
+          <button id="clear-checks" type="button" class="button outline">Снять отметки</button>
+        </div>
+        <div id="shopping-list"></div>
+      </section>
+
+      <section id="view-stores" class="view" aria-labelledby="stores-title" hidden>
+        <div class="section-heading view-title">
+          <div><h1 id="stores-title">Магазины и цены</h1><p>Стоимость одинакового набора продуктов в Оренбурге</p></div>
+          <a class="button outline" href="#shopping"><svg class="icon"><use href="#i-bag"></use></svg>К покупкам</a>
+        </div>
+        <div id="stores-summary"></div>
+        <div id="store-comparison" class="stores-grid"></div>
+        <p class="method-note"><svg class="icon"><use href="#i-info"></use></svg>Итог включает целые упаковки. Условия доступа к акции, доставка и сервисные сборы могут отличаться от магазина к магазину.</p>
+      </section>
+      <p id="live-status" class="sr-only" role="status" aria-live="polite"></p>
+    </main>
+  </div>
+
+  <dialog id="meal-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-top">
+      <div><span id="dialog-kicker"></span><h2 id="dialog-title"></h2></div>
+      <form method="dialog"><button class="icon-button" type="submit" aria-label="Закрыть"><svg class="icon"><use href="#i-close"></use></svg></button></form>
+    </div>
+    <div id="dialog-content"></div>
+  </dialog>
+</body>
+</html>
