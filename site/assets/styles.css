@@ -359,3 +359,15 @@ dialog::backdrop { background: #10241ad0; }
   .meal-actions { grid-template-columns: 1fr; }
   .stores-grid { grid-template-columns: 1fr; }
 }
+
+.meal-cost { margin: -6px 0 9px; color: var(--green); font-size: 13px; font-weight: 850; }
+.day-cost { margin: 12px 0 0; text-align: right; font-size: 13px; font-weight: 850; }
+#budget-warning { margin-top: 12px; }
+.estimate-editor { margin-top: 16px; }
+.estimate-editor > summary { cursor: pointer; padding: 12px 14px; font-weight: 850; }
+.estimate-editor > p { padding: 0 14px 12px; color: var(--muted); font-size: 12px; }
+.estimate-row { display: grid; grid-template-columns: minmax(0, 1fr) 100px; align-items: center; gap: 10px; padding: 7px 14px; border-top: 1px solid var(--line); }
+.estimate-row label { font-size: 12px; font-weight: 800; }
+.estimate-row small { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+.estimate-row input { width: 100%; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+.estimate-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 14px; }

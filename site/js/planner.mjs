@@ -242,9 +242,13 @@ export function pricing(catalog, now = Date.now()) {
   };
 }
 
+function evidence(quote) {
+  return quote.estimate ? 2 : Number(Boolean(quote.stale));
+}
+
 export function bestQuote(quotes) {
   return quotes.filter(quote => quote.complete)
-    .sort((a, b) => Number(Boolean(a.stale)) - Number(Boolean(b.stale)) || a.knownCost - b.knownCost)[0] ?? null;
+    .sort((a, b) => evidence(a) - evidence(b) || a.knownCost - b.knownCost)[0] ?? null;
 }
 
 function shuffle(items, random) {
@@ -256,16 +260,13 @@ function shuffle(items, random) {
   return pool;
 }
 
-function quoteScore(quote, budget) {
-  // Prefer a verified full basket within budget, then the lowest verified full
-  // basket. Historic prices and incomplete baskets are separate evidence levels.
-  // When whole packs tie, use ingredient consumption to keep searching toward
-  // a plan that can actually drop a pack. This never changes the quoted total.
+function quoteScore(quote, budget, changed) {
+  if (!quote.complete) return [6, quote.missing, quote.knownCost ?? Infinity];
+  const level = evidence(quote);
+  if (quote.knownCost <= budget) return [level * 2, -changed, 0];
   const consumption = quote.lines.reduce((sum, line) =>
-    sum + (line.hasPrice ? line.cost * line.quantity / line.bought : 0), 0);
-  if (quote.complete && !quote.stale) return [quote.knownCost > budget ? 1 : 0, quote.knownCost, consumption];
-  if (quote.complete) return [quote.knownCost > budget ? 3 : 2, quote.knownCost, consumption];
-  return [4, quote.missing, quote.knownCost ?? Infinity, consumption];
+    sum + line.cost * line.quantity / line.bought, 0);
+  return [level * 2 + 1, quote.knownCost, consumption];
 }
 
 function better(candidate, reference) {
@@ -296,9 +297,10 @@ export function generateMenu(recipes, ingredients, settings, prices, random = Ma
 
   const recipesById = new Map(eligible.map(recipe => [recipe.id, recipe]));
   const budget = settings.budget * 100;
-  function rank(plan) {
+  function rank(plan, limit = budget) {
     const quotes = prices.quote(shoppingList(plan, recipesById, ingredients, settings.people));
-    return quotes.map(quote => quoteScore(quote, budget)).reduce((best, score) => better(score, best) ? score : best);
+    const changed = plan.reduce((sum, id) => sum + Number(!previousMenu.includes(id)), 0);
+    return quotes.map(quote => quoteScore(quote, limit, changed)).reduce((best, score) => better(score, best) ? score : best);
   }
 
   let score = rank(menu);
@@ -307,14 +309,37 @@ export function generateMenu(recipes, ingredients, settings, prices, random = Ma
     const trialScore = rank(trial);
     if (better(trialScore, score)) [menu, score] = [trial, trialScore];
   }
-  // Refine the sampled plan without introducing repeats where seven choices exist.
-  for (let index = 0; index < menu.length; index++) {
-    const options = pools[index % 3].filter(id => !menu.includes(id));
-    for (const id of shuffle(options, random).slice(0, 5)) {
-      const trial = menu.map((current, slot) => slot === index ? id : current);
-      const trialScore = rank(trial);
-      if (better(trialScore, score)) [menu, score] = [trial, trialScore];
+  if (score[0] % 2 === 1 || score[0] === 6) {
+    // Build a second candidate one meal at a time, reusing ingredients from
+    // packs the partial plan already bought. Keep all seven choices distinct
+    // whenever the exclusions leave that many.
+    const greedy = [];
+    for (let index = 0; index < menu.length; index++) {
+      const pool = pools[index % MEALS.length];
+      const unused = pool.filter(id => !greedy.includes(id));
+      const candidates = unused.length ? unused : pool;
+      let choice = candidates[0];
+      let best = rank([...greedy, choice], -1);
+      for (const id of candidates.slice(1)) {
+        const next = rank([...greedy, id], -1);
+        if (better(next, best)) [choice, best] = [id, next];
+      }
+      greedy.push(choice);
     }
+    const greedyScore = rank(greedy);
+    if (better(greedyScore, score)) [menu, score] = [greedy, greedyScore];
+  }
+  for (let pass = 0; pass < 3; pass++) {
+    const before = score;
+    for (let index = 0; index < menu.length; index++) {
+      const options = pools[index % MEALS.length].filter(id => !menu.includes(id));
+      for (const id of shuffle(options, random).slice(0, 10)) {
+        const trial = menu.map((current, slot) => slot === index ? id : current);
+        const trialScore = rank(trial);
+        if (better(trialScore, score)) [menu, score] = [trial, trialScore];
+      }
+    }
+    if (before === score) break;
   }
   return { menu, empty };
 }

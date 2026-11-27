@@ -215,6 +215,7 @@ class StoreCollector:
     def collect(self, config, ingredients, checked_at):
         if config is None:
             self.probe()
+            self.web.fetch(self.url)
             fail("unconfigured", "Разрешённый источник цен для конкретного магазина Оренбурга пока не подтверждён.")
         location = validate_config(config, self.hosts, checked_at)
         if config["format"] == "regional-json":

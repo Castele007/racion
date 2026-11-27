@@ -52,6 +52,8 @@ jobs:
       && (needs.refresh.result == 'success' || needs.refresh.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 6
+    outputs:
+      site_revision: ${{ steps.site_revision.outputs.sha }}
     permissions:
       contents: read
       pages: read
@@ -63,6 +65,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Record the revision being published
+        id: site_revision
+        run: git rev-parse HEAD | sed 's/^/sha=/' >> "$GITHUB_OUTPUT"
       - uses: actions/configure-pages@v5
       - name: Check public data
         run: |
@@ -76,6 +81,8 @@ jobs:
     if: ${{ !cancelled() && needs.build.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 8
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       pages: write
       id-token: write
@@ -86,3 +93,27 @@ jobs:
       - name: Publish the static application
         id: deployment
         uses: actions/deploy-pages@v4
+
+
+  verify-published:
+    needs: [build, deploy]
+    if: ${{ !cancelled() && github.event_name == 'push' && needs.deploy.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.site_revision }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install browser test runner
+        run: |
+          npm install --prefix "$RUNNER_TEMP/racion-browser" --no-audit --no-fund playwright@1.62.1
+          "$RUNNER_TEMP/racion-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Check the published site and decode every recipe image
+        env:
+          NODE_PATH: ${{ runner.temp }}/racion-browser/node_modules
+          RACION_PUBLISHED_URL: ${{ needs.deploy.outputs.page_url }}
+        run: test -n "$RACION_PUBLISHED_URL" && node --test tests/browser.test.mjs

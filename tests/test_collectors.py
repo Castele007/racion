@@ -78,11 +78,11 @@ class CollectorsTest(unittest.TestCase):
         with self.assertRaises(SourceError) as error:
             collector.collect(None, INGREDIENTS, NOW)
         self.assertEqual(error.exception.code, "unconfigured")
-        self.assertEqual(web.calls, [collector.url])
+        self.assertEqual(web.calls, [collector.url, collector.url])
         with self.assertRaises(SourceError) as error:
             collector.collect({"format": "regional-json"}, INGREDIENTS, NOW)
         self.assertEqual(error.exception.code, "unverified_source")
-        self.assertEqual(web.calls, [collector.url])
+        self.assertEqual(web.calls, [collector.url, collector.url])
 
     def test_robots_and_same_origin_rules(self):
         rules = robots_directives("""
