@@ -1,0 +1,36 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test planner and catalog collectors
+        run: |
+          node --test tests/planner.test.mjs
+          python -m unittest discover -s tests
+      - name: Install browser test runner
+        run: |
+          npm install --prefix "$RUNNER_TEMP/racion-browser" --no-audit --no-fund playwright@1.62.1
+          "$RUNNER_TEMP/racion-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Run browser workflows
+        env:
+          NODE_PATH: ${{ runner.temp }}/racion-browser/node_modules
+        run: node --test tests/browser.test.mjs

@@ -1,0 +1,87 @@
+name: Update prices and publish Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "collectors/**"
+      - ".github/workflows/pages.yml"
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: racion-pages
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Collect authorized prices for Orenburg
+        env:
+          CATALOG_SOURCES_JSON: ${{ vars.CATALOG_SOURCES_JSON }}
+        run: python -m collectors.update
+      - name: Store the price snapshot
+        run: |
+          git add -- site/data/prices.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Update Orenburg price snapshot"
+          git push origin HEAD:refs/heads/main
+
+  build:
+    needs: refresh
+    if: >-
+      ${{ !cancelled() && github.ref == 'refs/heads/main'
+      && (needs.refresh.result == 'success' || needs.refresh.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/configure-pages@v5
+      - name: Check public data
+        run: |
+          node --test tests/planner.test.mjs
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish the static application
+        id: deployment
+        uses: actions/deploy-pages@v4

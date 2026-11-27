@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "city": "Оренбург",
+  "stores": [
+    {
+      "id": "pyaterochka",
+      "name": "Пятёрочка",
+      "url": "https://5ka.ru/",
+      "checkedAt": "2026-11-27T13:07:32Z",
+      "location": null,
+      "status": "unavailable",
+      "updatedAt": null,
+      "error": {
+        "code": "access_denied",
+        "message": "Источник ограничил доступ (HTTP 403)."
+      },
+      "offers": []
+    },
+    {
+      "id": "magnit",
+      "name": "Магнит",
+      "url": "https://magnit.ru/",
+      "checkedAt": "2026-11-27T13:07:32Z",
+      "location": null,
+      "status": "unavailable",
+      "updatedAt": null,
+      "error": {
+        "code": "unconfigured",
+        "message": "Разрешённый источник цен для конкретного магазина Оренбурга пока не подтверждён."
+      },
+      "offers": []
+    },
+    {
+      "id": "lenta",
+      "name": "Лента",
+      "url": "https://lenta.com/",
+      "checkedAt": "2026-11-27T13:07:32Z",
+      "location": null,
+      "status": "unavailable",
+      "updatedAt": null,
+      "error": {
+        "code": "access_denied",
+        "message": "Источник ограничил доступ (HTTP 403)."
+      },
+      "offers": []
+    },
+    {
+      "id": "perekrestok",
+      "name": "Перекрёсток",
+      "url": "https://www.perekrestok.ru/",
+      "checkedAt": "2026-11-27T13:07:32Z",
+      "location": null,
+      "status": "unavailable",
+      "updatedAt": null,
+      "error": {
+        "code": "access_denied",
+        "message": "Источник ограничил доступ (HTTP 403)."
+      },
+      "offers": []
+    },
+    {
+      "id": "metro",
+      "name": "METRO",
+      "url": "https://online.metro-cc.ru/",
+      "checkedAt": "2026-11-27T13:07:32Z",
+      "location": null,
+      "status": "unavailable",
+      "updatedAt": null,
+      "error": {
+        "code": "unconfigured",
+        "message": "Разрешённый источник цен для конкретного магазина Оренбурга пока не подтверждён."
+      },
+      "offers": []
+    }
+  ]
+}
