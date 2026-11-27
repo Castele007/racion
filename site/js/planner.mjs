@@ -1,4 +1,5 @@
-import { completeDish, familyOf, productOf, sideFamily } from "./culinary.mjs";
+import { completeDish, dishProfile, dishSimilarity } from "./culinary.mjs";
+import { better, selectWeek } from "./menu-search.mjs";
 
 export const MEALS = ["breakfast", "lunch", "dinner"];
 export const MEAL_NAMES = { breakfast: "Завтрак", lunch: "Обед", dinner: "Ужин" };
@@ -265,180 +266,87 @@ export function bestQuote(quotes) {
     .sort((a, b) => evidence(a) - evidence(b) || a.knownCost - b.knownCost)[0] ?? null;
 }
 
-function shuffle(items, random) {
-  const pool = [...items];
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool;
+function pricePlan(ingredients, people, prices) {
+  if (!prices?.hasOffers) return null;
+  const products = Object.entries(ingredients).map(([id, item]) => ({ id, ...item }));
+  const indexOf = new Map(products.map(({ id }, index) => [id, index]));
+  const amounts = new Map();
+
+  return plan => {
+    const quantities = new Float64Array(products.length);
+    for (let index = 0; index < plan.length; index++) {
+      const dish = plan[index];
+      if (!dish) continue;
+      const recipe = dish.recipe;
+      const portions = portionsAt(people, index);
+      const key = recipe.id + ":" + portions;
+      if (!amounts.has(key)) amounts.set(key, Object.keys(recipe.ingredients).map(id => [
+        indexOf.get(id), Math.round(recipeAmount(recipe, id, portions, ingredients[id].unit) * 1000),
+      ]));
+      for (const [product, quantity] of amounts.get(key)) quantities[product] += quantity;
+    }
+    const list = [];
+    quantities.forEach((quantity, index) => {
+      if (quantity) list.push({ ...products[index], quantity: quantity / 1000 });
+    });
+    if (!list.length) return null;
+    const quotes = prices.quote(list);
+    const complete = bestQuote(quotes);
+    if (complete) return { cost: complete.knownCost, evidence: evidence(complete), missing: 0 };
+    const partial = quotes.reduce((best, quote) => !best || quote.missing < best.missing ||
+      (quote.missing === best.missing && (quote.knownCost ?? Infinity) < (best.knownCost ?? Infinity)) ? quote : best, null);
+    return { cost: partial?.knownCost ?? 0, missing: partial?.missing || list.length };
+  };
 }
 
-function count(map, key) {
-  if (!key) return 0;
-  const value = map.get(key) ?? 0;
-  map.set(key, value + 1);
-  return value;
-}
-
-function variety() {
-  const families = new Map(), categories = new Map(), sides = new Map(), products = new Map();
-  function repetitions(recipe) {
-    const family = families.get(familyOf(recipe)) ?? 0;
-    return [Number(family > 0), family,
-      recipe.category ? (categories.get(recipe.meal + ":" + recipe.category) ?? 0) : 0,
-      sides.get(sideFamily(recipe)) ?? 0, products.get(productOf(recipe)) ?? 0];
-  }
-  function add(recipe) {
-    const family = count(families, familyOf(recipe));
-    return [Number(family > 0), family,
-      count(categories, recipe.category && recipe.meal + ":" + recipe.category),
-      count(sides, sideFamily(recipe)), count(products, productOf(recipe))];
-  }
-  return { repetitions, add };
-}
-
-function varietyScore([families, repeats, categories, sides, products], preference, changed) {
-  return [families, categories, -preference, repeats, sides, products, -changed];
-}
-
-function quoteScore(quote, budget, choice) {
-  if (!quote.complete) return [6, quote.missing, quote.knownCost ?? Infinity, ...choice];
-  const level = evidence(quote);
-  if (quote.knownCost <= budget) return [level * 2, ...choice, quote.knownCost];
-  const consumption = quote.lines.reduce((sum, line) =>
-    sum + line.cost * line.quantity / line.bought, 0);
-  return [level * 2 + 1, quote.knownCost, consumption, ...choice];
-}
-
-function better(candidate, reference) {
-  for (let i = 0; i < candidate.length; i++) {
-    if (candidate[i] !== reference[i]) return candidate[i] < reference[i];
-  }
-  return false;
-}
-
-export function generateMenu(recipes, ingredients, settings, prices, random = Math.random, previousMenu = []) {
+export function generateMenu(recipes, ingredients, settings, prices, random = Math.random, previousMenu = [], history = []) {
   const meals = settings.meals ?? MEALS;
   const eligible = eligibleRecipes(recipes, ingredients, settings.exclusions)
     .filter(settings.allows ?? (() => true)).filter(completeDish);
-  const pools = meals.map(meal => eligible.filter(recipe => recipe.meal === meal).map(recipe => recipe.id));
-  const empty = pools.map((pool, index) => pool.length ? null : meals[index]).filter(Boolean);
+  const pools = meals.map(meal => eligible.filter(recipe => recipe.meal === meal));
+  const empty = meals.filter((_, index) => !pools[index].length);
   if (!meals.length || empty.length) return { menu: null, empty };
-  const recipesById = new Map(eligible.map(recipe => [recipe.id, recipe]));
-  const recipePriority = settings.priority ?? (() => 0);
-  const previous = new Set(previousMenu);
-
-  function candidate() {
-    const candidates = pools.map(pool => shuffle(pool, random));
-    const used = new Set();
-    const varietyCounts = variety();
-    return Array.from({ length: meals.length * 7 }, (_, index) => {
-      const pool = candidates[index % meals.length];
-      const unused = pool.filter(id => !used.has(id));
-      let selected, best;
-      for (const id of unused.length ? unused : pool) {
-        const recipe = recipesById.get(id);
-        const weight = varietyScore(varietyCounts.repetitions(recipe), recipePriority(recipe), Number(!previous.has(id)));
-        if (!best || better(weight, best)) [selected, best] = [id, weight];
-      }
-      used.add(selected);
-      varietyCounts.add(recipesById.get(selected));
-      return selected;
-    });
-  }
-
-  let menu = candidate();
-  const budget = Math.round(settings.budget * 100);
-  function rank(plan, limit = budget) {
-    const varietyCounts = variety();
-    const varietyWeight = [0, 0, 0, 0, 0];
-    let preference = 0;
-    let changed = 0;
-    for (const id of plan) {
-      const recipe = recipesById.get(id);
-      varietyCounts.add(recipe).forEach((value, index) => { varietyWeight[index] += value; });
-      preference += recipePriority(recipe);
-      changed += !previous.has(id);
-    }
-    const choice = varietyScore(varietyWeight, preference, changed);
-    if (!prices?.hasOffers) return [0, ...choice];
-    const quotes = prices.quote(shoppingList(plan, recipesById, ingredients, settings.people));
-    return quotes.map(quote => quoteScore(quote, limit, choice)).reduce((best, score) => better(score, best) ? score : best);
-  }
-
-  let score = rank(menu);
-  for (let i = 0; i < 30; i++) {
-    const trial = candidate();
-    const trialScore = rank(trial);
-    if (better(trialScore, score)) [menu, score] = [trial, trialScore];
-  }
-  if (score[0] % 2 === 1 || score[0] === 6) {
-    // Build a second candidate one meal at a time, reusing ingredients from
-    // packs the partial plan already bought. Keep all seven choices distinct
-    // whenever the exclusions leave that many.
-    const greedy = [];
-    for (let index = 0; index < menu.length; index++) {
-      const pool = pools[index % meals.length];
-      const unused = pool.filter(id => !greedy.includes(id));
-      const candidates = unused.length ? unused : pool;
-      let choice = candidates[0];
-      let best = rank([...greedy, choice], -1);
-      for (const id of candidates.slice(1)) {
-        const next = rank([...greedy, id], -1);
-        if (better(next, best)) [choice, best] = [id, next];
-      }
-      greedy.push(choice);
-    }
-    const greedyScore = rank(greedy);
-    if (better(greedyScore, score)) [menu, score] = [greedy, greedyScore];
-  }
-  for (let pass = 0; pass < 3; pass++) {
-    const before = score;
-    for (let index = 0; index < menu.length; index++) {
-      const options = shuffle(pools[index % meals.length].filter(id => !menu.includes(id)), random);
-      const counts = variety();
-      menu.forEach((id, slot) => { if (slot !== index) counts.add(recipesById.get(id)); });
-      const families = new Set();
-      const representatives = [];
-      for (const id of options) {
-        const recipe = recipesById.get(id);
-        const family = familyOf(recipe);
-        if (!counts.repetitions(recipe)[0] && !families.has(family)) {
-          representatives.push(id);
-          families.add(family);
-        }
-      }
-      const candidates = new Set([...representatives.slice(0, 10), ...options.slice(0, 10)]);
-      for (const id of candidates) {
-        const trial = menu.map((current, slot) => slot === index ? id : current);
-        const trialScore = rank(trial);
-        if (better(trialScore, score)) [menu, score] = [trial, trialScore];
-      }
-    }
-    if (before === score) break;
-  }
+  const menu = selectWeek({
+    pools, recipes: new Map(recipes.map(recipe => [recipe.id, recipe])), settings, random, previous: previousMenu, history,
+    price: pricePlan(ingredients, settings.people, prices),
+  });
   return { menu, empty };
 }
 
+export function mealIngredientCosts(menu, recipesById, ingredients, people, quote) {
+  if (!quote?.complete) return null;
+  const unitCosts = new Map(quote.lines.map(line => [line.id, line.cost / line.bought]));
+  return menu.map((id, index) => {
+    const recipe = recipesById.get(id);
+    const portions = portionsAt(people, index);
+    const used = Object.keys(recipe.ingredients).reduce((sum, ingredient) =>
+      sum + recipeAmount(recipe, ingredient, portions, ingredients[ingredient].unit) * unitCosts.get(ingredient), 0);
+    return { used, perPortion: Math.round(used / portions) };
+  });
+}
+
 export function replacementOptions(menu, index, recipes, ingredients, exclusions, meals = MEALS,
-  allows = () => true, priority = () => 0) {
+  allows = () => true, priority = () => 0, method) {
   const pool = eligibleRecipes(recipes, ingredients, exclusions).filter(recipe =>
     recipe.meal === meals[index % meals.length] && recipe.id !== menu[index] && completeDish(recipe) && allows(recipe));
   const unused = pool.filter(recipe => !menu.includes(recipe.id));
   const byId = new Map(recipes.map(recipe => [recipe.id, recipe]));
-  const varietyCounts = variety();
-  menu.forEach((id, slot) => {
-    if (slot !== index && byId.has(id)) varietyCounts.add(byId.get(id));
+  const otherDishes = menu.flatMap((id, slot) => {
+    const recipe = byId.get(id);
+    return slot !== index && recipe ? [dishProfile(recipe, method?.(recipe))] : [];
   });
-  return (unused.length ? unused : pool).map(recipe => ({
-    recipe, rank: varietyScore(varietyCounts.repetitions(recipe), priority(recipe), 0),
-  })).sort((a, b) => better(a.rank, b.rank) ? -1 : better(b.rank, a.rank) ? 1 :
+  return (unused.length ? unused : pool).map(recipe => {
+    const dish = dishProfile(recipe, method?.(recipe));
+    const sameFamily = otherDishes.filter(other => other.family === dish.family).length;
+    const resemblance = otherDishes.filter(other => other.recipe.meal === recipe.meal)
+      .reduce((sum, other) => sum + dishSimilarity(dish, other) ** 2, 0);
+    return { recipe, rank: [sameFamily, resemblance - priority(recipe) * 0.025] };
+  }).sort((a, b) => better(a.rank, b.rank) ? -1 : better(b.rank, a.rank) ? 1 :
     a.recipe.title.localeCompare(b.recipe.title, "ru")).map(({ recipe }) => recipe);
 }
 
-export function replacementMenu(menu, index, id, recipes, ingredients, exclusions, meals, allows, priority) {
+export function replacementMenu(menu, index, id, recipes, ingredients, exclusions, meals, allows, priority, method) {
   if (!Number.isInteger(index) || index < 0 || index >= menu.length ||
-      !replacementOptions(menu, index, recipes, ingredients, exclusions, meals, allows, priority).some(recipe => recipe.id === id)) return null;
+      !replacementOptions(menu, index, recipes, ingredients, exclusions, meals, allows, priority, method).some(recipe => recipe.id === id)) return null;
   return menu.map((current, slot) => slot === index ? id : current);
 }

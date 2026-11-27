@@ -1,4 +1,4 @@
-import { CATEGORIES, SIDES, completeDish, familyOf } from "../site/js/culinary.mjs";
+import { CATEGORIES, SIDES, SIMILAR_DISH, completeDish, dishProfile, dishSimilarity, familyOf } from "../site/js/culinary.mjs";
 import {
   ALLERGENS, EQUIPMENT, MEALS as QUESTIONNAIRE_MEALS, activeMeals, buildRules, compatibleMethods,
   mealPeople, plannerSettings, portionSchedule, restoreAnswers, validBudget, validateStep,
@@ -10,7 +10,7 @@ import { createHash } from "node:crypto";
 import { allocateMealCosts, estimateLowerBound, estimatePricing, estimateRows, fillMissingPrices } from "../site/js/estimates.mjs";
 import {
   MEALS, STORES, bestQuote, cheapestPacks, eligibleRecipes, exclusionIds, generateMenu,
-  pricing, purchasable, recipeAmount, replacementMenu, replacementOptions, shoppingList,
+  mealIngredientCosts, pricing, purchasable, recipeAmount, replacementMenu, replacementOptions, shoppingList,
   starterMenu, validMenu, weekForDate, weekStart,
 } from "../site/js/planner.mjs";
 
@@ -400,6 +400,23 @@ test("different families are preferred to small recipe variations, including in 
     recipesForDinner, ingredients, [], ["dinner"]);
   assert.ok(replace[0] && !replace[0].id.startsWith("variant-"));
   assert.ok(replace.every(completeDish));
+});
+
+test("swapping the meat in an otherwise identical tray bake leaves a similar dish", () => {
+  const common = { category: "roast", sideDish: "vegetables", methods: [{ equipment: ["oven"], mode: "Запекание" }] };
+  const poultry = dishProfile({ ...common, id: "poultry", mainIngredient: "chicken", ingredients: { chicken: 200, broccoli: 200 } });
+  const pork = dishProfile({ ...common, id: "pork", mainIngredient: "pork", ingredients: { pork: 200, broccoli: 200 } });
+  assert.ok(dishSimilarity(poultry, pork) >= SIMILAR_DISH);
+  assert.ok(dishSimilarity(pork, dishProfile(byId.get("homemade-beef-pelmeni"))) < SIMILAR_DISH);
+});
+
+test("the portion cost uses only the quantities eaten from a purchased pack", () => {
+  const index = new Map([["rice-dish", { ingredients: { rice: 180 }, servings: 2 }]]);
+  const quote = { complete: true, lines: [{ id: "rice", cost: 10000, bought: 1000 }] };
+  assert.deepEqual(mealIngredientCosts(["rice-dish", "rice-dish"], index, ingredients, [1, 2], quote), [
+    { used: 900, perPortion: 900 }, { used: 1800, perPortion: 900 },
+  ]);
+  assert.equal(mealIngredientCosts(["rice-dish"], index, ingredients, [1], { complete: false }), null);
 });
 
 test("the old authored families still provide options when equipment restricts a full dinner", () => {

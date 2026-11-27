@@ -266,3 +266,20 @@
 }
 .meal-side { margin: -6px 0 8px; font-size: 11px; color: var(--green); font-weight: 750; }
 .meal-side + .meal-cost { margin-top: 0; }
+
+.menu-modes { display: grid; gap: 7px; margin: 12px 0 0; padding: 0; border: 0; min-width: 0; }
+.menu-modes legend { margin-bottom: 6px; color: var(--green); font-size: 13px; font-weight: 850; }
+.menu-modes label {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 8px;
+  padding: 7px 10px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer;
+}
+.menu-modes label:has(input:checked) { background: #edf3e6; border-color: #cbdcc2; }
+.menu-modes input { margin-top: 3px; accent-color: var(--green); }
+.menu-modes strong { display: block; font-size: 12px; }
+.menu-modes small, .meal-cost small { color: var(--muted); font-size: 11px; font-weight: 600; }
+.menu-modes small { display: block; margin-top: 2px; }
+.menu-details { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 9px; font-size: 12px; }
+.menu-details summary { color: var(--green); cursor: pointer; font-weight: 850; }
+.menu-details ul { margin: 7px 0 4px; padding-left: 20px; line-height: 1.6; }
+.menu-details li { margin: 3px 0; }
+.menu-details details { margin-top: 7px; padding-left: 7px; }
